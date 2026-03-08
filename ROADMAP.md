@@ -44,7 +44,19 @@ Application mobile de mémorisation du Quran avec système de révision espacée
 
 **Target:** Fin Mars 2026
 
-### v1.1 - Polish
+### v1.1 - Features (Sprint 5)
+**Goal:** Nouvelles fonctionnalités utilisateur
+
+| Issue | Feature | Priority | Value |
+|-------|---------|----------|-------|
+| RED-53 | Notifications Rappel | P2 | ⭐⭐⭐ Rétention |
+| RED-54 | Multi-Reciters | P2 | ⭐⭐ Personnalisation |
+| RED-55 | Tajweed Highlighting | P3 | ⭐⭐⭐ Apprentissage |
+| RED-56 | Export/Import Data | P2 | ⭐⭐ Backup |
+
+**Target:** Avril 2026
+
+### v1.2 - Polish (Sprint 6)
 **Goal:** UX améliorée et stabilité
 
 - [ ] Animations fluides
@@ -52,17 +64,6 @@ Application mobile de mémorisation du Quran avec système de révision espacée
 - [ ] Dark/Light theme toggle
 - [ ] Performance optimization
 - [ ] Crash reporting
-
-**Target:** Avril 2026
-
-### v1.2 - Features
-**Goal:** Nouvelles fonctionnalités
-
-- [ ] Notifications rappel
-- [ ] Multi-user support
-- [ ] Export/Import data
-- [ ] Multiple reciters
-- [ ] Tajweed highlighting
 
 **Target:** Mai 2026
 

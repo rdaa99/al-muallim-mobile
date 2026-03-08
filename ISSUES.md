@@ -29,13 +29,22 @@
 
 ## Backlog Issues
 
-### Future Features (Priority 3-4)
+### v1.0 Remaining
 
 | Issue | Title | Priority | Sprint |
 |-------|-------|----------|--------|
 | [RED-51](https://linear.app/reda-labs/issue/RED-51) | US-M06: Offline Support | P3 | Sprint 3 |
 
 *Note: RED-51 (Offline Support) will be partially addressed by RED-52 (SQLite Local Storage)*
+
+### v1.1 Features (Sprint 5 - April 2026)
+
+| Issue | Title | Priority | Description |
+|-------|-------|----------|-------------|
+| [RED-53](https://linear.app/reda-labs/issue/RED-53) | US-M08: Notifications Rappel | P2 | Push notifications quotidiennes |
+| [RED-54](https://linear.app/reda-labs/issue/RED-54) | US-M09: Multi-Reciters | P2 | Choix parmi 5+ récitateurs |
+| [RED-55](https://linear.app/reda-labs/issue/RED-55) | US-M10: Tajweed Highlighting | P3 | Coloration règles Tajweed |
+| [RED-56](https://linear.app/reda-labs/issue/RED-56) | US-M11: Export/Import Data | P2 | Backup et restauration progression |
 
 ---
 
