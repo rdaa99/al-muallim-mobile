@@ -1,64 +1,46 @@
 import { renderHook, act } from '@testing-library/react-native';
 import { useAudioPlayer } from '../useAudioPlayer';
 
-// Mock Audio
-class MockAudio {
-  src: string = '';
-  loop: boolean = false;
-  currentTime: number = 0;
-  duration: number = 100;
-  paused: boolean = true;
+// Mock react-native-sound at the top level
+jest.mock('react-native-sound', () => {
+  const mockSoundConstructor = jest.fn().mockImplementation((url, basePath, callback) => {
+    const mockSoundInstance = {
+      play: jest.fn((playCallback) => {
+        if (playCallback) {
+          playCallback(true);
+        }
+      }),
+      pause: jest.fn(),
+      stop: jest.fn(),
+      release: jest.fn(),
+      getDuration: jest.fn(() => 60),
+      getCurrentTime: jest.fn((cb) => cb(0, false)),
+      setCurrentTime: jest.fn(),
+      setVolume: jest.fn(),
+    };
 
-  private eventListeners: { [key: string]: EventListener[] } = {};
-
-  constructor(src: string) {
-    this.src = src;
-  }
-
-  addEventListener(type: string, listener: EventListener) {
-    if (!this.eventListeners[type]) {
-      this.eventListeners[type] = [];
+    // Call callback asynchronously to ensure sound instance is fully constructed
+    if (callback) {
+      process.nextTick(() => callback(null));
     }
-    this.eventListeners[type].push(listener);
-  }
 
-  removeEventListener(type: string, listener: EventListener) {
-    if (this.eventListeners[type]) {
-      const index = this.eventListeners[type].indexOf(listener);
-      if (index > -1) {
-        this.eventListeners[type].splice(index, 1);
-      }
-    }
-  }
+    return mockSoundInstance;
+  });
 
-  emit(type: string) {
-    if (this.eventListeners[type]) {
-      this.eventListeners[type].forEach(listener => listener(new Event(type)));
-    }
-  }
+  // Add static method to the mock constructor
+  mockSoundConstructor.setCategory = jest.fn();
 
-  play() {
-    this.paused = false;
-    return Promise.resolve();
-  }
-
-  pause() {
-    this.paused = true;
-  }
-}
-
-// Mock global Audio
-global.Audio = MockAudio as any;
-
-// Mock timers
-jest.useFakeTimers();
+  return {
+    __esModule: true,
+    default: mockSoundConstructor,
+  };
+});
 
 describe('useAudioPlayer', () => {
   const testUrl = 'https://example.com/audio.mp3';
 
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.clearAllTimers();
   });
 
   it('should initialize with default state', () => {
@@ -72,15 +54,21 @@ describe('useAudioPlayer', () => {
     expect(result.current.currentTime).toBe(0);
   });
 
-  it('should start loading when play is called', () => {
+  it('should start loading and finish loading when play is called', async () => {
     const { result } = renderHook(() => useAudioPlayer());
 
     act(() => {
       result.current.play(testUrl);
     });
 
-    expect(result.current.isLoading).toBe(true);
+    // Wait for next tick
+    await act(async () => {
+      await new Promise(resolve => process.nextTick(resolve));
+    });
+
+    expect(result.current.isLoading).toBe(false);
     expect(result.current.error).toBeNull();
+    expect(result.current.duration).toBe(60);
   });
 
   it('should set isPlaying to true when audio starts playing', async () => {
@@ -90,15 +78,14 @@ describe('useAudioPlayer', () => {
       result.current.play(testUrl);
     });
 
-    // Simulate canplay event
-    act(() => {
-      const audio = new MockAudio(testUrl);
-      audio.emit('canplay');
+    // Wait for next tick
+    await act(async () => {
+      await new Promise(resolve => process.nextTick(resolve));
     });
 
-    // Note: In real implementation, this would be triggered by the audio element
-    // For this test, we're just checking the initial state after play() is called
-    expect(result.current.isLoading).toBe(true);
+    // Should be playing after play() is called
+    expect(result.current.isPlaying).toBe(true);
+    expect(result.current.isLoading).toBe(false);
   });
 
   it('should toggle loop mode', () => {
@@ -119,11 +106,16 @@ describe('useAudioPlayer', () => {
     expect(result.current.isLooping).toBe(false);
   });
 
-  it('should stop audio and reset state', () => {
+  it('should stop audio and reset state', async () => {
     const { result } = renderHook(() => useAudioPlayer());
 
     act(() => {
       result.current.play(testUrl);
+    });
+
+    // Wait for next tick
+    await act(async () => {
+      await new Promise(resolve => process.nextTick(resolve));
     });
 
     act(() => {
@@ -134,65 +126,55 @@ describe('useAudioPlayer', () => {
     expect(result.current.currentTime).toBe(0);
   });
 
-  it('should set error on timeout if audio does not load', () => {
+  it('should handle errors during loading', async () => {
+    // Get the mock and override it for this test only
+    const Sound = require('react-native-sound').default;
+    Sound.mockImplementationOnce((url, basePath, callback) => {
+      const mockSoundInstance = {
+        play: jest.fn(),
+        pause: jest.fn(),
+        stop: jest.fn(),
+        release: jest.fn(),
+        getDuration: jest.fn(() => 0),
+        getCurrentTime: jest.fn((cb) => cb(0, false)),
+        setCurrentTime: jest.fn(),
+        setVolume: jest.fn(),
+      };
+
+      if (callback) {
+        process.nextTick(() => callback(new Error('Load failed')));
+      }
+
+      return mockSoundInstance;
+    });
+
     const { result } = renderHook(() => useAudioPlayer());
 
     act(() => {
       result.current.play(testUrl);
     });
 
-    expect(result.current.isLoading).toBe(true);
-
-    // Fast-forward 10 seconds
-    act(() => {
-      jest.advanceTimersByTime(10000);
+    // Wait for next tick
+    await act(async () => {
+      await new Promise(resolve => process.nextTick(resolve));
     });
 
-    expect(result.current.error).toBe('Audio non disponible après 10 secondes');
+    expect(result.current.error).toBe('Audio non disponible');
     expect(result.current.isLoading).toBe(false);
   });
 
-  it('should clear timeout when canplay is triggered', () => {
+  it('should seek to a specific time', async () => {
     const { result } = renderHook(() => useAudioPlayer());
 
+    // First play audio to create the sound instance
     act(() => {
       result.current.play(testUrl);
     });
 
-    // Simulate quick load (before timeout)
-    act(() => {
-      const audio = new MockAudio(testUrl);
-      audio.emit('canplay');
+    // Wait for next tick
+    await act(async () => {
+      await new Promise(resolve => process.nextTick(resolve));
     });
-
-    // Fast-forward past timeout
-    act(() => {
-      jest.advanceTimersByTime(10000);
-    });
-
-    // Should not have error because timeout was cleared
-    // Note: This test would need adjustment based on actual implementation
-  });
-
-  it('should handle errors during playback', () => {
-    const { result } = renderHook(() => useAudioPlayer());
-
-    act(() => {
-      result.current.play(testUrl);
-    });
-
-    // Simulate error event
-    act(() => {
-      const audio = new MockAudio(testUrl);
-      audio.emit('error');
-    });
-
-    expect(result.current.error).toBe('Erreur lors du chargement de l\'audio');
-    expect(result.current.isPlaying).toBe(false);
-  });
-
-  it('should seek to a specific time', () => {
-    const { result } = renderHook(() => useAudioPlayer());
 
     const seekTime = 50;
     act(() => {
@@ -200,5 +182,32 @@ describe('useAudioPlayer', () => {
     });
 
     expect(result.current.currentTime).toBe(seekTime);
+  });
+
+  it('should pause audio', async () => {
+    const { result } = renderHook(() => useAudioPlayer());
+
+    act(() => {
+      result.current.play(testUrl);
+    });
+
+    // Wait for next tick
+    await act(async () => {
+      await new Promise(resolve => process.nextTick(resolve));
+    });
+
+    act(() => {
+      result.current.pause();
+    });
+
+    expect(result.current.isPlaying).toBe(false);
+  });
+
+  it('should call Sound.setCategory when hook is initialized', () => {
+    const Sound = require('react-native-sound').default;
+    
+    renderHook(() => useAudioPlayer());
+
+    expect(Sound.setCategory).toHaveBeenCalledWith('Playback');
   });
 });

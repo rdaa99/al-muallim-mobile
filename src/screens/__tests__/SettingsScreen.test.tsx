@@ -6,9 +6,6 @@ import { useAppStore } from '@/stores/appStore';
 // Mock the store
 jest.mock('@/stores/appStore');
 
-// Mock slider component
-jest.mock('@react-native-community/slider', () => 'Slider');
-
 // Mock navigation
 jest.mock('@react-navigation/native', () => ({
   useNavigation: () => ({

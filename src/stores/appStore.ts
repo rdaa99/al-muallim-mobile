@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import type { Verse, DailyReview, ProgressStats, UserSettings } from '@/types';
-import * as api from '@/services/api';
+import * as db from '@/services/database';
 
 interface AppState {
   // Verses
@@ -44,7 +44,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   loadTodayReview: async () => {
     set({ loading: true, error: null });
     try {
-      const review = await api.getTodayReview();
+      const review = await db.getTodayReview();
       set({
         dailyReview: review,
         verses: review.verses,
@@ -62,7 +62,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     if (!currentVerse) return;
 
     try {
-      await api.submitReview(currentVerse.id, quality);
+      await db.submitReview(currentVerse.id, quality);
 
       // Move to next verse
       const nextIndex = reviewIndex + 1;
@@ -93,7 +93,7 @@ export const useAppStore = create<AppState>((set, get) => ({
 
   loadStats: async () => {
     try {
-      const stats = await api.getProgressStats();
+      const stats = await db.getProgressStats();
       set({ stats });
     } catch (error) {
       set({ error: 'Failed to load stats' });
@@ -102,7 +102,7 @@ export const useAppStore = create<AppState>((set, get) => ({
 
   loadSettings: async () => {
     try {
-      const settings = await api.getSettings();
+      const settings = await db.getSettings();
       set({ settings });
     } catch (error) {
       set({ error: 'Failed to load settings' });
@@ -111,7 +111,7 @@ export const useAppStore = create<AppState>((set, get) => ({
 
   updateSettings: async (newSettings) => {
     try {
-      const settings = await api.updateSettings(newSettings);
+      const settings = await db.updateSettings(newSettings);
       set({ settings });
     } catch (error) {
       set({ error: 'Failed to update settings' });
