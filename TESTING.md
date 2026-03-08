@@ -66,6 +66,24 @@ npm run seed
 
 ## Test Categories
 
+### Scope MVP (Juz 29-30)
+**Important:** This MVP includes only Juz 29 and 30 (last 2 sections of Quran)
+
+**Included:**
+- **Juz 29:** 11 surahs (67-77), ~431 verses
+- **Juz 30:** 37 surahs (78-114), ~564 verses
+- **Total MVP:** 48 surahs, ~995 verses (16% of full Quran)
+
+**Not Included (Future):**
+- Juz 1-28 will be added in future versions
+- Download on-demand feature planned for v1.2
+
+**Benefits:**
+- ✅ 85% lighter app (800KB vs 5MB)
+- ✅ Faster testing (48 vs 114 surahs)
+- ✅ Focus on most-revised surahs
+- ✅ Quicker installation
+
 ### 1. Smoke Tests (Critical Path)
 Quick validation that core features work.
 
