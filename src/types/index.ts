@@ -35,6 +35,9 @@ export interface DailyReview {
   due_count: number;
   completed_count: number;
   verses: Verse[];
+  sections?: any[];
+  blocked?: boolean;
+  block_message?: string | null;
 }
 
 export interface ProgressStats {

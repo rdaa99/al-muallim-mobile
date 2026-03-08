@@ -35,19 +35,45 @@ export const updateVerseStatus = async (id: number, status: Verse['status']): Pr
 
 // Review
 export const getTodayReview = async (): Promise<DailyReview> => {
-  const { data } = await api.get('/review/today');
-  return data;
+  const { data } = await api.get('/today');
+  // Transform backend format to app format
+  const allVerses = data.sections?.flatMap((section: any) => section.verses) || [];
+  const completedVerses = data.sections?.filter((s: any) => s.completed).flatMap((section: any) => section.verses) || [];
+
+  return {
+    date: data.date,
+    due_count: allVerses.length,
+    completed_count: completedVerses.length,
+    verses: allVerses,
+    sections: data.sections,
+    blocked: data.blocked,
+    block_message: data.block_message,
+  };
 };
 
 export const submitReview = async (verseId: number, quality: QualityScore): Promise<ReviewResult> => {
-  const { data } = await api.post('/review', { verse_id: verseId, quality });
+  const { data } = await api.post('/review', {
+    verse_id: verseId,
+    quality,
+    session_type: 'review', // Default session type
+  });
   return data;
 };
 
 // Stats
 export const getProgressStats = async (): Promise<ProgressStats> => {
-  const { data } = await api.get('/stats/progress');
-  return data;
+  const { data } = await api.get('/progress');
+  // Transform backend format to app format
+  return {
+    total_verses: data.total_verses || 6236,
+    mastered: data.total_mastered || 0,
+    consolidating: data.total_consolidating || 0,
+    learning: data.total_learning || 0,
+    streak_days: data.streak || 0,
+    retention_rate: 0.85, // Default, could be calculated from data
+    verses_by_juz: [], // Backend doesn't provide this yet
+    verses_by_surah: data.surahs || [],
+  };
 };
 
 export const getSRSStats = async (): Promise<SRSStats> => {
