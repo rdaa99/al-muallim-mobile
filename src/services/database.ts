@@ -1,5 +1,6 @@
 import SQLite from 'react-native-quick-sqlite';
 import type { Verse, DailyReview, ProgressStats, UserSettings, ReviewResult, QualityScore } from '@/types';
+import { VERSES_JUZ_29_30 } from '@/data/verses-juz-29-30';
 
 // Open database
 const db = SQLite.open({ name: 'almuallim.db' });
@@ -53,7 +54,7 @@ export const initDatabase = async (): Promise<void> => {
   }
 };
 
-// Seed Juz 29-30 (995 verses) - Sample data for testing
+// Seed Juz 29-30 (995 verses)
 export const seedDatabase = async (): Promise<void> => {
   // Check if database is already seeded
   const checkResult = await db.execute(`SELECT COUNT(*) as count FROM verses`);
@@ -64,60 +65,8 @@ export const seedDatabase = async (): Promise<void> => {
     return;
   }
 
-  // Sample verses from Juz 29-30 (Amma)
-  const sampleVerses = [
-    [78, 1, 'عَمَّ يَتَسَاءَلُونَ', 'De quoi s\'interrogent-ils ?', 'About what are they asking one another?', 30, 582],
-    [78, 2, 'عَنِ النَّبَإِ الْعَظِيمِ', 'De la nouvelle immense', 'About the great news', 30, 582],
-    [78, 3, 'الَّذِي هُمْ فِيهِ مُخْتَلِفُونَ', 'Au sujet de laquelle ils divergent', 'About which they disagree', 30, 582],
-    [78, 4, 'كَلَّا سَيَعْلَمُونَ', 'Non ! Ils sauront bientôt', 'No! They are going to know', 30, 582],
-    [78, 5, 'ثُمَّ كَلَّا سَيَعْلَمُونَ', 'Puis non ! Ils sauront bientôt', 'Then no! They are going to know', 30, 582],
-    [79, 1, 'وَالنَّازِعَاتِ غَرْقًا', 'Par ceux qui arrachent avec violence', 'By those who extract with violence', 30, 583],
-    [79, 2, 'وَالنَّاشِطَاتِ نَشْطًا', 'Et celles qui tirent avec douceur', 'And those who extract with ease', 30, 583],
-    [79, 3, 'وَالسَّابِحَاتِ سَبْحًا', 'Et celles qui nagent librement', 'And those who glide swimmingly', 30, 583],
-    [79, 4, 'فَالسَّابِقَاتِ سَبْقًا', 'Puis celles qui devancent en vitesse', 'Then those who race to the front', 30, 583],
-    [79, 5, 'فَالْمُدَبِّرَاتِ أَمْرًا', 'Puis celles qui dirigent les affaires', 'Then those who arrange each matter', 30, 583],
-    [80, 1, 'عَبَسَ وَتَوَلَّىٰ', 'Il s\'est renfrogné et a tourné le dos', 'He frowned and turned away', 30, 585],
-    [80, 2, 'أَن جَاءَهُ الْأَعْمَىٰ', 'Parce que l\'aveugle est venu à lui', 'Because the blind man came to him', 30, 585],
-    [80, 3, 'وَمَا يُدْرِيكَ لَعَلَّهُ يَزَّكَّىٰ', 'Et qu\'en sais-tu ? Peut-être se purifierait-il', 'And what can make you know? Perhaps he might purify himself', 30, 585],
-    [81, 1, 'إِذَا الشَّمْسُ كُوِّرَتْ', 'Quand le soleil sera enveloppé', 'When the sun is wrapped up', 30, 586],
-    [81, 2, 'وَإِذَا النُّجُومُ انْكَدَرَتْ', 'Et que les étoiles s\'obscurciront', 'And when the stars fall, dispersing', 30, 586],
-    [82, 1, 'إِذَا السَّمَاءُ انْفَطَرَتْ', 'Quand le ciel se fendra', 'When the sky breaks apart', 30, 587],
-    [82, 2, 'وَإِذَا الْكَوَاكِبُ انْتَثَرَتْ', 'Et que les étoiles se disperseront', 'And when the stars fall, scattering', 30, 587],
-    [83, 1, 'وَيْلٌ لِلْمُطَفِّفِينَ', 'Malheur aux fraudeurs', 'Woe to those who give less', 30, 587],
-    [84, 1, 'إِذَا السَّمَاءُ شَقَّقَتْ', 'Quand le ciel se déchirera', 'When the sky has split open', 30, 589],
-    [85, 1, 'وَالسَّمَاءِ ذَاتِ الْبُرُوجِ', 'Par le ciel aux constellations', 'By the sky containing great stars', 30, 590],
-    [86, 1, 'وَالسَّمَاءِ وَالطَّارِقِ', 'Par le ciel et l\'astre nocturne', 'By the sky and the night comer', 30, 591],
-    [87, 1, 'سَبِّحِ اسْمَ رَبِّكَ الْأَعْلَىٰ', 'Glorifie le nom de ton Seigneur le Très-Haut', 'Glorify the name of your Lord, the Most High', 30, 591],
-    [88, 1, 'هَلْ أَتَاكَ حَدِيثُ الْغَاشِيَةِ', 'T\'est parvenu le récit de l\'enveloppante ?', 'Has there come to you the narration of the overwhelming?', 30, 592],
-    [89, 1, 'وَالْفَجْرِ', 'Par l\'aube !', 'By the dawn', 30, 593],
-    [90, 1, 'لَا أُقْسِمُ بِهَٰذَا الْبَلَدِ', 'Non ! Je jure par cette cité !', 'I swear by this city', 30, 594],
-    [91, 1, 'وَالشَّمْسِ وَضُحَاهَا', 'Par le soleil et par sa clarté', 'By the sun and its brightness', 30, 595],
-    [92, 1, 'وَاللَّيْلِ إِذَا يَغْشَىٰ', 'Par la nuit quand elle enveloppe', 'By the night when it covers', 30, 596],
-    [93, 1, 'وَالضُّحَىٰ', 'Par le jour montant !', 'By the morning brightness', 30, 596],
-    [94, 1, 'أَلَمْ نَشْرَحْ لَكَ صَدْرَكَ', 'N\'avons-Nous pas ouvert ton cœur ?', 'Did We not expand for you your breast?', 30, 596],
-    [95, 1, 'وَالتِّينِ وَالزَّيْتُونِ', 'Par le figuier et l\'olivier !', 'By the fig and the olive', 30, 597],
-    [96, 1, 'اقْرَأْ بِاسْمِ رَبِّكَ الَّذِي خَلَقَ', 'Lis au nom de ton Seigneur qui a créé', 'Read in the name of your Lord who created', 30, 597],
-    [97, 1, 'إِنَّا أَنْزَلْنَاهُ فِي لَيْلَةِ الْقَدْرِ', 'Nous l\'avons fait descendre pendant la nuit du Destin', 'Indeed, We sent it down during the Night of Decree', 30, 598],
-    [98, 1, 'لَمْ يَكُنِ الَّذِينَ كَفَرُوا مِنْ أَهْلِ الْكِتَابِ', 'Ceux qui ont mécru parmi les gens du Livre', 'Those who disbelieved among the People of the Scripture', 30, 598],
-    [99, 1, 'إِذَا زُلْزِلَتِ الْأَرْضُ زِلْزَالَهَا', 'Quand la terre tremblera d\'un tremblement', 'When the earth is shaken with its earthquake', 30, 599],
-    [100, 1, 'وَالْعَادِيَاتِ ضَبْحًا', 'Par les coursiers qui halètent !', 'By the racers, panting', 30, 599],
-    [101, 1, 'الْقَارِعَةُ', 'Le fracas !', 'The Striking Calamity', 30, 600],
-    [102, 1, 'أَلْهَاكُمُ التَّكَاثُرُ', 'La course aux richesses vous distrait', 'Competition in worldly increase diverts you', 30, 600],
-    [103, 1, 'وَالْعَصْرِ', 'Par le temps !', 'By time', 30, 601],
-    [104, 1, 'وَيْلٌ لِكُلِّ هُمَزَةٍ لُمَزَةٍ', 'Malheur à tout calomniateur diffamateur', 'Woe to every scorner and mocker', 30, 601],
-    [105, 1, 'أَلَمْ تَرَ كَيْفَ فَعَلَ رَبُّكَ بِأَصْحَابِ الْفِيلِ', 'N\'as-tu pas vu comment ton Seigneur a agi avec les gens de l\'éléphant ?', 'Have you not considered how your Lord dealt with the companions of the elephant?', 30, 601],
-    [106, 1, 'لِإِيلَافِ قُرَيْشٍ', 'Pour l\'union des Quraysh', 'For the security of Quraysh', 30, 602],
-    [107, 1, 'أَرَأَيْتَ الَّذِي يُكَذِّبُ بِالدِّينِ', 'Vois-tu celui qui traite de mensonge la religion ?', 'Have you seen the one who denies the Recompense?', 30, 602],
-    [108, 1, 'إِنَّا أَعْطَيْنَاكَ الْكَوْثَرَ', 'Nous t\'avons certes accordé l\'Abondance', 'Indeed, We have granted you Al-Kawthar', 30, 602],
-    [109, 1, 'قُلْ يَا أَيُّهَا الْكَافِرُونَ', 'Dis : Ô vous les infidèles !', 'Say, "O disbelievers"', 30, 603],
-    [110, 1, 'إِذَا جَاءَ نَصْرُ اللَّهِ وَالْفَتْحُ', 'Quand vient le secours d\'Allah ainsi que la victoire', 'When the victory of Allah has come and the conquest', 30, 603],
-    [111, 1, 'تَبَّتْ يَدَا أَبِي لَهَبٍ وَتَبَّ', 'Que périssent les deux mains d\'Abu-Lahab et qu\'il périsse lui-même', 'May the hands of Abu Lahab be ruined, and ruined is he', 30, 603],
-    [112, 1, 'قُلْ هُوَ اللَّهُ أَحَدٌ', 'Dis : Il est Allah, Unique', 'Say, "He is Allah, the One"', 30, 604],
-    [113, 1, 'قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ', 'Dis : Je cherche protection auprès du Seigneur de l\'aube naissante', 'Say, "I seek refuge in the Lord of daybreak"', 30, 604],
-    [114, 1, 'قُلْ أَعُوذُ بِرَبِّ النَّاسِ', 'Dis : Je cherche protection auprès du Seigneur des hommes', 'Say, "I seek refuge in the Lord of mankind"', 30, 604],
-  ];
-
-  for (const verse of sampleVerses) {
+  // Insert all 995 verses from Juz 29-30
+  for (const verse of VERSES_JUZ_29_30) {
     await db.execute(
       `INSERT INTO verses 
        (surah_number, ayah_number, text_arabic, text_translation_fr, text_translation_en, juz_number, page_number)
@@ -126,7 +75,7 @@ export const seedDatabase = async (): Promise<void> => {
     );
   }
 
-  console.log(`Database seeded with ${sampleVerses.length} sample verses`);
+  console.log(`Database seeded with ${VERSES_JUZ_29_30.length} verses from Juz 29-30`);
 };
 
 // SM-2 Algorithm
