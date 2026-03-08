@@ -13,17 +13,6 @@ jest.mock('@react-navigation/native', () => ({
   }),
 }));
 
-// Mock Platform
-jest.mock('react-native', () => ({
-  ...jest.requireActual('react-native'),
-  Platform: {
-    OS: 'ios',
-  },
-  Alert: {
-    alert: jest.fn(),
-  },
-}));
-
 describe('SettingsScreen', () => {
   const mockLoadSettings = jest.fn();
   const mockUpdateSettings = jest.fn();
@@ -75,23 +64,34 @@ describe('SettingsScreen', () => {
   });
 
   it('should change learning mode on press', async () => {
+    jest.useFakeTimers();
+    
     const { getByText } = render(<SettingsScreen />);
     
     const revisionOnlyButton = getByText('🔄 Révision uniquement');
     fireEvent.press(revisionOnlyButton);
+
+    // Fast-forward through debounce delay (1000ms)
+    act(() => {
+      jest.advanceTimersByTime(1100);
+    });
 
     await waitFor(() => {
       expect(mockUpdateSettings).toHaveBeenCalledWith(
         expect.objectContaining({ learning_mode: 'revision_only' })
       );
     });
+    
+    jest.useRealTimers();
   });
 
   it('should display daily settings with sliders', () => {
-    const { getByText } = render(<SettingsScreen />);
+    const { getByText, getAllByText } = render(<SettingsScreen />);
     expect(getByText('Quotidien')).toBeTruthy();
     expect(getByText('Nouveaux versets/jour')).toBeTruthy();
-    expect(getByText('3')).toBeTruthy();
+    // "3" appears in the slider display - use getAllByText since it may appear multiple times
+    const threes = getAllByText('3');
+    expect(threes.length).toBeGreaterThan(0);
     expect(getByText('Durée session (min)')).toBeTruthy();
     expect(getByText('Capacité d\'apprentissage')).toBeTruthy();
   });
@@ -113,16 +113,25 @@ describe('SettingsScreen', () => {
   });
 
   it('should change direction on press', async () => {
+    jest.useFakeTimers();
+    
     const { getByText } = render(<SettingsScreen />);
     
     const ascButton = getByText('⬆️ Al-Fatiha → An-Nas');
     fireEvent.press(ascButton);
+
+    // Fast-forward through debounce delay (1000ms)
+    act(() => {
+      jest.advanceTimersByTime(1100);
+    });
 
     await waitFor(() => {
       expect(mockUpdateSettings).toHaveBeenCalledWith(
         expect.objectContaining({ direction: 'asc' })
       );
     });
+    
+    jest.useRealTimers();
   });
 
   it('should display reciter picker', () => {
@@ -143,6 +152,8 @@ describe('SettingsScreen', () => {
   });
 
   it('should select reciter from picker', async () => {
+    jest.useFakeTimers();
+    
     const { getByText } = render(<SettingsScreen />);
     
     // Open picker
@@ -153,11 +164,18 @@ describe('SettingsScreen', () => {
     const newReciter = getByText('Mishary Al-Afasy');
     fireEvent.press(newReciter);
 
+    // Fast-forward through debounce delay (1000ms)
+    act(() => {
+      jest.advanceTimersByTime(1100);
+    });
+
     await waitFor(() => {
       expect(mockUpdateSettings).toHaveBeenCalledWith(
         expect.objectContaining({ preferred_reciter: 'afasy' })
       );
     });
+    
+    jest.useRealTimers();
   });
 
   it('should call loadSettings on mount', () => {

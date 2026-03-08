@@ -26,6 +26,102 @@ export const ActivityIndicator = (props) => React.createElement('ActivityIndicat
 export const RefreshControl = (props) => React.createElement('RefreshControl', props);
 export const Modal = ({ children, ...props }) => React.createElement('Modal', props, children);
 
+// Mock Animated
+const mockAnimatedValue = jest.fn((value) => ({
+  setValue: jest.fn(),
+  setOffset: jest.fn(),
+  flattenOffset: jest.fn(),
+  extractOffset: jest.fn(),
+  addListener: jest.fn(),
+  removeListener: jest.fn(),
+  stopAnimation: jest.fn(),
+  resetAnimation: jest.fn(),
+  interpolate: jest.fn(() => ({
+    __getValue: jest.fn(() => value),
+  })),
+  __getValue: jest.fn(() => value),
+}));
+
+const mockAnimatedNode = {
+  setValue: jest.fn(),
+  setOffset: jest.fn(),
+  flattenOffset: jest.fn(),
+  extractOffset: jest.fn(),
+  addListener: jest.fn(),
+  removeListener: jest.fn(),
+  stopAnimation: jest.fn(),
+  resetAnimation: jest.fn(),
+  interpolate: jest.fn(() => mockAnimatedNode),
+  __getValue: jest.fn(() => 0),
+};
+
+export const Animated = {
+  Value: mockAnimatedValue,
+  ValueXY: jest.fn(() => ({
+    x: mockAnimatedNode,
+    y: mockAnimatedNode,
+    setValue: jest.fn(),
+    setOffset: jest.fn(),
+    flattenOffset: jest.fn(),
+    extractOffset: jest.fn(),
+    stopAnimation: jest.fn(),
+    resetAnimation: jest.fn(),
+    addListener: jest.fn(),
+    removeListener: jest.fn(),
+    getLayout: jest.fn(() => ({})),
+    getTranslateTransform: jest.fn(() => []),
+  })),
+  View: View,
+  Text: Text,
+  Image: Image,
+  createAnimatedComponent: jest.fn((component) => component),
+  timing: jest.fn(() => ({
+    start: jest.fn((callback) => callback && callback({ finished: true })),
+    stop: jest.fn(),
+    reset: jest.fn(),
+  })),
+  spring: jest.fn(() => ({
+    start: jest.fn((callback) => callback && callback({ finished: true })),
+    stop: jest.fn(),
+    reset: jest.fn(),
+  })),
+  decay: jest.fn(() => ({
+    start: jest.fn((callback) => callback && callback({ finished: true })),
+    stop: jest.fn(),
+    reset: jest.fn(),
+  })),
+  sequence: jest.fn((animations) => ({
+    start: jest.fn((callback) => callback && callback({ finished: true })),
+    stop: jest.fn(),
+    reset: jest.fn(),
+  })),
+  parallel: jest.fn((animations) => ({
+    start: jest.fn((callback) => callback && callback({ finished: true })),
+    stop: jest.fn(),
+    reset: jest.fn(),
+  })),
+  loop: jest.fn((animation) => ({
+    start: jest.fn((callback) => callback && callback({ finished: true })),
+    stop: jest.fn(),
+    reset: jest.fn(),
+  })),
+  event: jest.fn(() => jest.fn()),
+  add: jest.fn(() => mockAnimatedNode),
+  subtract: jest.fn(() => mockAnimatedNode),
+  multiply: jest.fn(() => mockAnimatedNode),
+  divide: jest.fn(() => mockAnimatedNode),
+  modulo: jest.fn(() => mockAnimatedNode),
+  diffClamp: jest.fn(() => mockAnimatedNode),
+  delay: jest.fn(() => ({
+    start: jest.fn((callback) => callback && callback({ finished: true })),
+    stop: jest.fn(),
+  })),
+  stagger: jest.fn(() => ({
+    start: jest.fn((callback) => callback && callback({ finished: true })),
+    stop: jest.fn(),
+  })),
+};
+
 // Mock APIs
 export const Dimensions = {
   get: jest.fn().mockReturnValue({
@@ -50,7 +146,6 @@ export const Keyboard = {
   dismiss: jest.fn(),
   addListener: jest.fn(() => ({ remove: jest.fn() })),
   removeListener: jest.fn(),
-  dismiss: jest.fn(),
 };
 
 export const StatusBar = {
@@ -91,6 +186,25 @@ export const Vibration = {
   cancel: jest.fn(),
 };
 
+// Easing mock
+export const Easing = {
+  linear: jest.fn(),
+  ease: jest.fn(),
+  quad: jest.fn(),
+  cubic: jest.fn(),
+  poly: jest.fn(),
+  sin: jest.fn(),
+  circle: jest.fn(),
+  exp: jest.fn(),
+  elastic: jest.fn(),
+  back: jest.fn(),
+  bounce: jest.fn(),
+  bezier: jest.fn(),
+  in: jest.fn(),
+  out: jest.fn(),
+  inOut: jest.fn(),
+};
+
 // Mock hooks
 export const useColorScheme = jest.fn(() => 'light');
 export const useWindowDimensions = jest.fn(() => ({ width: 375, height: 812 }));
@@ -122,6 +236,8 @@ export default {
   AppState,
   Linking,
   Vibration,
+  Animated,
+  Easing,
   useColorScheme,
   useWindowDimensions,
 };

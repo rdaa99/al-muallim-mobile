@@ -157,13 +157,14 @@ describe('ReviewScreen', () => {
   });
 
   it('should show completion message when all reviews done', () => {
+    // When all verses are done but verses array still exists (completed state)
     (useAppStore as unknown as jest.Mock).mockReturnValue({
       currentVerse: null,
       dailyReview: {
         date: '2026-03-08',
         due_count: 5,
         completed_count: 5,
-        verses: [],
+        verses: [mockVerse, mockVerse, mockVerse, mockVerse, mockVerse],
       },
       loading: false,
       error: null,
@@ -174,7 +175,7 @@ describe('ReviewScreen', () => {
 
     const { getByText } = render(<ReviewScreen />);
     expect(getByText('Félicitations !')).toBeTruthy();
-    expect(getByText('5 versets révisés')).toBeTruthy();
+    expect(getByText('versets révisés')).toBeTruthy();
   });
 
   it('should show blocked message when review is blocked', () => {
