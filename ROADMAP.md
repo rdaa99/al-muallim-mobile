@@ -49,6 +49,7 @@ Application mobile de mémorisation du Quran avec système de révision espacée
 
 | Issue | Feature | Priority | Value |
 |-------|---------|----------|-------|
+| RED-57 | Mode Récitation Libre (Tarteel-style) | P2 | ⭐⭐⭐⭐⭐ Core Feature |
 | RED-53 | Notifications Rappel | P2 | ⭐⭐⭐ Rétention |
 | RED-54 | Multi-Reciters | P2 | ⭐⭐ Personnalisation |
 | RED-55 | Tajweed Highlighting | P3 | ⭐⭐⭐ Apprentissage |

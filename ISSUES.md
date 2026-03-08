@@ -41,6 +41,7 @@
 
 | Issue | Title | Priority | Description |
 |-------|-------|----------|-------------|
+| [RED-57](https://linear.app/reda-labs/issue/RED-57) | US-M12: Mode Récitation Libre (Tarteel-style) | P2 | Récitation sourates avec affichage progressif |
 | [RED-53](https://linear.app/reda-labs/issue/RED-53) | US-M08: Notifications Rappel | P2 | Push notifications quotidiennes |
 | [RED-54](https://linear.app/reda-labs/issue/RED-54) | US-M09: Multi-Reciters | P2 | Choix parmi 5+ récitateurs |
 | [RED-55](https://linear.app/reda-labs/issue/RED-55) | US-M10: Tajweed Highlighting | P3 | Coloration règles Tajweed |
