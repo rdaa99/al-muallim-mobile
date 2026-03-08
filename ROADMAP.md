@@ -44,18 +44,36 @@ Application mobile de mémorisation du Quran avec système de révision espacée
 
 **Target:** Fin Mars 2026
 
-### v1.1 - Features (Sprint 5)
-**Goal:** Nouvelles fonctionnalités utilisateur
+### v1.1 - Tarteel-Style Features (Sprint 5-6)
+**Goal:** Répliquer l'expérience Tarteel avec toutes ses features
 
-| Issue | Feature | Priority | Value |
-|-------|---------|----------|-------|
-| RED-57 | Mode Récitation Libre (Tarteel-style) | P2 | ⭐⭐⭐⭐⭐ Core Feature |
-| RED-53 | Notifications Rappel | P2 | ⭐⭐⭐ Rétention |
-| RED-54 | Multi-Reciters | P2 | ⭐⭐ Personnalisation |
-| RED-55 | Tajweed Highlighting | P3 | ⭐⭐⭐ Apprentissage |
-| RED-56 | Export/Import Data | P2 | ⭐⭐ Backup |
+**Sprint 5 (April 2026) - Core Features:**
 
-**Target:** Avril 2026
+| Issue | Feature | Priority | Estimation |
+|-------|---------|----------|------------|
+| RED-57 | Mode Récitation Libre (Tarteel-style) | P2 | 11-12 days |
+| RED-59 | Word-by-Word Breakdown | P2 | 3-4 days |
+| RED-60 | Goals & Gamification | P2 | 4-5 days |
+| RED-61 | Mistake Tracking & Analysis | P2 | 3-4 days |
+
+**Sprint 6 (May 2026) - Advanced Features:**
+
+| Issue | Feature | Priority | Estimation |
+|-------|---------|----------|------------|
+| RED-58 | Voice Recording & AI Feedback | P2 | 5-7 days |
+| RED-62 | Focus Mode & Custom Collections | P3 | 2-3 days |
+
+**Additional Features:**
+
+| Issue | Feature | Priority | Sprint |
+|-------|---------|----------|--------|
+| RED-53 | Notifications Rappel | P2 | Sprint 5-6 |
+| RED-54 | Multi-Reciters | P2 | Sprint 5-6 |
+| RED-55 | Tajweed Highlighting | P3 | Sprint 6-7 |
+| RED-56 | Export/Import Data | P2 | Sprint 5-6 |
+| RED-63 | Social & Community | P3 | Future (v1.2) |
+
+**Total Estimation:** 35-45 days (7-9 weeks)
 
 ### v1.2 - Polish (Sprint 6)
 **Goal:** UX améliorée et stabilité
