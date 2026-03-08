@@ -10,19 +10,35 @@ import {
   Platform,
 } from 'react-native';
 import { useAppStore } from '@/stores/appStore';
+import type { UserSettings } from '@/types';
 
 // Simple Slider component fallback
 // Note: For production, install @react-native-community/slider
-const Slider = (props: any) => {
-  const { value, minimumValue, maximumValue, step, onSlidingComplete, style } = props;
+interface SliderProps {
+  value: number;
+  minimumValue: number;
+  maximumValue: number;
+  step?: number;
+  onValueChange?: (value: number) => void;
+  onSlidingComplete?: (value: number) => void;
+  style?: any;
+  minimumTrackTintColor?: string;
+  maximumTrackTintColor?: string;
+  thumbTintColor?: string;
+}
+
+const Slider: React.FC<SliderProps> = (props) => {
+  const { value, minimumValue, maximumValue, step, onSlidingComplete, onValueChange, style } = props;
   
   const handleDecrease = () => {
     const newValue = Math.max(minimumValue, value - (step || 1));
+    onValueChange?.(newValue);
     onSlidingComplete?.(newValue);
   };
   
   const handleIncrease = () => {
     const newValue = Math.min(maximumValue, value + (step || 1));
+    onValueChange?.(newValue);
     onSlidingComplete?.(newValue);
   };
 
@@ -66,7 +82,7 @@ export const SettingsScreen: React.FC = () => {
 
   // Debounced save function
   const debouncedSave = useCallback(
-    async (newSettings: Partial<typeof localSettings>) => {
+    async (newSettings: Partial<UserSettings>) => {
       if (debounceTimer) {
         clearTimeout(debounceTimer);
       }
@@ -99,13 +115,14 @@ export const SettingsScreen: React.FC = () => {
     }
   };
 
-  const updateSetting = async <K extends keyof typeof localSettings>(
+  const updateSetting = async <K extends keyof UserSettings>(
     key: K,
-    value: (typeof localSettings)[K]
+    value: UserSettings[K]
   ) => {
-    const newSettings = { ...localSettings, [key]: value } as typeof localSettings;
+    if (!localSettings) return;
+    const newSettings = { ...localSettings, [key]: value } as UserSettings;
     setLocalSettings(newSettings);
-    await debouncedSave({ [key]: value });
+    await debouncedSave({ [key]: value } as Partial<UserSettings>);
   };
 
   if (!localSettings) {
@@ -156,14 +173,14 @@ export const SettingsScreen: React.FC = () => {
         <View style={styles.sliderContainer}>
           <View style={styles.sliderHeader}>
             <Text style={styles.sliderLabel}>Nouveaux versets/jour</Text>
-            <Text style={styles.sliderValue}>{localSettings.daily_new_lines}</Text>
+            <Text style={styles.sliderValue}>{localSettings.daily_new_lines ?? 3}</Text>
           </View>
           <Slider
             style={styles.slider}
             minimumValue={1}
             maximumValue={10}
             step={1}
-            value={localSettings.daily_new_lines}
+            value={localSettings.daily_new_lines ?? 3}
             onValueChange={(value) => {
               setLocalSettings({ ...localSettings, daily_new_lines: value });
             }}
@@ -184,7 +201,7 @@ export const SettingsScreen: React.FC = () => {
             minimumValue={5}
             maximumValue={60}
             step={5}
-            value={localSettings.session_duration}
+            value={localSettings.session_duration ?? 15}
             onValueChange={(value) => {
               setLocalSettings({ ...localSettings, session_duration: value });
             }}
@@ -205,7 +222,7 @@ export const SettingsScreen: React.FC = () => {
             minimumValue={1}
             maximumValue={20}
             step={1}
-            value={localSettings.learning_capacity}
+            value={localSettings.learning_capacity ?? 10}
             onValueChange={(value) => {
               setLocalSettings({ ...localSettings, learning_capacity: value });
             }}
@@ -224,14 +241,14 @@ export const SettingsScreen: React.FC = () => {
         <View style={styles.sliderContainer}>
           <View style={styles.sliderHeader}>
             <Text style={styles.sliderLabel}>Début</Text>
-            <Text style={styles.sliderValue}>Juz {localSettings.focus_juz_start}</Text>
+            <Text style={styles.sliderValue}>Juz {localSettings.focus_juz_start ?? 1}</Text>
           </View>
           <Slider
             style={styles.slider}
             minimumValue={1}
             maximumValue={30}
             step={1}
-            value={localSettings.focus_juz_start}
+            value={localSettings.focus_juz_start ?? 1}
             onValueChange={(value) => {
               setLocalSettings({ ...localSettings, focus_juz_start: value });
             }}
@@ -245,14 +262,14 @@ export const SettingsScreen: React.FC = () => {
         <View style={styles.sliderContainer}>
           <View style={styles.sliderHeader}>
             <Text style={styles.sliderLabel}>Fin</Text>
-            <Text style={styles.sliderValue}>Juz {localSettings.focus_juz_end}</Text>
+            <Text style={styles.sliderValue}>Juz {localSettings.focus_juz_end ?? 30}</Text>
           </View>
           <Slider
             style={styles.slider}
-            minimumValue={localSettings.focus_juz_start}
+            minimumValue={localSettings.focus_juz_start ?? 1}
             maximumValue={30}
             step={1}
-            value={localSettings.focus_juz_end}
+            value={localSettings.focus_juz_end ?? 30}
             onValueChange={(value) => {
               setLocalSettings({ ...localSettings, focus_juz_end: value });
             }}

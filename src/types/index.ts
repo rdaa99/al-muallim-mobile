@@ -42,13 +42,21 @@ export interface DailyReview {
 
 export interface ProgressStats {
   total_verses: number;
+  total_learned: number;
+  total_mastered: number;
+  total_consolidating: number;
+  total_learning: number;
   mastered: number;
   consolidating: number;
   learning: number;
   streak_days: number;
+  streak?: number;
   retention_rate: number;
   verses_by_juz: JuzProgress[];
   verses_by_surah: SurahProgress[];
+  surahs?: SurahProgress[];
+  calendar?: { date: string; has_activity: boolean }[];
+  this_month?: number;
 }
 
 export interface JuzProgress {
@@ -69,15 +77,16 @@ export interface SurahProgress {
 }
 
 export interface UserSettings {
-  learning_mode: 'active' | 'revision_only' | 'paused';
-  focus_juz_start: number;
-  focus_juz_end: number;
-  evaluation_day: number;
-  learning_capacity: number;
-  daily_new_lines: number;
-  direction: 'desc' | 'asc';
-  session_duration: number;
-  preferred_reciter: string;
+  learning_mode?: 'active' | 'revision_only' | 'paused';
+  focus_juz_start?: number;
+  focus_juz_end?: number;
+  evaluation_day?: number;
+  learning_capacity?: number;
+  daily_new_lines?: number;
+  direction?: 'desc' | 'asc';
+  session_duration?: number;
+  preferred_reciter?: string;
+  [key: string]: string | number | undefined;
 }
 
 export interface SRSStats {

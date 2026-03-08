@@ -66,13 +66,21 @@ export const getProgressStats = async (): Promise<ProgressStats> => {
   // Transform backend format to app format
   return {
     total_verses: data.total_verses || 6236,
+    total_learned: data.total_learned || 0,
+    total_mastered: data.total_mastered || 0,
+    total_consolidating: data.total_consolidating || 0,
+    total_learning: data.total_learning || 0,
     mastered: data.total_mastered || 0,
     consolidating: data.total_consolidating || 0,
     learning: data.total_learning || 0,
     streak_days: data.streak || 0,
+    streak: data.streak || 0,
     retention_rate: 0.85, // Default, could be calculated from data
     verses_by_juz: [], // Backend doesn't provide this yet
     verses_by_surah: data.surahs || [],
+    surahs: data.surahs || [],
+    calendar: data.calendar || [],
+    this_month: data.this_month || 0,
   };
 };
 

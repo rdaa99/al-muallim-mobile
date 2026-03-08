@@ -10,6 +10,7 @@ import {
   ScrollView,
 } from 'react-native';
 import { useAppStore } from '@/stores/appStore';
+import { AudioPlayer } from '@/components/AudioPlayer';
 
 const { width } = Dimensions.get('window');
 
@@ -218,6 +219,15 @@ export const ReviewScreen: React.FC = () => {
           </TouchableOpacity>
         )}
       </Animated.View>
+
+      {/* Audio Player */}
+      {currentVerse && (
+        <AudioPlayer
+          surahNumber={currentVerse.surah_number}
+          ayahNumber={currentVerse.ayah_number}
+          autoPlay={false}
+        />
+      )}
 
       {/* Quality buttons */}
       <View style={styles.qualityButtons}>

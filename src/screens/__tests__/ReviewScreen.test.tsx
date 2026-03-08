@@ -6,6 +6,11 @@ import { useAppStore } from '@/stores/appStore';
 // Mock the store
 jest.mock('@/stores/appStore');
 
+// Mock the AudioPlayer component
+jest.mock('@/components/AudioPlayer', () => ({
+  AudioPlayer: () => null,
+}));
+
 // Mock navigation
 jest.mock('@react-navigation/native', () => ({
   useNavigation: () => ({
