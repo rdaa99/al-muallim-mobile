@@ -1,0 +1,38 @@
+# Dependencies
+node_modules/
+
+# Build
+android/app/build/
+ios/build/
+
+# Metro
+.metro-health-check*
+
+# Testing
+coverage/
+
+# Misc
+.DS_Store
+*.swp
+*.swo
+*~
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.idea/
+.vscode/
+*.sublime-*
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Temporary
+tmp/
+temp/
