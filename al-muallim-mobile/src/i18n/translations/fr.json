@@ -67,5 +67,18 @@
     "back": "Retour",
     "next": "Suivant",
     "previous": "Précédent"
+  },
+  "recitation": {
+    "modes": {
+      "learning": "Apprentissage",
+      "test": "Test",
+      "flow": "Flow",
+      "hifz": "Hifz"
+    },
+    "reveal": "Révéler",
+    "review": "Réviser",
+    "next": "Suivant",
+    "hifzMode": "Mode Hifz",
+    "progress": "Progression"
   }
 }

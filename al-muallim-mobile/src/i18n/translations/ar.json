@@ -67,5 +67,18 @@
     "back": "رجوع",
     "next": "التالي",
     "previous": "السابق"
+  },
+  "recitation": {
+    "modes": {
+      "learning": "تعلم",
+      "test": "اختبار",
+      "flow": "انسياب",
+      "hifz": "حفظ"
+    },
+    "reveal": "كشف",
+    "review": "مراجعة",
+    "next": "التالي",
+    "hifzMode": "وضع الحفظ",
+    "progress": "التقدم"
   }
 }
