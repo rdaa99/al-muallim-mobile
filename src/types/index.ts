@@ -101,3 +101,38 @@ export interface SRSStats {
   quality_distribution: Record<QualityScore, number>;
   forecast_7days: number[];
 }
+
+// Audio types
+export interface Surah {
+  number: number;
+  name: string;
+  englishName: string;
+  ayahsCount: number;
+  revelationType: 'Meccan' | 'Medinan';
+}
+
+export interface AudioState {
+  isPlaying: boolean;
+  currentSurah: Surah | null;
+  currentAyah: number;
+  duration: number;
+  position: number;
+  playbackSpeed: number;
+}
+
+export interface UserProgress {
+  surahsMemorized: number;
+  totalAyahs: number;
+  ayahsMemorized: number;
+  currentStreak: number;
+  longestStreak: number;
+  dailyGoal: number;
+  weeklyProgress: number[];
+}
+
+export interface Reciter {
+  id: string;
+  name: string;
+  englishName: string;
+  style?: string;
+}

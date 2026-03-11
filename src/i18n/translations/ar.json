@@ -1,0 +1,37 @@
+{
+  "common": {
+    "welcome": "السلام عليكم",
+    "dashboard": "لوحة القيادة",
+    "settings": "الإعدادات",
+    "review": "مراجعة",
+    "audio": "صوتي"
+  },
+  "dashboard": {
+    "title": "لوحة القيادة",
+    "surahsMemorized": "السور المحفوظة",
+    "ayahsMemorized": "الآيات المحفوظة",
+    "currentStreak": "السلسلة الحالية",
+    "dailyGoal": "الهدف اليومي"
+  },
+  "settings": {
+    "title": "الإعدادات",
+    "language": "اللغة",
+    "darkMode": "الوضع الداكن",
+    "fontSize": "حجم النص",
+    "notifications": "الإشعارات",
+    "reciter": "القارئ"
+  },
+  "review": {
+    "title": "مراجعة",
+    "nextVerse": "الآية التالية",
+    "previousVerse": "الآية السابقة",
+    "submitReview": "إرسال المراجعة"
+  },
+  "audio": {
+    "title": "الصوتي",
+    "play": "تشغيل",
+    "pause": "إيقاف",
+    "repeat": "تكرار",
+    "speed": "السرعة"
+  }
+}

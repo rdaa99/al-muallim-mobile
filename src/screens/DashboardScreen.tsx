@@ -1,450 +1,111 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  ActivityIndicator,
-  RefreshControl,
-  Dimensions,
-} from 'react-native';
-import { useAppStore } from '@/stores/appStore';
-
-const { width } = Dimensions.get('window');
+import React from 'react';
+import { ScrollView, View, Text, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
+import { useUserStore } from '../store/userStore';
+import { useTheme } from '../context/ThemeContext';
+import { useFonts } from '../context/FontSizeContext';
+import { ProgressCard } from '../components/ProgressCard';
+import { StreakCard } from '../components/StreakCard';
+import { WeeklyProgress } from '../components/WeeklyProgress';
 
 export const DashboardScreen: React.FC = () => {
-  const { stats, loading, loadStats } = useAppStore();
-  const [refreshing, setRefreshing] = useState(false);
+  const { progress } = useUserStore();
+  const { t } = useTranslation();
+  const { colors } = useTheme();
+  const { fonts } = useFonts();
+  const navigation = useNavigation();
 
-  useEffect(() => {
-    loadStats();
-  }, []);
-
-  const onRefresh = useCallback(async () => {
-    setRefreshing(true);
-    await loadStats();
-    setRefreshing(false);
-  }, [loadStats]);
-
-  if (loading && !stats) {
-    return (
-      <View style={styles.container}>
-        <ActivityIndicator size="large" color="#10B981" />
-        <Text style={styles.loadingText}>Chargement des statistiques...</Text>
-      </View>
-    );
-  }
-
-  // Empty state for new users
-  if (!stats || (stats.total_learned === 0 && stats.total_mastered === 0)) {
-    return (
-      <ScrollView
-        style={styles.container}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={['#10B981']} />
-        }
-      >
-        <View style={styles.emptyContainer}>
-          <Text style={styles.emptyIcon}>📖</Text>
-          <Text style={styles.emptyTitle}>Bienvenue !</Text>
-          <Text style={styles.emptyText}>
-            Commencez votre voyage de mémorisation du Coran. Vos statistiques apparaîtront ici.
-          </Text>
-          <View style={styles.tipCard}>
-            <Text style={styles.tipIcon}>💡</Text>
-            <Text style={styles.tipText}>
-              Commencez par les petites sourates à la fin du Coran pour progresser rapidement.
-            </Text>
-          </View>
-        </View>
-      </ScrollView>
-    );
-  }
-
-  const progressPercentage = stats.total_verses > 0
-    ? Math.round((stats.mastered / stats.total_verses) * 100)
-    : 0;
-
-  const learnedPercentage = stats.total_verses > 0
-    ? Math.round((stats.total_learned / stats.total_verses) * 100)
-    : 0;
+  const handleQuickAction = (action: string) => {
+    if (action !== 'stats') {
+      navigation.navigate('AudioPlayer' as never);
+    }
+  };
 
   return (
-    <ScrollView
-      style={styles.container}
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={['#10B981']} />
-      }
-    >
-      {/* Streak */}
-      <View style={styles.streakCard}>
-        <Text style={styles.streakEmoji}>🔥</Text>
-        <Text style={styles.streakNumber}>{stats.streak_days}</Text>
-        <Text style={styles.streakLabel}>jours consécutifs</Text>
-      </View>
-
-      {/* Progress Overview */}
-      <View style={styles.progressCard}>
-        <Text style={styles.cardTitle}>Progression globale</Text>
-        <View style={styles.progressCircle}>
-          <Text style={styles.progressNumber}>{progressPercentage}%</Text>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View style={styles.header}>
+          <Text style={[styles.greeting, { color: colors.text, fontSize: fonts.hero }]}>
+            {t('common.welcome')}
+          </Text>
+          <Text style={[styles.subtitle, { color: colors.textSecondary, fontSize: fonts.body }]}>
+            {t('dashboard.title')}
+          </Text>
         </View>
-        <Text style={styles.progressText}>
-          {stats.mastered} / {stats.total_verses} versets maîtrisés
-        </Text>
 
-        {/* Simple bar chart */}
-        <View style={styles.chartContainer}>
-          <View style={styles.chartRow}>
-            <Text style={styles.chartLabel}>Maîtrisés</Text>
-            <View style={styles.chartBar}>
-              <View
-                style={[
-                  styles.chartFill,
-                  styles.masteredFill,
-                  { width: `${progressPercentage}%` },
-                ]}
-              />
-            </View>
-            <Text style={styles.chartValue}>{stats.mastered}</Text>
+        <StreakCard
+          currentStreak={progress.currentStreak}
+          longestStreak={progress.longestStreak}
+        />
+
+        <ProgressCard
+          title={t('dashboard.surahsMemorized')}
+          value={progress.surahsMemorized}
+          total={114}
+          color="#2196F3"
+        />
+
+        <ProgressCard
+          title={t('dashboard.ayahsMemorized')}
+          value={progress.ayahsMemorized}
+          total={progress.totalAyahs}
+          unit=""
+          color="#4CAF50"
+        />
+
+        <ProgressCard
+          title={t('dashboard.dailyGoal')}
+          value={progress.ayahsMemorized % progress.dailyGoal}
+          total={progress.dailyGoal}
+          unit=" versets"
+          color="#FF9800"
+        />
+
+        <WeeklyProgress
+          data={progress.weeklyProgress}
+          dailyGoal={progress.dailyGoal}
+        />
+
+        <View style={[styles.quickActions, { backgroundColor: colors.surface }]}>
+          <Text style={[styles.sectionTitle, { color: colors.text, fontSize: fonts.heading }]}>
+            Actions rapides
+          </Text>
+          <View style={styles.actionGrid}>
+            {[ 
+              { icon: '📖', label: 'Continuer', action: 'continue' },
+              { icon: '🎯', label: 'Réviser', action: 'review' },
+              { icon: '🎧', label: 'Écouter', action: 'listen' },
+              { icon: '📊', label: 'Stats', action: 'stats' },
+            ].map(({ icon, label, action }) => (
+              <TouchableOpacity
+                key={action}
+                style={[styles.actionButton, { backgroundColor: colors.card }]}
+                onPress={() => handleQuickAction(action)}
+              >
+                <Text style={styles.actionIcon}>{icon}</Text>
+                <Text style={[styles.actionLabel, { color: colors.text }]}>{label}</Text>
+              </TouchableOpacity>
+            ))}
           </View>
-
-          <View style={styles.chartRow}>
-            <Text style={styles.chartLabel}>En cours</Text>
-            <View style={styles.chartBar}>
-              <View
-                style={[
-                  styles.chartFill,
-                  styles.learningFill,
-                  { width: `${Math.min(learnedPercentage - progressPercentage, 100)}%` },
-                ]}
-              />
-            </View>
-            <Text style={styles.chartValue}>{stats.consolidating + stats.learning}</Text>
-          </View>
-
-          <View style={styles.chartRow}>
-            <Text style={styles.chartLabel}>Restants</Text>
-            <View style={styles.chartBar}>
-              <View
-                style={[
-                  styles.chartFill,
-                  styles.remainingFill,
-                  { width: `${100 - learnedPercentage}%` },
-                ]}
-              />
-            </View>
-            <Text style={styles.chartValue}>{stats.total_verses - stats.total_learned}</Text>
-          </View>
-        </View>
-      </View>
-
-      {/* Status Distribution */}
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>Répartition</Text>
-
-        <View style={styles.statRow}>
-          <Text style={styles.statLabel}>✅ Maîtrisés</Text>
-          <Text style={[styles.statValue, styles.masteredValue]}>{stats.mastered}</Text>
         </View>
 
-        <View style={styles.statRow}>
-          <Text style={styles.statLabel}>🔄 En consolidation</Text>
-          <Text style={[styles.statValue, styles.consolidatingValue]}>{stats.consolidating}</Text>
-        </View>
-
-        <View style={styles.statRow}>
-          <Text style={styles.statLabel}>📖 En apprentissage</Text>
-          <Text style={[styles.statValue, styles.learningValue]}>{stats.learning}</Text>
-        </View>
-
-        <View style={styles.statRow}>
-          <Text style={styles.statLabel}>📊 Taux de rétention</Text>
-          <Text style={styles.statValue}>{Math.round(stats.retention_rate * 100)}%</Text>
-        </View>
-      </View>
-
-      {/* Juz Progress */}
-      {stats.verses_by_juz && stats.verses_by_juz.length > 0 && (
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Progression par Juz</Text>
-          {stats.verses_by_juz.slice(0, 5).map((juz) => (
-            <View key={juz.juz_number} style={styles.juzRow}>
-              <Text style={styles.juzLabel}>Juz {juz.juz_number}</Text>
-              <View style={styles.juzBar}>
-                <View
-                  style={[
-                    styles.juzProgress,
-                    { width: `${(juz.mastered / juz.total) * 100}%` },
-                  ]}
-                />
-              </View>
-              <Text style={styles.juzCount}>
-                {juz.mastered}/{juz.total}
-              </Text>
-            </View>
-          ))}
-        </View>
-      )}
-
-      {/* Quick Stats Grid */}
-      <View style={styles.statsGrid}>
-        <View style={styles.statsGridItem}>
-          <Text style={styles.statsGridNumber}>{stats.total_learned}</Text>
-          <Text style={styles.statsGridLabel}>Appris</Text>
-        </View>
-        <View style={styles.statsGridItem}>
-          <Text style={styles.statsGridNumber}>{stats.streak_days}</Text>
-          <Text style={styles.statsGridLabel}>Jours</Text>
-        </View>
-        <View style={styles.statsGridItem}>
-          <Text style={styles.statsGridNumber}>{stats.mastered}</Text>
-          <Text style={styles.statsGridLabel}>Maîtrisés</Text>
-        </View>
-      </View>
-
-      {/* Pull to refresh hint */}
-      <Text style={styles.pullHint}>Tirez vers le bas pour actualiser ↻</Text>
-    </ScrollView>
+        <View style={styles.footer} />
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#0F172A',
-    padding: 20,
-  },
-  loadingText: {
-    color: '#94A3B8',
-    marginTop: 12,
-    fontSize: 16,
-  },
-  emptyContainer: {
-    alignItems: 'center',
-    paddingVertical: 40,
-  },
-  emptyIcon: {
-    fontSize: 64,
-    marginBottom: 16,
-  },
-  emptyTitle: {
-    color: '#FFFFFF',
-    fontSize: 28,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 12,
-  },
-  emptyText: {
-    color: '#94A3B8',
-    fontSize: 16,
-    textAlign: 'center',
-    lineHeight: 24,
-    marginBottom: 24,
-    paddingHorizontal: 20,
-  },
-  tipCard: {
-    backgroundColor: '#1E293B',
-    borderRadius: 16,
-    padding: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
-    maxWidth: width - 80,
-  },
-  tipIcon: {
-    fontSize: 32,
-    marginRight: 12,
-  },
-  tipText: {
-    color: '#CBD5E1',
-    fontSize: 14,
-    flex: 1,
-    lineHeight: 20,
-  },
-  streakCard: {
-    backgroundColor: '#1E293B',
-    borderRadius: 16,
-    padding: 24,
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  streakEmoji: {
-    fontSize: 48,
-    marginBottom: 8,
-  },
-  streakNumber: {
-    color: '#F59E0B',
-    fontSize: 56,
-    fontWeight: 'bold',
-  },
-  streakLabel: {
-    color: '#94A3B8',
-    fontSize: 16,
-    marginTop: 4,
-  },
-  progressCard: {
-    backgroundColor: '#10B981',
-    borderRadius: 16,
-    padding: 24,
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  cardTitle: {
-    color: '#FFFFFF',
-    fontSize: 18,
-    fontWeight: '600',
-    marginBottom: 16,
-    alignSelf: 'flex-start',
-  },
-  progressCircle: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  progressNumber: {
-    color: '#FFFFFF',
-    fontSize: 48,
-    fontWeight: 'bold',
-  },
-  progressText: {
-    color: '#FFFFFF',
-    fontSize: 14,
-    opacity: 0.9,
-    marginTop: 8,
-  },
-  chartContainer: {
-    marginTop: 20,
-    width: '100%',
-  },
-  chartRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: 6,
-  },
-  chartLabel: {
-    color: '#FFFFFF',
-    fontSize: 12,
-    width: 80,
-    opacity: 0.9,
-  },
-  chartBar: {
-    flex: 1,
-    height: 12,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    borderRadius: 6,
-    marginHorizontal: 8,
-    overflow: 'hidden',
-  },
-  chartFill: {
-    height: '100%',
-    borderRadius: 6,
-  },
-  masteredFill: {
-    backgroundColor: '#FFFFFF',
-  },
-  learningFill: {
-    backgroundColor: '#FCD34D',
-  },
-  remainingFill: {
-    backgroundColor: 'rgba(255, 255, 255, 0.3)',
-  },
-  chartValue: {
-    color: '#FFFFFF',
-    fontSize: 12,
-    width: 40,
-    textAlign: 'right',
-    fontWeight: '600',
-  },
-  card: {
-    backgroundColor: '#1E293B',
-    borderRadius: 16,
-    padding: 20,
-    marginBottom: 20,
-  },
-  statRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#334155',
-  },
-  statLabel: {
-    color: '#CBD5E1',
-    fontSize: 16,
-  },
-  statValue: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  masteredValue: {
-    color: '#10B981',
-  },
-  consolidatingValue: {
-    color: '#F59E0B',
-  },
-  learningValue: {
-    color: '#3B82F6',
-  },
-  juzRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 8,
-  },
-  juzLabel: {
-    color: '#CBD5E1',
-    fontSize: 14,
-    width: 60,
-  },
-  juzBar: {
-    flex: 1,
-    height: 8,
-    backgroundColor: '#334155',
-    borderRadius: 4,
-    marginHorizontal: 12,
-  },
-  juzProgress: {
-    height: '100%',
-    backgroundColor: '#10B981',
-    borderRadius: 4,
-  },
-  juzCount: {
-    color: '#94A3B8',
-    fontSize: 12,
-    width: 40,
-    textAlign: 'right',
-  },
-  statsGrid: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 20,
-  },
-  statsGridItem: {
-    flex: 1,
-    backgroundColor: '#1E293B',
-    borderRadius: 12,
-    padding: 16,
-    alignItems: 'center',
-    marginHorizontal: 4,
-  },
-  statsGridNumber: {
-    color: '#10B981',
-    fontSize: 24,
-    fontWeight: 'bold',
-  },
-  statsGridLabel: {
-    color: '#94A3B8',
-    fontSize: 12,
-    marginTop: 4,
-  },
-  pullHint: {
-    color: '#64748B',
-    fontSize: 12,
-    textAlign: 'center',
-    marginBottom: 20,
-  },
+  container: { flex: 1 },
+  header: { padding: 20, paddingTop: 10 },
+  greeting: { fontWeight: 'bold', textAlign: 'right' },
+  subtitle: { marginTop: 4 },
+  sectionTitle: { fontWeight: '600', marginBottom: 12, marginHorizontal: 16 },
+  quickActions: { marginTop: 16, padding: 16 },
+  actionGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 12 },
+  actionButton: { flex: 1, minWidth: '45%', borderRadius: 12, padding: 16, alignItems: 'center', elevation: 3 },
+  actionIcon: { fontSize: 32, marginBottom: 8 },
+  actionLabel: { fontSize: 14, fontWeight: '500' },
+  footer: { height: 20 },
 });
