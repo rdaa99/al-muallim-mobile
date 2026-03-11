@@ -11,15 +11,34 @@
     "surahsMemorized": "Surahs Memorized",
     "ayahsMemorized": "Ayahs Memorized",
     "currentStreak": "Current Streak",
-    "dailyGoal": "Daily Goal"
+    "dailyGoal": "Daily Goal",
+    "weeklyProgress": "Weekly Progress",
+    "consecutiveDays": "Consecutive Days",
+    "record": "Record",
+    "quickActions": "Quick Actions",
+    "continue": "Continue",
+    "reviewAction": "Review",
+    "listen": "Listen",
+    "stats": "Stats",
+    "verses": "verses"
   },
   "settings": {
     "title": "Settings",
     "language": "Language",
+    "languageLabel": "App Language",
     "darkMode": "Dark Mode",
     "fontSize": "Font Size",
     "notifications": "Notifications",
-    "reciter": "Reciter"
+    "dailyReminders": "Daily Reminders",
+    "reminderTime": "Reminder Time",
+    "reciter": "Reciter",
+    "recitation": "Recitation",
+    "display": "Display",
+    "about": "About",
+    "version": "Version",
+    "fontSmall": "Small",
+    "fontMedium": "Medium",
+    "fontLarge": "Large"
   },
   "review": {
     "title": "Review",
@@ -28,10 +47,29 @@
     "submitReview": "Submit Review"
   },
   "audio": {
-    "title": "Audio",
+    "title": "Audio Player",
     "play": "Play",
     "pause": "Pause",
     "repeat": "Repeat",
-    "speed": "Speed"
+    "speed": "Speed",
+    "text": "Text",
+    "playlist": "Playlist",
+    "previous": "Previous",
+    "next": "Next",
+    "reciter": "Reciter",
+    "noSurah": "No surah",
+    "selectSurah": "Select a surah",
+    "surah": "Surah",
+    "verse": "Verse",
+    "selectFromList": "Choose a surah"
+  },
+  "days": {
+    "sun": "Sun",
+    "mon": "Mon",
+    "tue": "Tue",
+    "wed": "Wed",
+    "thu": "Thu",
+    "fri": "Fri",
+    "sat": "Sat"
   }
 }

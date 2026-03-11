@@ -1,19 +1,30 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { useTranslation } from 'react-i18next';
+import { useTheme } from '../context/ThemeContext';
+import { useFonts } from '../context/FontSizeContext';
 
 interface WeeklyProgressProps {
   data: number[];
   dailyGoal: number;
 }
 
-const DAYS = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
-
 export const WeeklyProgress: React.FC<WeeklyProgressProps> = ({ data, dailyGoal }) => {
   const maxValue = Math.max(...data, dailyGoal);
+  const { t } = useTranslation();
+  const { colors } = useTheme();
+  const { fonts } = useFonts();
+
+  const DAYS = [
+    t('days.sun'), t('days.mon'), t('days.tue'), t('days.wed'),
+    t('days.thu'), t('days.fri'), t('days.sat'),
+  ];
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Progression cette semaine</Text>
+    <View style={[styles.container, { backgroundColor: colors.card }]}>
+      <Text style={[styles.title, { color: colors.text, fontSize: fonts.subheading }]}>
+        {t('dashboard.weeklyProgress')}
+      </Text>
       <View style={styles.chart}>
         {data.map((value, index) => {
           const height = maxValue > 0 ? (value / maxValue) * 100 : 0;
@@ -22,7 +33,7 @@ export const WeeklyProgress: React.FC<WeeklyProgressProps> = ({ data, dailyGoal 
 
           return (
             <View key={index} style={styles.barContainer}>
-              <View style={styles.barWrapper}>
+              <View style={[styles.barWrapper, { backgroundColor: colors.border }]}>
                 <View
                   style={[
                     styles.bar,
@@ -34,7 +45,7 @@ export const WeeklyProgress: React.FC<WeeklyProgressProps> = ({ data, dailyGoal 
                   ]}
                 />
               </View>
-              <Text style={[styles.dayLabel, isToday && styles.todayLabel]}>
+              <Text style={[styles.dayLabel, { color: colors.textSecondary, fontSize: fonts.caption }, isToday && styles.todayLabel]}>
                 {DAYS[index]}
               </Text>
             </View>
@@ -47,21 +58,15 @@ export const WeeklyProgress: React.FC<WeeklyProgressProps> = ({ data, dailyGoal 
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#fff',
     borderRadius: 12,
     padding: 16,
     marginVertical: 8,
     marginHorizontal: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
     elevation: 3,
   },
   title: {
-    fontSize: 16,
     fontWeight: '600',
-    color: '#333',
     marginBottom: 16,
   },
   chart: {
@@ -77,7 +82,6 @@ const styles = StyleSheet.create({
   barWrapper: {
     width: 20,
     height: 100,
-    backgroundColor: '#f5f5f5',
     borderRadius: 10,
     justifyContent: 'flex-end',
     overflow: 'hidden',
@@ -91,8 +95,6 @@ const styles = StyleSheet.create({
     borderColor: '#2196F3',
   },
   dayLabel: {
-    fontSize: 11,
-    color: '#666',
     marginTop: 8,
   },
   todayLabel: {

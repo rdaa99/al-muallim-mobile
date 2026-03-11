@@ -50,7 +50,7 @@ export const DashboardScreen: React.FC = () => {
           title={t('dashboard.dailyGoal')}
           value={progress.ayahsMemorized % progress.dailyGoal}
           total={progress.dailyGoal}
-          unit=" versets"
+          unit={` ${t('dashboard.verses')}`}
           color="#FF9800"
         />
 
@@ -61,24 +61,32 @@ export const DashboardScreen: React.FC = () => {
 
         <View style={[styles.quickActions, { backgroundColor: colors.surface }]}>
           <Text style={[styles.sectionTitle, { color: colors.text, fontSize: fonts.heading }]}>
-            Actions rapides
+            {t('dashboard.quickActions')}
           </Text>
           <View style={styles.actionGrid}>
             <View style={[styles.actionButton, { backgroundColor: colors.card }]}>
               <Text style={styles.actionIcon}>📖</Text>
-              <Text style={[styles.actionLabel, { color: colors.text }]}>Continuer</Text>
+              <Text style={[styles.actionLabel, { color: colors.text, fontSize: fonts.body }]}>
+                {t('dashboard.continue')}
+              </Text>
             </View>
             <View style={[styles.actionButton, { backgroundColor: colors.card }]}>
               <Text style={styles.actionIcon}>🎯</Text>
-              <Text style={[styles.actionLabel, { color: colors.text }]}>Réviser</Text>
+              <Text style={[styles.actionLabel, { color: colors.text, fontSize: fonts.body }]}>
+                {t('dashboard.reviewAction')}
+              </Text>
             </View>
             <View style={[styles.actionButton, { backgroundColor: colors.card }]}>
               <Text style={styles.actionIcon}>🎧</Text>
-              <Text style={[styles.actionLabel, { color: colors.text }]}>Écouter</Text>
+              <Text style={[styles.actionLabel, { color: colors.text, fontSize: fonts.body }]}>
+                {t('dashboard.listen')}
+              </Text>
             </View>
             <View style={[styles.actionButton, { backgroundColor: colors.card }]}>
               <Text style={styles.actionIcon}>📊</Text>
-              <Text style={[styles.actionLabel, { color: colors.text }]}>Stats</Text>
+              <Text style={[styles.actionLabel, { color: colors.text, fontSize: fonts.body }]}>
+                {t('dashboard.stats')}
+              </Text>
             </View>
           </View>
         </View>
@@ -124,10 +132,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 16,
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
     elevation: 3,
   },
   actionIcon: {
@@ -135,7 +140,6 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   actionLabel: {
-    fontSize: 14,
     fontWeight: '500',
   },
   footer: {

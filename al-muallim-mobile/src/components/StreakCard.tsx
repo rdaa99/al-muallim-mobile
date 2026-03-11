@@ -1,5 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { useTranslation } from 'react-i18next';
+import { useTheme } from '../context/ThemeContext';
+import { useFonts } from '../context/FontSizeContext';
 
 interface StreakCardProps {
   currentStreak: number;
@@ -10,18 +13,30 @@ export const StreakCard: React.FC<StreakCardProps> = ({
   currentStreak,
   longestStreak,
 }) => {
+  const { t } = useTranslation();
+  const { colors } = useTheme();
+  const { fonts } = useFonts();
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.card }]}>
       <View style={styles.streakBox}>
         <Text style={styles.emoji}>🔥</Text>
-        <Text style={styles.streakNumber}>{currentStreak}</Text>
-        <Text style={styles.streakLabel}>Jours consécutifs</Text>
+        <Text style={[styles.streakNumber, { color: colors.text, fontSize: fonts.title }]}>
+          {currentStreak}
+        </Text>
+        <Text style={[styles.streakLabel, { color: colors.textSecondary, fontSize: fonts.caption }]}>
+          {t('dashboard.consecutiveDays')}
+        </Text>
       </View>
-      <View style={styles.divider} />
+      <View style={[styles.divider, { backgroundColor: colors.border }]} />
       <View style={styles.streakBox}>
         <Text style={styles.emoji}>🏆</Text>
-        <Text style={styles.streakNumber}>{longestStreak}</Text>
-        <Text style={styles.streakLabel}>Record</Text>
+        <Text style={[styles.streakNumber, { color: colors.text, fontSize: fonts.title }]}>
+          {longestStreak}
+        </Text>
+        <Text style={[styles.streakLabel, { color: colors.textSecondary, fontSize: fonts.caption }]}>
+          {t('dashboard.record')}
+        </Text>
       </View>
     </View>
   );
@@ -29,15 +44,11 @@ export const StreakCard: React.FC<StreakCardProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#fff',
     borderRadius: 12,
     padding: 16,
     marginVertical: 8,
     marginHorizontal: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
     elevation: 3,
     flexDirection: 'row',
     alignItems: 'center',
@@ -51,19 +62,14 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   streakNumber: {
-    fontSize: 28,
     fontWeight: 'bold',
-    color: '#333',
   },
   streakLabel: {
-    fontSize: 12,
-    color: '#666',
     marginTop: 4,
   },
   divider: {
     width: 1,
     height: 60,
-    backgroundColor: '#e0e0e0',
     marginHorizontal: 16,
   },
 });

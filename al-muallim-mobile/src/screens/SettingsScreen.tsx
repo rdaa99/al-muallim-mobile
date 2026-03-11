@@ -7,7 +7,6 @@ import {
   SafeAreaView,
   TouchableOpacity,
   Switch,
-  Alert,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useUserStore } from '../store/userStore';
@@ -20,21 +19,31 @@ const LANGUAGES = [
   { code: 'fr', name: 'Français', flag: '🇫🇷' },
 ];
 
-const FONT_SIZES = [
-  { key: 'small', label: 'Petite' },
-  { key: 'medium', label: 'Moyenne' },
-  { key: 'large', label: 'Grande' },
+const RECITERS = [
+  { id: '1', name: 'عبد الباسط عبد الصمد', englishName: 'Abdul Basit Abdul Samad', style: 'Murattal' },
+  { id: '2', name: 'مشاري العفاسي', englishName: 'Mishary Alafasy', style: 'Murattal' },
+  { id: '3', name: 'سعد الغامدي', englishName: 'Saad Al-Ghamdi', style: 'Murattal' },
+  { id: '4', name: 'ماهر المعيقلي', englishName: 'Maher Al-Muaiqly', style: 'Murattal' },
 ];
 
 export const SettingsScreen: React.FC = () => {
   const { settings, updateSettings } = useUserStore();
+  const { t } = useTranslation();
+  const { colors } = useTheme();
+  const { fonts } = useFonts();
   const [showLanguagePicker, setShowLanguagePicker] = useState(false);
   const [showFontSizePicker, setShowFontSizePicker] = useState(false);
+  const [showReciterPicker, setShowReciterPicker] = useState(false);
+
+  const FONT_SIZES = [
+    { key: 'small', label: t('settings.fontSmall') },
+    { key: 'medium', label: t('settings.fontMedium') },
+    { key: 'large', label: t('settings.fontLarge') },
+  ];
 
   const handleLanguageChange = (langCode: 'ar' | 'en' | 'fr') => {
     updateSettings({ language: langCode });
     setShowLanguagePicker(false);
-    Alert.alert('Succès', `Langue changée en ${LANGUAGES.find(l => l.code === langCode)?.name}`);
   };
 
   const handleFontSizeChange = (size: 'small' | 'medium' | 'large') => {
@@ -42,11 +51,13 @@ export const SettingsScreen: React.FC = () => {
     setShowFontSizePicker(false);
   };
 
+  const handleReciterChange = (reciter: typeof RECITERS[0]) => {
+    updateSettings({ reciter });
+    setShowReciterPicker(false);
+  };
+
   const handleNotificationsToggle = (value: boolean) => {
     updateSettings({ notificationsEnabled: value });
-    if (value) {
-      Alert.alert('Notifications activées', 'Vous recevrez des rappels quotidiens');
-    }
   };
 
   const handleDarkModeToggle = (value: boolean) => {
@@ -54,44 +65,50 @@ export const SettingsScreen: React.FC = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
-          <Text style={styles.title}>Paramètres</Text>
+          <Text style={[styles.title, { color: colors.text, fontSize: fonts.hero }]}>
+            {t('settings.title')}
+          </Text>
         </View>
 
         {/* Language Section */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Langue</Text>
+        <View style={[styles.section, { backgroundColor: colors.card }]}>
+          <Text style={[styles.sectionTitle, { color: colors.textSecondary, fontSize: fonts.caption }]}>
+            {t('settings.language').toUpperCase()}
+          </Text>
           <TouchableOpacity
-            style={styles.option}
+            style={[styles.option, { borderBottomColor: colors.border }]}
             onPress={() => setShowLanguagePicker(!showLanguagePicker)}
           >
             <View style={styles.optionLeft}>
               <Text style={styles.optionIcon}>🌐</Text>
-              <Text style={styles.optionLabel}>Langue de l'application</Text>
+              <Text style={[styles.optionLabel, { color: colors.text, fontSize: fonts.subheading }]}>
+                {t('settings.languageLabel')}
+              </Text>
             </View>
-            <Text style={styles.optionValue}>
+            <Text style={[styles.optionValue, { color: colors.textSecondary, fontSize: fonts.body }]}>
               {LANGUAGES.find(l => l.code === settings.language)?.flag}{' '}
               {LANGUAGES.find(l => l.code === settings.language)?.name}
             </Text>
           </TouchableOpacity>
 
           {showLanguagePicker && (
-            <View style={styles.picker}>
+            <View style={[styles.picker, { backgroundColor: colors.surface }]}>
               {LANGUAGES.map((lang) => (
                 <TouchableOpacity
                   key={lang.code}
                   style={[
                     styles.pickerOption,
-                    settings.language === lang.code && styles.pickerOptionActive,
+                    settings.language === lang.code && { backgroundColor: colors.primary + '20' },
                   ]}
                   onPress={() => handleLanguageChange(lang.code as 'ar' | 'en' | 'fr')}
                 >
-                  <Text style={styles.pickerFlag}>{lang.flag}</Text>
-                  <Text style={styles.pickerLabel}>{lang.name}</Text>
+                  <Text style={[styles.pickerFlag, { fontSize: fonts.subheading }]}>{lang.flag}</Text>
+                  <Text style={[styles.pickerLabel, { color: colors.text, fontSize: fonts.subheading }]}>{lang.name}</Text>
                   {settings.language === lang.code && (
-                    <Text style={styles.checkmark}>✓</Text>
+                    <Text style={[styles.checkmark, { color: colors.primary }]}>✓</Text>
                   )}
                 </TouchableOpacity>
               ))}
@@ -100,88 +117,140 @@ export const SettingsScreen: React.FC = () => {
         </View>
 
         {/* Reciter Section */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Récitation</Text>
-          <View style={styles.option}>
+        <View style={[styles.section, { backgroundColor: colors.card }]}>
+          <Text style={[styles.sectionTitle, { color: colors.textSecondary, fontSize: fonts.caption }]}>
+            {t('settings.recitation').toUpperCase()}
+          </Text>
+          <TouchableOpacity
+            style={[styles.option, { borderBottomColor: colors.border }]}
+            onPress={() => setShowReciterPicker(!showReciterPicker)}
+          >
             <View style={styles.optionLeft}>
               <Text style={styles.optionIcon}>🎙️</Text>
-              <Text style={styles.optionLabel}>Récitateur</Text>
+              <Text style={[styles.optionLabel, { color: colors.text, fontSize: fonts.subheading }]}>
+                {t('settings.reciter')}
+              </Text>
             </View>
-            <Text style={styles.optionValue}>{settings.reciter.englishName}</Text>
-          </View>
+            <Text style={[styles.optionValue, { color: colors.textSecondary, fontSize: fonts.body }]}>
+              {settings.reciter.englishName}
+            </Text>
+          </TouchableOpacity>
+
+          {showReciterPicker && (
+            <View style={[styles.picker, { backgroundColor: colors.surface }]}>
+              {RECITERS.map((reciter) => (
+                <TouchableOpacity
+                  key={reciter.id}
+                  style={[
+                    styles.pickerOption,
+                    settings.reciter.id === reciter.id && { backgroundColor: colors.primary + '20' },
+                  ]}
+                  onPress={() => handleReciterChange(reciter)}
+                >
+                  <View style={{ flex: 1 }}>
+                    <Text style={[styles.pickerLabel, { color: colors.text, fontSize: fonts.subheading }]}>
+                      {reciter.name}
+                    </Text>
+                    <Text style={[{ color: colors.textSecondary, fontSize: fonts.caption }]}>
+                      {reciter.englishName}
+                    </Text>
+                  </View>
+                  {settings.reciter.id === reciter.id && (
+                    <Text style={[styles.checkmark, { color: colors.primary }]}>✓</Text>
+                  )}
+                </TouchableOpacity>
+              ))}
+            </View>
+          )}
         </View>
 
         {/* Notifications Section */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Notifications</Text>
-          <View style={styles.option}>
+        <View style={[styles.section, { backgroundColor: colors.card }]}>
+          <Text style={[styles.sectionTitle, { color: colors.textSecondary, fontSize: fonts.caption }]}>
+            {t('settings.notifications').toUpperCase()}
+          </Text>
+          <View style={[styles.option, { borderBottomColor: colors.border }]}>
             <View style={styles.optionLeft}>
               <Text style={styles.optionIcon}>🔔</Text>
-              <Text style={styles.optionLabel}>Rappels quotidiens</Text>
+              <Text style={[styles.optionLabel, { color: colors.text, fontSize: fonts.subheading }]}>
+                {t('settings.dailyReminders')}
+              </Text>
             </View>
             <Switch
               value={settings.notificationsEnabled}
               onValueChange={handleNotificationsToggle}
-              trackColor={{ false: '#ccc', true: '#4CAF50' }}
+              trackColor={{ false: colors.border, true: colors.primary }}
               thumbColor="#fff"
             />
           </View>
 
           {settings.notificationsEnabled && (
-            <View style={styles.option}>
+            <View style={[styles.option, { borderBottomColor: colors.border }]}>
               <View style={styles.optionLeft}>
                 <Text style={styles.optionIcon}>⏰</Text>
-                <Text style={styles.optionLabel}>Heure du rappel</Text>
+                <Text style={[styles.optionLabel, { color: colors.text, fontSize: fonts.subheading }]}>
+                  {t('settings.reminderTime')}
+                </Text>
               </View>
-              <Text style={styles.optionValue}>{settings.dailyReminderTime}</Text>
+              <Text style={[styles.optionValue, { color: colors.textSecondary, fontSize: fonts.body }]}>
+                {settings.dailyReminderTime}
+              </Text>
             </View>
           )}
         </View>
 
         {/* Display Section */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Affichage</Text>
-          
-          <View style={styles.option}>
+        <View style={[styles.section, { backgroundColor: colors.card }]}>
+          <Text style={[styles.sectionTitle, { color: colors.textSecondary, fontSize: fonts.caption }]}>
+            {t('settings.display').toUpperCase()}
+          </Text>
+
+          <View style={[styles.option, { borderBottomColor: colors.border }]}>
             <View style={styles.optionLeft}>
               <Text style={styles.optionIcon}>🌙</Text>
-              <Text style={styles.optionLabel}>Mode sombre</Text>
+              <Text style={[styles.optionLabel, { color: colors.text, fontSize: fonts.subheading }]}>
+                {t('settings.darkMode')}
+              </Text>
             </View>
             <Switch
               value={settings.darkMode}
               onValueChange={handleDarkModeToggle}
-              trackColor={{ false: '#ccc', true: '#4CAF50' }}
+              trackColor={{ false: colors.border, true: colors.primary }}
               thumbColor="#fff"
             />
           </View>
 
           <TouchableOpacity
-            style={styles.option}
+            style={[styles.option, { borderBottomColor: colors.border }]}
             onPress={() => setShowFontSizePicker(!showFontSizePicker)}
           >
             <View style={styles.optionLeft}>
               <Text style={styles.optionIcon}>🔤</Text>
-              <Text style={styles.optionLabel}>Taille du texte</Text>
+              <Text style={[styles.optionLabel, { color: colors.text, fontSize: fonts.subheading }]}>
+                {t('settings.fontSize')}
+              </Text>
             </View>
-            <Text style={styles.optionValue}>
+            <Text style={[styles.optionValue, { color: colors.textSecondary, fontSize: fonts.body }]}>
               {FONT_SIZES.find(f => f.key === settings.fontSize)?.label}
             </Text>
           </TouchableOpacity>
 
           {showFontSizePicker && (
-            <View style={styles.picker}>
+            <View style={[styles.picker, { backgroundColor: colors.surface }]}>
               {FONT_SIZES.map((size) => (
                 <TouchableOpacity
                   key={size.key}
                   style={[
                     styles.pickerOption,
-                    settings.fontSize === size.key && styles.pickerOptionActive,
+                    settings.fontSize === size.key && { backgroundColor: colors.primary + '20' },
                   ]}
                   onPress={() => handleFontSizeChange(size.key as 'small' | 'medium' | 'large')}
                 >
-                  <Text style={styles.pickerLabel}>{size.label}</Text>
+                  <Text style={[styles.pickerLabel, { color: colors.text, fontSize: fonts.subheading }]}>
+                    {size.label}
+                  </Text>
                   {settings.fontSize === size.key && (
-                    <Text style={styles.checkmark}>✓</Text>
+                    <Text style={[styles.checkmark, { color: colors.primary }]}>✓</Text>
                   )}
                 </TouchableOpacity>
               ))}
@@ -190,14 +259,18 @@ export const SettingsScreen: React.FC = () => {
         </View>
 
         {/* About Section */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>À propos</Text>
-          <View style={styles.option}>
+        <View style={[styles.section, { backgroundColor: colors.card }]}>
+          <Text style={[styles.sectionTitle, { color: colors.textSecondary, fontSize: fonts.caption }]}>
+            {t('settings.about').toUpperCase()}
+          </Text>
+          <View style={[styles.option, { borderBottomColor: colors.border }]}>
             <View style={styles.optionLeft}>
               <Text style={styles.optionIcon}>ℹ️</Text>
-              <Text style={styles.optionLabel}>Version</Text>
+              <Text style={[styles.optionLabel, { color: colors.text, fontSize: fonts.subheading }]}>
+                {t('settings.version')}
+              </Text>
             </View>
-            <Text style={styles.optionValue}>1.0.0</Text>
+            <Text style={[styles.optionValue, { color: colors.textSecondary, fontSize: fonts.body }]}>1.0.0</Text>
           </View>
         </View>
 
@@ -210,26 +283,20 @@ export const SettingsScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
   },
   header: {
     padding: 20,
     paddingTop: 10,
   },
   title: {
-    fontSize: 28,
     fontWeight: 'bold',
-    color: '#333',
   },
   section: {
-    backgroundColor: '#fff',
     marginTop: 16,
     paddingVertical: 8,
   },
   sectionTitle: {
-    fontSize: 13,
     fontWeight: '600',
-    color: '#999',
     textTransform: 'uppercase',
     paddingHorizontal: 16,
     paddingVertical: 8,
@@ -241,7 +308,6 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
   },
   optionLeft: {
     flexDirection: 'row',
@@ -252,18 +318,11 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginRight: 12,
   },
-  optionLabel: {
-    fontSize: 16,
-    color: '#333',
-  },
-  optionValue: {
-    fontSize: 14,
-    color: '#666',
-  },
+  optionLabel: {},
+  optionValue: {},
   picker: {
     paddingHorizontal: 16,
     paddingVertical: 8,
-    backgroundColor: '#fafafa',
   },
   pickerOption: {
     flexDirection: 'row',
@@ -273,21 +332,14 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginVertical: 2,
   },
-  pickerOptionActive: {
-    backgroundColor: '#e3f2fd',
-  },
   pickerFlag: {
-    fontSize: 20,
     marginRight: 12,
   },
   pickerLabel: {
-    fontSize: 16,
-    color: '#333',
     flex: 1,
   },
   checkmark: {
     fontSize: 18,
-    color: '#2196F3',
     fontWeight: 'bold',
   },
   footer: {
