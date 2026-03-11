@@ -12,15 +12,24 @@
     "ayahsMemorized": "Ayahs Memorized",
     "currentStreak": "Current Streak",
     "dailyGoal": "Daily Goal",
-    "weeklyProgress": "Weekly Progress",
     "consecutiveDays": "Consecutive Days",
     "record": "Record",
+    "weeklyProgress": "Weekly Progress",
+    "verses": "verses",
     "quickActions": "Quick Actions",
     "continue": "Continue",
-    "reviewAction": "Review",
+    "reviewBtn": "Review",
     "listen": "Listen",
-    "stats": "Stats",
-    "verses": "verses"
+    "stats": "Stats"
+  },
+  "days": {
+    "sun": "Sun",
+    "mon": "Mon",
+    "tue": "Tue",
+    "wed": "Wed",
+    "thu": "Thu",
+    "fri": "Fri",
+    "sat": "Sat"
   },
   "settings": {
     "title": "Settings",
@@ -31,20 +40,17 @@
     "notifications": "Notifications",
     "dailyReminders": "Daily Reminders",
     "reminderTime": "Reminder Time",
-    "reciter": "Reciter",
     "recitation": "Recitation",
+    "reciter": "Reciter",
     "display": "Display",
     "about": "About",
-    "version": "Version",
-    "fontSmall": "Small",
-    "fontMedium": "Medium",
-    "fontLarge": "Large"
+    "version": "Version"
   },
   "review": {
     "title": "Review",
     "nextVerse": "Next Verse",
     "previousVerse": "Previous Verse",
-    "submitReview": "Submit Review"
+    "submitReview": "Submit"
   },
   "audio": {
     "title": "Audio Player",
@@ -54,22 +60,12 @@
     "speed": "Speed",
     "text": "Text",
     "playlist": "Playlist",
-    "previous": "Previous",
-    "next": "Next",
-    "reciter": "Reciter",
     "noSurah": "No surah",
     "selectSurah": "Select a surah",
-    "surah": "Surah",
     "verse": "Verse",
-    "selectFromList": "Choose a surah"
-  },
-  "days": {
-    "sun": "Sun",
-    "mon": "Mon",
-    "tue": "Tue",
-    "wed": "Wed",
-    "thu": "Thu",
-    "fri": "Fri",
-    "sat": "Sat"
+    "reciter": "Reciter",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous"
   }
 }

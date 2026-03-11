@@ -12,15 +12,24 @@
     "ayahsMemorized": "الآيات المحفوظة",
     "currentStreak": "السلسلة الحالية",
     "dailyGoal": "الهدف اليومي",
-    "weeklyProgress": "تقدم الأسبوع",
     "consecutiveDays": "أيام متتالية",
     "record": "الرقم القياسي",
+    "weeklyProgress": "تقدم هذا الأسبوع",
+    "verses": "آيات",
     "quickActions": "إجراءات سريعة",
     "continue": "متابعة",
-    "reviewAction": "مراجعة",
+    "reviewBtn": "مراجعة",
     "listen": "استماع",
-    "stats": "إحصائيات",
-    "verses": "آيات"
+    "stats": "إحصائيات"
+  },
+  "days": {
+    "sun": "أحد",
+    "mon": "إثنين",
+    "tue": "ثلاثاء",
+    "wed": "أربعاء",
+    "thu": "خميس",
+    "fri": "جمعة",
+    "sat": "سبت"
   },
   "settings": {
     "title": "الإعدادات",
@@ -31,20 +40,17 @@
     "notifications": "الإشعارات",
     "dailyReminders": "التذكيرات اليومية",
     "reminderTime": "وقت التذكير",
-    "reciter": "القارئ",
     "recitation": "التلاوة",
+    "reciter": "القارئ",
     "display": "العرض",
     "about": "حول",
-    "version": "الإصدار",
-    "fontSmall": "صغير",
-    "fontMedium": "متوسط",
-    "fontLarge": "كبير"
+    "version": "الإصدار"
   },
   "review": {
     "title": "مراجعة",
     "nextVerse": "الآية التالية",
     "previousVerse": "الآية السابقة",
-    "submitReview": "إرسال المراجعة"
+    "submitReview": "إرسال"
   },
   "audio": {
     "title": "مشغل الصوت",
@@ -52,24 +58,14 @@
     "pause": "إيقاف",
     "repeat": "تكرار",
     "speed": "السرعة",
-    "text": "النص",
+    "text": "نص",
     "playlist": "قائمة التشغيل",
-    "previous": "السابق",
-    "next": "التالي",
-    "reciter": "القارئ",
-    "noSurah": "لا سورة",
+    "noSurah": "لا توجد سورة",
     "selectSurah": "اختر سورة",
-    "surah": "سورة",
     "verse": "آية",
-    "selectFromList": "اختر سورة"
-  },
-  "days": {
-    "sun": "أحد",
-    "mon": "إثن",
-    "tue": "ثلا",
-    "wed": "أرب",
-    "thu": "خمي",
-    "fri": "جمع",
-    "sat": "سبت"
+    "reciter": "القارئ",
+    "back": "رجوع",
+    "next": "التالي",
+    "previous": "السابق"
   }
 }
