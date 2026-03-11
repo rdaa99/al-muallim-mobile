@@ -6,6 +6,8 @@ import { DashboardScreen } from '../screens/DashboardScreen';
 import { SettingsScreen } from '../screens/SettingsScreen';
 import { AudioPlayerScreen } from '../screens/AudioPlayerScreen';
 import { RecitationScreen } from '../screens/RecitationScreen';
+import { WordBreakdownScreen } from '../screens/WordBreakdownScreen';
+import { FocusModeScreen } from '../screens/FocusModeScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -70,6 +72,8 @@ export const AppNavigator: React.FC = () => {
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Tabs" component={TabNavigator} />
         <Stack.Screen name="Recitation" component={RecitationScreen} />
+        <Stack.Screen name="WordBreakdown" component={WordBreakdownScreen} />
+        <Stack.Screen name="FocusMode" component={FocusModeScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
