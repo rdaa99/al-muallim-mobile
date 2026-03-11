@@ -1,0 +1,37 @@
+{
+  "common": {
+    "welcome": "Bienvenue",
+    "dashboard": "Tableau de bord",
+    "settings": "Paramètres",
+    "review": "Révision",
+    "audio": "Audio"
+  },
+  "dashboard": {
+    "title": "Tableau de bord",
+    "surahsMemorized": "Sourates mémorisées",
+    "ayahsMemorized": "Versets mémorisés",
+    "currentStreak": "Série actuelle",
+    "dailyGoal": "Objectif quotidien"
+  },
+  "settings": {
+    "title": "Paramètres",
+    "language": "Langue",
+    "darkMode": "Mode sombre",
+    "fontSize": "Taille du texte",
+    "notifications": "Notifications",
+    "reciter": "Récitateur"
+  },
+  "review": {
+    "title": "Révision",
+    "nextVerse": "Verset suivant",
+    "previousVerse": "Verset précédent",
+    "submitReview": "Valider"
+  },
+  "audio": {
+    "title": "Audio",
+    "play": "Lecture",
+    "pause": "Pause",
+    "repeat": "Répéter",
+    "speed": "Vitesse"
+  }
+}

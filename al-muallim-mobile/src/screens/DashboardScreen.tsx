@@ -1,19 +1,29 @@
 import React from 'react';
 import { ScrollView, View, Text, StyleSheet, SafeAreaView } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { useUserStore } from '../store/userStore';
+import { useTheme } from '../context/ThemeContext';
+import { useFonts } from '../context/FontSizeContext';
 import { ProgressCard } from '../components/ProgressCard';
 import { StreakCard } from '../components/StreakCard';
 import { WeeklyProgress } from '../components/WeeklyProgress';
 
 export const DashboardScreen: React.FC = () => {
   const { progress } = useUserStore();
+  const { t } = useTranslation();
+  const { colors } = useTheme();
+  const { fonts } = useFonts();
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
-          <Text style={styles.greeting}>السلام عليكم</Text>
-          <Text style={styles.subtitle}>Bienvenue dans Al-Muallim</Text>
+          <Text style={[styles.greeting, { color: colors.text, fontSize: fonts.hero }]}>
+            {t('common.welcome')}
+          </Text>
+          <Text style={[styles.subtitle, { color: colors.textSecondary, fontSize: fonts.body }]}>
+            {t('dashboard.title')}
+          </Text>
         </View>
 
         <StreakCard
@@ -22,14 +32,14 @@ export const DashboardScreen: React.FC = () => {
         />
 
         <ProgressCard
-          title="Sourates mémorisées"
+          title={t('dashboard.surahsMemorized')}
           value={progress.surahsMemorized}
           total={114}
           color="#2196F3"
         />
 
         <ProgressCard
-          title="Versets mémorisés"
+          title={t('dashboard.ayahsMemorized')}
           value={progress.ayahsMemorized}
           total={progress.totalAyahs}
           unit=""
@@ -37,7 +47,7 @@ export const DashboardScreen: React.FC = () => {
         />
 
         <ProgressCard
-          title="Objectif journalier"
+          title={t('dashboard.dailyGoal')}
           value={progress.ayahsMemorized % progress.dailyGoal}
           total={progress.dailyGoal}
           unit=" versets"
@@ -49,24 +59,26 @@ export const DashboardScreen: React.FC = () => {
           dailyGoal={progress.dailyGoal}
         />
 
-        <View style={styles.quickActions}>
-          <Text style={styles.sectionTitle}>Actions rapides</Text>
+        <View style={[styles.quickActions, { backgroundColor: colors.surface }]}>
+          <Text style={[styles.sectionTitle, { color: colors.text, fontSize: fonts.heading }]}>
+            Actions rapides
+          </Text>
           <View style={styles.actionGrid}>
-            <View style={styles.actionButton}>
+            <View style={[styles.actionButton, { backgroundColor: colors.card }]}>
               <Text style={styles.actionIcon}>📖</Text>
-              <Text style={styles.actionLabel}>Continuer</Text>
+              <Text style={[styles.actionLabel, { color: colors.text }]}>Continuer</Text>
             </View>
-            <View style={styles.actionButton}>
+            <View style={[styles.actionButton, { backgroundColor: colors.card }]}>
               <Text style={styles.actionIcon}>🎯</Text>
-              <Text style={styles.actionLabel}>Réviser</Text>
+              <Text style={[styles.actionLabel, { color: colors.text }]}>Réviser</Text>
             </View>
-            <View style={styles.actionButton}>
+            <View style={[styles.actionButton, { backgroundColor: colors.card }]}>
               <Text style={styles.actionIcon}>🎧</Text>
-              <Text style={styles.actionLabel}>Écouter</Text>
+              <Text style={[styles.actionLabel, { color: colors.text }]}>Écouter</Text>
             </View>
-            <View style={styles.actionButton}>
+            <View style={[styles.actionButton, { backgroundColor: colors.card }]}>
               <Text style={styles.actionIcon}>📊</Text>
-              <Text style={styles.actionLabel}>Stats</Text>
+              <Text style={[styles.actionLabel, { color: colors.text }]}>Stats</Text>
             </View>
           </View>
         </View>
@@ -80,43 +92,35 @@ export const DashboardScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
   },
   header: {
     padding: 20,
     paddingTop: 10,
   },
   greeting: {
-    fontSize: 28,
     fontWeight: 'bold',
-    color: '#333',
     textAlign: 'right',
   },
   subtitle: {
-    fontSize: 14,
-    color: '#666',
     marginTop: 4,
   },
   sectionTitle: {
-    fontSize: 18,
     fontWeight: '600',
-    color: '#333',
     marginBottom: 12,
     marginHorizontal: 16,
   },
   quickActions: {
     marginTop: 16,
+    padding: 16,
   },
   actionGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    paddingHorizontal: 16,
     gap: 12,
   },
   actionButton: {
     flex: 1,
     minWidth: '45%',
-    backgroundColor: '#fff',
     borderRadius: 12,
     padding: 16,
     alignItems: 'center',
@@ -132,7 +136,7 @@ const styles = StyleSheet.create({
   },
   actionLabel: {
     fontSize: 14,
-    color: '#666',
+    fontWeight: '500',
   },
   footer: {
     height: 20,

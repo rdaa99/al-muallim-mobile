@@ -9,7 +9,10 @@ import {
   Switch,
   Alert,
 } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { useUserStore } from '../store/userStore';
+import { useTheme } from '../context/ThemeContext';
+import { useFonts } from '../context/FontSizeContext';
 
 const LANGUAGES = [
   { code: 'ar', name: 'العربية', flag: '🇸🇦' },
