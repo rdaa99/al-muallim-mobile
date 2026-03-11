@@ -46,12 +46,6 @@
     "about": "À propos",
     "version": "Version"
   },
-  "review": {
-    "title": "Révision",
-    "nextVerse": "Verset suivant",
-    "previousVerse": "Verset précédent",
-    "submitReview": "Valider"
-  },
   "audio": {
     "title": "Lecteur Audio",
     "play": "Lecture",
@@ -67,5 +61,56 @@
     "back": "Retour",
     "next": "Suivant",
     "previous": "Précédent"
+  },
+  "recitation": {
+    "modes": {
+      "learning": "Apprentissage",
+      "test": "Test",
+      "flow": "Flow",
+      "hifz": "Hifz"
+    },
+    "reveal": "Révéler",
+    "review": "Réviser",
+    "next": "Suivant",
+    "hifzMode": "Mode Hifz",
+    "progress": "Progression"
+  },
+  "wordBreakdown": {
+    "title": "Analyse des mots",
+    "translation": "Traduction",
+    "transliteration": "Translittération",
+    "root": "Racine",
+    "grammar": "Grammaire",
+    "meaning": "Signification",
+    "fullVerse": "Verset complet"
+  },
+  "goals": {
+    "title": "Objectifs",
+    "dailyGoals": "Objectifs quotidiens",
+    "achievements": "Accomplissements",
+    "points": "Points"
+  },
+  "mistakes": {
+    "title": "Erreurs",
+    "pronunciation": "Prononciation",
+    "tajweed": "Tajweed",
+    "memory": "Mémoire",
+    "fluency": "Fluidité"
+  },
+  "focus": {
+    "title": "Mode Focus",
+    "selectSurahs": "Sélectionner les sourates",
+    "duration": "Durée",
+    "minutes": "min",
+    "startSession": "Commencer la session",
+    "sessionComplete": "Session terminée !",
+    "timeUp": "Le temps est écoulé",
+    "selectSurah": "Sélectionner une sourate",
+    "selectAtLeastOne": "Sélectionnez au moins une sourate",
+    "sessionEnded": "Session terminée",
+    "keepPracticing": "Continuez à pratiquer !",
+    "timeRemaining": "Temps restant",
+    "surahsSelected": "sourates sélectionnées",
+    "endSession": "Terminer"
   }
 }
