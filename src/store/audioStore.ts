@@ -41,11 +41,15 @@ export const useAudioStore = create<AudioStore>()(
       nextAyah: () =>
         set((state) => ({
           currentAyah: state.currentAyah + 1,
+          position: 0,
+          duration: 0,
         })),
 
       previousAyah: () =>
         set((state) => ({
           currentAyah: Math.max(1, state.currentAyah - 1),
+          position: 0,
+          duration: 0,
         })),
     }),
     {

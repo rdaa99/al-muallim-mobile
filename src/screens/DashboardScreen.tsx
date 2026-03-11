@@ -10,11 +10,12 @@ import { StreakCard } from '../components/StreakCard';
 import { WeeklyProgress } from '../components/WeeklyProgress';
 
 export const DashboardScreen: React.FC = () => {
-  const { progress } = useUserStore();
+  const { progress, settings } = useUserStore();
   const { t } = useTranslation();
   const { colors } = useTheme();
   const { fonts } = useFonts();
   const navigation = useNavigation();
+  const isRTL = settings.language === 'ar';
 
   const handleQuickAction = (action: string) => {
     if (action !== 'stats') {
@@ -23,7 +24,7 @@ export const DashboardScreen: React.FC = () => {
   };
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }, isRTL && { direction: 'rtl' }]}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
           <Text style={[styles.greeting, { color: colors.text, fontSize: fonts.hero }]}>
@@ -65,6 +66,7 @@ export const DashboardScreen: React.FC = () => {
         <WeeklyProgress
           data={progress.weeklyProgress}
           dailyGoal={progress.dailyGoal}
+          language={settings.language}
         />
 
         <View style={[styles.quickActions, { backgroundColor: colors.surface }]}>

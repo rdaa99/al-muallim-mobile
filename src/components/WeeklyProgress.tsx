@@ -4,21 +4,27 @@ import { View, Text, StyleSheet } from 'react-native';
 interface WeeklyProgressProps {
   data: number[];
   dailyGoal: number;
+  language?: string;
 }
 
-const DAYS = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
+const DAYS_LTR = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
+const DAYS_RTL = ['Sam', 'Ven', 'Jeu', 'Mer', 'Mar', 'Lun', 'Dim'];
 
-export const WeeklyProgress: React.FC<WeeklyProgressProps> = ({ data, dailyGoal }) => {
+export const WeeklyProgress: React.FC<WeeklyProgressProps> = ({ data, dailyGoal, language }) => {
   const maxValue = Math.max(...data, dailyGoal);
+  const isRTL = language === 'ar';
+  const displayData = isRTL ? data.slice().reverse() : data;
+  const DAYS = isRTL ? DAYS_RTL : DAYS_LTR;
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Progression cette semaine</Text>
-      <View style={styles.chart}>
-        {data.map((value, index) => {
+      <View style={[styles.chart, isRTL && { direction: 'rtl' }]}>
+        {displayData.map((value, index) => {
           const height = maxValue > 0 ? (value / maxValue) * 100 : 0;
           const isGoalMet = value >= dailyGoal;
-          const isToday = index === new Date().getDay();
+          const todayIndex = new Date().getDay();
+          const isToday = isRTL ? index === (data.length - 1 - todayIndex) : index === todayIndex;
 
           return (
             <View key={index} style={styles.barContainer}>
