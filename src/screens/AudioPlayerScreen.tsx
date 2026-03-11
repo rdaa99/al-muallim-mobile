@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -42,6 +42,25 @@ export const AudioPlayerScreen: React.FC = () => {
 
   const SPEEDS = [0.5, 0.75, 1, 1.25, 1.5, 2];
 
+  // BUG-004: Auto-advance to next ayah when current finishes
+  const hasAdvancedRef = useRef(false);
+  useEffect(() => {
+    if (isPlaying && duration > 0 && position >= duration) {
+      if (hasAdvancedRef.current) return;
+      hasAdvancedRef.current = true;
+
+      if (repeatMode) {
+        seek(0);
+      } else if (currentSurah && currentAyah < currentSurah.ayahsCount) {
+        nextAyah();
+      } else {
+        pause();
+      }
+    } else {
+      hasAdvancedRef.current = false;
+    }
+  }, [position, duration, isPlaying, repeatMode, currentSurah, currentAyah]);
+
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
@@ -53,6 +72,10 @@ export const AudioPlayerScreen: React.FC = () => {
       pause();
     } else {
       if (currentSurah) {
+        // BUG-005: Reset position if at the end of track
+        if (position >= duration && duration > 0) {
+          seek(0);
+        }
         resume();
       } else {
         play({
@@ -85,7 +108,7 @@ export const AudioPlayerScreen: React.FC = () => {
   };
 
   const handleBack = () => {
-    navigation.goBack();
+    navigation.navigate('Dashboard' as never);
   };
 
   return (
@@ -122,7 +145,7 @@ export const AudioPlayerScreen: React.FC = () => {
           {/* Reciter Info */}
           <View style={styles.reciterInfo}>
             <Text style={styles.reciterLabel}>Récitateur</Text>
-            <Text style={styles.reciterName}>{settings.reciter?.englishName || 'Abdul Basit'}</Text>
+            <Text style={styles.reciterName}>{settings.language === 'ar' ? (settings.reciter?.name || 'عبد الباسط') : (settings.reciter?.englishName || 'Abdul Basit')}</Text>
           </View>
 
           {/* Progress */}
@@ -464,6 +487,8 @@ const styles = StyleSheet.create({
   activeButton: {
     backgroundColor: '#E3F2FD',
     borderRadius: 8,
+    borderWidth: 2,
+    borderColor: '#2196F3',
   },
   activeIndicator: {
     position: 'absolute',

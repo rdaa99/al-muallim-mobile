@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { useTranslation } from 'react-i18next';
 import { DashboardScreen } from '../screens/DashboardScreen';
 import { SettingsScreen } from '../screens/SettingsScreen';
 import { AudioPlayerScreen } from '../screens/AudioPlayerScreen';
@@ -8,6 +9,8 @@ import { AudioPlayerScreen } from '../screens/AudioPlayerScreen';
 const Tab = createBottomTabNavigator();
 
 export const AppNavigator: React.FC = () => {
+  const { t } = useTranslation();
+
   return (
     <NavigationContainer>
       <Tab.Navigator
@@ -46,17 +49,17 @@ export const AppNavigator: React.FC = () => {
         <Tab.Screen
           name="Dashboard"
           component={DashboardScreen}
-          options={{ tabBarLabel: 'Tableau de bord' }}
+          options={{ tabBarLabel: t('common.dashboard') }}
         />
         <Tab.Screen
           name="AudioPlayer"
           component={AudioPlayerScreen}
-          options={{ tabBarLabel: 'Audio' }}
+          options={{ tabBarLabel: t('common.audio') }}
         />
         <Tab.Screen
           name="Settings"
           component={SettingsScreen}
-          options={{ tabBarLabel: 'Paramètres' }}
+          options={{ tabBarLabel: t('common.settings') }}
         />
       </Tab.Navigator>
     </NavigationContainer>
