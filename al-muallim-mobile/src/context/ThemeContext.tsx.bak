@@ -33,7 +33,7 @@ const colors: Record<Theme, ThemeColors> = {
     surface: '#1E293B',
     primary: '#10B981',
     text: '#F8FAFC',
-    textSecondary: '#A0AEC0',
+    textSecondary: '#94A3B8',
     border: '#334155',
     card: '#1E293B',
     tabBar: '#1E293B',

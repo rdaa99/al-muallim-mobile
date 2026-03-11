@@ -12,15 +12,24 @@
     "ayahsMemorized": "Versets mémorisés",
     "currentStreak": "Série actuelle",
     "dailyGoal": "Objectif quotidien",
-    "weeklyProgress": "Progression cette semaine",
     "consecutiveDays": "Jours consécutifs",
     "record": "Record",
+    "weeklyProgress": "Progression cette semaine",
+    "verses": "versets",
     "quickActions": "Actions rapides",
     "continue": "Continuer",
-    "reviewAction": "Réviser",
+    "reviewBtn": "Réviser",
     "listen": "Écouter",
-    "stats": "Stats",
-    "verses": "versets"
+    "stats": "Stats"
+  },
+  "days": {
+    "sun": "Dim",
+    "mon": "Lun",
+    "tue": "Mar",
+    "wed": "Mer",
+    "thu": "Jeu",
+    "fri": "Ven",
+    "sat": "Sam"
   },
   "settings": {
     "title": "Paramètres",
@@ -31,14 +40,11 @@
     "notifications": "Notifications",
     "dailyReminders": "Rappels quotidiens",
     "reminderTime": "Heure du rappel",
-    "reciter": "Récitateur",
     "recitation": "Récitation",
+    "reciter": "Récitateur",
     "display": "Affichage",
     "about": "À propos",
-    "version": "Version",
-    "fontSmall": "Petite",
-    "fontMedium": "Moyenne",
-    "fontLarge": "Grande"
+    "version": "Version"
   },
   "review": {
     "title": "Révision",
@@ -54,22 +60,12 @@
     "speed": "Vitesse",
     "text": "Texte",
     "playlist": "Playlist",
-    "previous": "Précédent",
-    "next": "Suivant",
-    "reciter": "Récitateur",
     "noSurah": "Aucune sourate",
     "selectSurah": "Sélectionnez une sourate",
-    "surah": "Sourate",
     "verse": "Verset",
-    "selectFromList": "Choisir une sourate"
-  },
-  "days": {
-    "sun": "Dim",
-    "mon": "Lun",
-    "tue": "Mar",
-    "wed": "Mer",
-    "thu": "Jeu",
-    "fri": "Ven",
-    "sat": "Sam"
+    "reciter": "Récitateur",
+    "back": "Retour",
+    "next": "Suivant",
+    "previous": "Précédent"
   }
 }
