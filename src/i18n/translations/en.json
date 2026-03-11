@@ -1,0 +1,37 @@
+{
+  "common": {
+    "welcome": "Welcome",
+    "dashboard": "Dashboard",
+    "settings": "Settings",
+    "review": "Review",
+    "audio": "Audio"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "surahsMemorized": "Surahs Memorized",
+    "ayahsMemorized": "Ayahs Memorized",
+    "currentStreak": "Current Streak",
+    "dailyGoal": "Daily Goal"
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "darkMode": "Dark Mode",
+    "fontSize": "Font Size",
+    "notifications": "Notifications",
+    "reciter": "Reciter"
+  },
+  "review": {
+    "title": "Review",
+    "nextVerse": "Next Verse",
+    "previousVerse": "Previous Verse",
+    "submitReview": "Submit Review"
+  },
+  "audio": {
+    "title": "Audio",
+    "play": "Play",
+    "pause": "Pause",
+    "repeat": "Repeat",
+    "speed": "Speed"
+  }
+}
