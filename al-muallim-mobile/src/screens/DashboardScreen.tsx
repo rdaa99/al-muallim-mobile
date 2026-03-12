@@ -1,5 +1,5 @@
-import React from 'react';
-import { ScrollView, View, Text, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { ScrollView, View, Text, StyleSheet, SafeAreaView, TouchableOpacity, Animated } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { useUserStore } from '../store/userStore';
@@ -11,6 +11,9 @@ import { ProgressCard } from '../components/ProgressCard';
 import { StreakCard } from '../components/StreakCard';
 import { WeeklyProgress } from '../components/WeeklyProgress';
 import { Surah } from '../types';
+import { haptic } from '../utils/haptic';
+
+const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity);
 
 export const DashboardScreen: React.FC = () => {
   const { progress } = useUserStore();
@@ -38,6 +41,8 @@ export const DashboardScreen: React.FC = () => {
   };
 
   const handleQuickAction = (action: string) => {
+    haptic.light(); // Add haptic feedback
+    
     switch (action) {
       case 'recitation':
         (navigation as any).navigate('Recitation', { surah: defaultSurah, mode: 'learning' });
