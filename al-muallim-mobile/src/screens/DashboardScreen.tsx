@@ -1,5 +1,6 @@
 import React from 'react';
-import { ScrollView, View, Text, StyleSheet, SafeAreaView } from 'react-native';
+import { ScrollView, View, Text, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { useUserStore } from '../store/userStore';
 import { useTheme } from '../context/ThemeContext';
@@ -7,12 +8,42 @@ import { useFonts } from '../context/FontSizeContext';
 import { ProgressCard } from '../components/ProgressCard';
 import { StreakCard } from '../components/StreakCard';
 import { WeeklyProgress } from '../components/WeeklyProgress';
+import { Surah } from '../types';
 
 export const DashboardScreen: React.FC = () => {
   const { progress } = useUserStore();
   const { t } = useTranslation();
   const { colors } = useTheme();
   const { fonts } = useFonts();
+  const navigation = useNavigation();
+
+  const defaultSurah: Surah = {
+    number: 1,
+    name: 'الفاتحة',
+    englishName: 'Al-Fatiha',
+    ayahsCount: 7,
+    revelationType: 'Meccan',
+  };
+
+  const handleQuickAction = (action: string) => {
+    switch (action) {
+      case 'recitation':
+        (navigation as any).navigate('Recitation', { surah: defaultSurah, mode: 'learning' });
+        break;
+      case 'wordBreakdown':
+        (navigation as any).navigate('WordBreakdown', { surahNumber: 1, verseNumber: 1 });
+        break;
+      case 'focusMode':
+        (navigation as any).navigate('FocusMode');
+        break;
+      case 'audio':
+        (navigation as any).navigate('Tabs', { screen: 'AudioPlayer' });
+        break;
+      case 'stats':
+        // Future stats screen
+        break;
+    }
+  };
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
@@ -59,35 +90,51 @@ export const DashboardScreen: React.FC = () => {
           dailyGoal={progress.dailyGoal}
         />
 
+        {/* New Features Section */}
         <View style={[styles.quickActions, { backgroundColor: colors.surface }]}>
           <Text style={[styles.sectionTitle, { color: colors.text, fontSize: fonts.heading }]}>
             {t('dashboard.quickActions')}
           </Text>
           <View style={styles.actionGrid}>
-            <View style={[styles.actionButton, { backgroundColor: colors.card }]}>
-              <Text style={styles.actionIcon}>📖</Text>
-              <Text style={[styles.actionLabel, { color: colors.text, fontSize: fonts.body }]}>
-                {t('dashboard.continue')}
-              </Text>
-            </View>
-            <View style={[styles.actionButton, { backgroundColor: colors.card }]}>
+            <TouchableOpacity
+              style={[styles.actionButton, { backgroundColor: colors.card }]}
+              onPress={() => handleQuickAction('recitation')}
+            >
               <Text style={styles.actionIcon}>🎯</Text>
               <Text style={[styles.actionLabel, { color: colors.text, fontSize: fonts.body }]}>
-                {t('dashboard.reviewAction')}
+                Récitation
               </Text>
-            </View>
-            <View style={[styles.actionButton, { backgroundColor: colors.card }]}>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.actionButton, { backgroundColor: colors.card }]}
+              onPress={() => handleQuickAction('wordBreakdown')}
+            >
+              <Text style={styles.actionIcon}>📚</Text>
+              <Text style={[styles.actionLabel, { color: colors.text, fontSize: fonts.body }]}>
+                Analyse Mots
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.actionButton, { backgroundColor: colors.card }]}
+              onPress={() => handleQuickAction('focusMode')}
+            >
+              <Text style={styles.actionIcon}>🧘</Text>
+              <Text style={[styles.actionLabel, { color: colors.text, fontSize: fonts.body }]}>
+                Mode Focus
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.actionButton, { backgroundColor: colors.card }]}
+              onPress={() => handleQuickAction('audio')}
+            >
               <Text style={styles.actionIcon}>🎧</Text>
               <Text style={[styles.actionLabel, { color: colors.text, fontSize: fonts.body }]}>
                 {t('dashboard.listen')}
               </Text>
-            </View>
-            <View style={[styles.actionButton, { backgroundColor: colors.card }]}>
-              <Text style={styles.actionIcon}>📊</Text>
-              <Text style={[styles.actionLabel, { color: colors.text, fontSize: fonts.body }]}>
-                {t('dashboard.stats')}
-              </Text>
-            </View>
+            </TouchableOpacity>
           </View>
         </View>
 
