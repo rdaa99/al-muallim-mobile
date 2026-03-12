@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { useUserStore } from '../store/userStore';
 import { useGoalsStore } from '../store/goalsStore';
+import { useMistakeTrackingStore } from '../store/mistakeTrackingStore';
 import { useTheme } from '../context/ThemeContext';
 import { useFonts } from '../context/FontSizeContext';
 import { ProgressCard } from '../components/ProgressCard';
@@ -14,6 +15,7 @@ import { Surah } from '../types';
 export const DashboardScreen: React.FC = () => {
   const { progress } = useUserStore();
   const { totalVersesMemorized, streakDays, points, achievements, checkAchievements } = useGoalsStore();
+  const { analysis } = useMistakeTrackingStore();
   const { t } = useTranslation();
   const { colors } = useTheme();
   const { fonts } = useFonts();
@@ -177,6 +179,54 @@ export const DashboardScreen: React.FC = () => {
           </Text>
         </View>
 
+        {/* Mistake Tracking Section */}
+        {analysis.totalMistakes > 0 && (
+          <View style={[styles.quickActions, { backgroundColor: colors.surface }]}>
+            <Text style={[styles.sectionTitle, { color: colors.text, fontSize: fonts.heading }]}>
+              📊 Analyse des Erreurs ({analysis.totalMistakes})
+            </Text>
+            <View style={styles.mistakesRow}>
+              {analysis.byType.pronunciation > 0 && (
+                <View style={styles.mistakeBadge}>
+                  <Text style={styles.mistakeIcon}>🗣️</Text>
+                  <Text style={[styles.mistakeCount, { color: colors.text }]}>
+                    {analysis.byType.pronunciation}
+                  </Text>
+                </View>
+              )}
+              {analysis.byType.tajweed > 0 && (
+                <View style={styles.mistakeBadge}>
+                  <Text style={styles.mistakeIcon}>📖</Text>
+                  <Text style={[styles.mistakeCount, { color: colors.text }]}>
+                    {analysis.byType.tajweed}
+                  </Text>
+                </View>
+              )}
+              {analysis.byType.memory > 0 && (
+                <View style={styles.mistakeBadge}>
+                  <Text style={styles.mistakeIcon}>🧠</Text>
+                  <Text style={[styles.mistakeCount, { color: colors.text }]}>
+                    {analysis.byType.memory}
+                  </Text>
+                </View>
+              )}
+              {analysis.byType.fluency > 0 && (
+                <View style={styles.mistakeBadge}>
+                  <Text style={styles.mistakeIcon}>🌊</Text>
+                  <Text style={[styles.mistakeCount, { color: colors.text }]}>
+                    {analysis.byType.fluency}
+                  </Text>
+                </View>
+              )}
+            </View>
+            {analysis.frequentVerses.length > 0 && (
+              <Text style={[styles.hintText, { color: colors.textSecondary }]}>
+                💡 Surah #{analysis.frequentVerses[0]?.surahNumber} à réviser
+              </Text>
+            )}
+          </View>
+        )}
+
         <View style={styles.footer} />
       </ScrollView>
     </SafeAreaView>
@@ -255,6 +305,28 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 8,
     fontWeight: '600',
+  },
+  mistakesRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginVertical: 12,
+  },
+  mistakeBadge: {
+    alignItems: 'center',
+    paddingHorizontal: 12,
+  },
+  mistakeIcon: {
+    fontSize: 24,
+    marginBottom: 4,
+  },
+  mistakeCount: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  hintText: {
+    textAlign: 'center',
+    marginTop: 8,
+    fontStyle: 'italic',
   },
   footer: {
     height: 20,
