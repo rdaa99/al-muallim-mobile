@@ -3,6 +3,7 @@ import { ScrollView, View, Text, StyleSheet, SafeAreaView, TouchableOpacity } fr
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { useUserStore } from '../store/userStore';
+import { useGoalsStore } from '../store/goalsStore';
 import { useTheme } from '../context/ThemeContext';
 import { useFonts } from '../context/FontSizeContext';
 import { ProgressCard } from '../components/ProgressCard';
@@ -12,10 +13,19 @@ import { Surah } from '../types';
 
 export const DashboardScreen: React.FC = () => {
   const { progress } = useUserStore();
+  const { totalVersesMemorized, streakDays, points, achievements, checkAchievements } = useGoalsStore();
   const { t } = useTranslation();
   const { colors } = useTheme();
   const { fonts } = useFonts();
   const navigation = useNavigation();
+
+  // Check for new achievements on mount
+  React.useEffect(() => {
+    const newAchievements = checkAchievements();
+    if (newAchievements.length > 0) {
+      console.log('New achievements unlocked:', newAchievements);
+    }
+  }, [totalVersesMemorized, streakDays]);
 
   const defaultSurah: Surah = {
     number: 1,
@@ -138,6 +148,35 @@ export const DashboardScreen: React.FC = () => {
           </View>
         </View>
 
+        {/* Achievements Section */}
+        <View style={[styles.quickActions, { backgroundColor: colors.surface }]}>
+          <Text style={[styles.sectionTitle, { color: colors.text, fontSize: fonts.heading }]}>
+            🏆 Achievements ({achievements.filter(a => a.unlockedAt).length}/{achievements.length})
+          </Text>
+          <View style={styles.achievementsRow}>
+            {achievements.slice(0, 4).map((achievement) => (
+              <View
+                key={achievement.id}
+                style={[
+                  styles.achievementBadge,
+                  {
+                    backgroundColor: achievement.unlockedAt ? colors.primary + '20' : colors.border,
+                    opacity: achievement.unlockedAt ? 1 : 0.5,
+                  },
+                ]}
+              >
+                <Text style={styles.achievementIcon}>{achievement.icon}</Text>
+                {achievement.unlockedAt && (
+                  <Text style={[styles.achievementCheck, { color: colors.primary }]}>✓</Text>
+                )}
+              </View>
+            ))}
+          </View>
+          <Text style={[styles.pointsText, { color: colors.textSecondary }]}>
+            💰 {points} points
+          </Text>
+        </View>
+
         <View style={styles.footer} />
       </ScrollView>
     </SafeAreaView>
@@ -188,6 +227,34 @@ const styles = StyleSheet.create({
   },
   actionLabel: {
     fontWeight: '500',
+  },
+  achievementsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginVertical: 12,
+  },
+  achievementBadge: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'relative',
+  },
+  achievementIcon: {
+    fontSize: 28,
+  },
+  achievementCheck: {
+    position: 'absolute',
+    top: 2,
+    right: 2,
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
+  pointsText: {
+    textAlign: 'center',
+    marginTop: 8,
+    fontWeight: '600',
   },
   footer: {
     height: 20,
