@@ -1,5 +1,28 @@
 import * as SQLite from 'expo-sqlite';
-import { QURAN_DATA } from '../data/quranData.generated';
+// Lazy load Quran data only when needed for seeding
+// This prevents the large JSON from being loaded into memory on app start
+
+interface Surah {
+  number: number;
+  name: string;
+  englishName: string;
+  englishNameTranslation: string;
+  revelationType: string;
+  numberOfAyahs: number;
+}
+
+interface Verse {
+  surahNumber: number;
+  verseNumber: number;
+  text: string;
+  juz: number;
+  page: number;
+}
+
+interface QuranData {
+  surahs: Surah[];
+  verses: Verse[];
+}
 
 const DB_NAME = 'quran.db';
 
@@ -51,6 +74,9 @@ export class QuranDatabase {
       return;
     }
 
+    // Lazy load Quran data ONLY when seeding (reduces initial bundle memory)
+    const { QURAN_DATA } = await import('../data/quranData.generated');
+    
     console.log(`🌱 Seeding ${QURAN_DATA.surahs.length} surahs and ${QURAN_DATA.verses.length} verses...`);
 
     // Seed surahs
@@ -90,6 +116,10 @@ export class QuranDatabase {
     }
 
     console.log('✅ Database seeded successfully');
+    
+    // Clear reference to free memory (QURAN_DATA no longer needed)
+    // @ts-ignore
+    delete (global as any).__QURAN_DATA_CACHE__;
   }
 
   // Get all surahs

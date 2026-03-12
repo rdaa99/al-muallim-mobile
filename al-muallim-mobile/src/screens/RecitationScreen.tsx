@@ -63,6 +63,7 @@ export const RecitationScreen: React.FC<RecitationScreenProps> = ({ route }) => 
   const [revealedVerses, setRevealedVerses] = useState<Set<number>>(new Set());
   const [verses, setVerses] = useState<Verse[]>([]);
   const [loading, setLoading] = useState(true);
+  const [retryCount, setRetryCount] = useState(0);
 
   const {
     progress,
@@ -95,11 +96,42 @@ export const RecitationScreen: React.FC<RecitationScreenProps> = ({ route }) => 
     };
     
     loadVerses();
-  }, [surah.number]);
+  }, [surah.number, retryCount]);
 
   const currentVerse = verses[currentVerseIndex];
-
+  
   // Loading state
+  if (loading) {
+    return (
+      <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={colors.primary} />
+          <Text style={[styles.loadingText, { color: colors.text }]}>
+            Chargement des versets...
+          </Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  // Error state - no verses loaded
+  if (!loading && verses.length === 0) {
+    return (
+      <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
+        <View style={styles.loadingContainer}>
+          <Text style={[styles.errorText, { color: colors.text }]}>
+            Impossible de charger les versets
+          </Text>
+          <TouchableOpacity
+            style={[styles.retryButton, { backgroundColor: colors.primary }]}
+            onPress={() => setRetryCount(prev => prev + 1)}
+          >
+            <Text style={styles.retryText}>Réessayer</Text>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+    );
+  }
   if (loading) {
     return (
       <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
