@@ -4,7 +4,8 @@
     "dashboard": "Dashboard",
     "settings": "Settings",
     "review": "Review",
-    "audio": "Audio"
+    "audio": "Audio",
+    "loading": "Loading..."
   },
   "dashboard": {
     "title": "Dashboard",
@@ -31,6 +32,28 @@
     "fri": "Fri",
     "sat": "Sat"
   },
+  "review": {
+    "title": "Review",
+    "loading": "Loading reviews...",
+    "retry": "Retry",
+    "noReviewsTitle": "No reviews today",
+    "noReviewsBody": "Enjoy your day or review extra verses!",
+    "refresh": "Refresh",
+    "completeTitle": "Congratulations!",
+    "completeBody": "You have completed all today's reviews!",
+    "versesReviewed": "verses reviewed",
+    "viewProgram": "View program",
+    "adapted": "Adapted program",
+    "tapToReveal": "Tap to reveal",
+    "revealTranslation": "Reveal translation",
+    "hard": "Hard",
+    "medium": "Medium",
+    "easy": "Easy",
+    "skip": "Skip this verse →",
+    "nextVerse": "Next Verse",
+    "previousVerse": "Previous Verse",
+    "submitReview": "Submit"
+  },
   "settings": {
     "title": "Settings",
     "language": "Language",
@@ -44,13 +67,20 @@
     "reciter": "Reciter",
     "display": "Display",
     "about": "About",
-    "version": "Version"
-  },
-  "review": {
-    "title": "Review",
-    "nextVerse": "Next Verse",
-    "previousVerse": "Previous Verse",
-    "submitReview": "Submit"
+    "version": "Version",
+    "learningMode": "Learning Mode",
+    "daily": "Daily",
+    "newVersesDay": "New verses/day",
+    "sessionDuration": "Session duration (min)",
+    "learningCapacity": "Learning capacity",
+    "focusJuz": "Focus Juz",
+    "start": "Start",
+    "end": "End",
+    "direction": "Direction",
+    "saved": "Settings saved ✓",
+    "saveError": "Error saving settings",
+    "saving": "Saving...",
+    "autoSaveInfo": "Changes are saved automatically after 1 second."
   },
   "audio": {
     "title": "Audio Player",
@@ -60,8 +90,10 @@
     "speed": "Speed",
     "text": "Text",
     "playlist": "Playlist",
+    "playlistSoon": "Coming soon",
     "noSurah": "No surah",
     "selectSurah": "Select a surah",
+    "surah": "Surah",
     "verse": "Verse",
     "reciter": "Reciter",
     "back": "Back",

@@ -1,65 +1,88 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   SafeAreaView,
   TouchableOpacity,
-  Dimensions,
+  useWindowDimensions,
   Alert,
   ScrollView,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { useAudioStore } from '../store/audioStore';
-import { useUserStore } from '../store/userStore';
+import { useTranslation } from 'react-i18next';
+import { useAudioPlayer } from '../hooks/useAudioPlayer';
+import { useUserStore } from '../stores/userStore';
+import { useTheme } from '../context/ThemeContext';
 import Slider from '@react-native-community/slider';
+import type { Surah } from '../types';
 
-const { width, height } = Dimensions.get('window');
-const isSmallScreen = width < 360 || height < 600;
+const SPEEDS = [0.5, 0.75, 1, 1.25, 1.5, 2];
+
+// Default surah for initial load
+const DEFAULT_SURAH: Surah = {
+  number: 1,
+  name: 'الفاتحة',
+  englishName: 'Al-Fatiha',
+  ayahsCount: 7,
+  revelationType: 'Meccan',
+};
 
 export const AudioPlayerScreen: React.FC = () => {
+  const { width } = useWindowDimensions();
+  const isSmallScreen = width < 360;
   const navigation = useNavigation();
+  const { t } = useTranslation();
+  const { colors } = useTheme();
+  const { settings } = useUserStore();
+
   const {
     isPlaying,
-    currentSurah,
-    currentAyah,
+    isLoading,
+    isLooping,
+    error: audioError,
     duration,
-    position,
-    playbackSpeed,
+    currentTime,
     play,
     pause,
-    resume,
+    stop,
+    replay,
+    toggleLoop,
     seek,
-    setPlaybackSpeed,
-    nextAyah,
-    previousAyah,
-  } = useAudioStore();
+  } = useAudioPlayer();
 
-  const { settings } = useUserStore();
+  const [currentSurah] = useState<Surah>(DEFAULT_SURAH);
+  const [currentAyah, setCurrentAyah] = useState(1);
   const [showSpeedOptions, setShowSpeedOptions] = useState(false);
   const [showText, setShowText] = useState(false);
-  const [repeatMode, setRepeatMode] = useState(false);
+  const [playbackSpeed, setPlaybackSpeedLocal] = useState(1);
 
-  const SPEEDS = [0.5, 0.75, 1, 1.25, 1.5, 2];
+  // Build audio URL
+  const getAudioUrl = useCallback((surahNum: number, ayahNum: number) => {
+    const paddedSurah = String(surahNum).padStart(3, '0');
+    const paddedAyah = String(ayahNum).padStart(3, '0');
+    return `https://cdn.islamic.network/quran/audio/128/ar.alafasy/${paddedSurah}${paddedAyah}.mp3`;
+  }, []);
 
-  // BUG-004: Auto-advance to next ayah when current finishes
+  // Auto-advance when track finishes
   const hasAdvancedRef = useRef(false);
   useEffect(() => {
-    if (isPlaying && duration > 0 && position >= duration) {
-      if (hasAdvancedRef.current) return;
+    if (isPlaying && duration > 0 && currentTime >= duration - 0.5) {
+      if (hasAdvancedRef.current) {return;}
       hasAdvancedRef.current = true;
 
-      if (repeatMode) {
-        seek(0);
-      } else if (currentSurah && currentAyah < currentSurah.ayahsCount) {
-        nextAyah();
+      if (isLooping) {
+        replay();
+      } else if (currentAyah < currentSurah.ayahsCount) {
+        handleNextAyah();
       } else {
-        pause();
+        stop();
       }
-    } else {
+    } else if (currentTime < duration - 1) {
       hasAdvancedRef.current = false;
     }
-  }, [position, duration, isPlaying, repeatMode, currentSurah, currentAyah]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentTime, duration, isPlaying, isLooping, currentSurah, currentAyah]);
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -71,98 +94,101 @@ export const AudioPlayerScreen: React.FC = () => {
     if (isPlaying) {
       pause();
     } else {
-      if (currentSurah) {
-        // BUG-005: Reset position if at the end of track
-        if (position >= duration && duration > 0) {
-          seek(0);
-        }
-        resume();
-      } else {
-        play({
-          number: 1,
-          name: 'الفاتحة',
-          englishName: 'Al-Fatiha',
-          ayahsCount: 7,
-          revelationType: 'Meccan',
-        });
-      }
+      const url = getAudioUrl(currentSurah.number, currentAyah);
+      play(url);
+    }
+  };
+
+  const handleNextAyah = () => {
+    if (currentAyah < currentSurah.ayahsCount) {
+      const nextAyah = currentAyah + 1;
+      setCurrentAyah(nextAyah);
+      const url = getAudioUrl(currentSurah.number, nextAyah);
+      play(url);
+    }
+  };
+
+  const handlePreviousAyah = () => {
+    if (currentAyah > 1) {
+      const prevAyah = currentAyah - 1;
+      setCurrentAyah(prevAyah);
+      const url = getAudioUrl(currentSurah.number, prevAyah);
+      play(url);
     }
   };
 
   const handleSpeedChange = (speed: number) => {
-    setPlaybackSpeed(speed);
+    setPlaybackSpeedLocal(speed);
     setShowSpeedOptions(false);
   };
 
   const handleRepeat = () => {
-    setRepeatMode(!repeatMode);
-    Alert.alert('Répétition', repeatMode ? 'Mode répétition désactivé' : 'Mode répétition activé');
-  };
-
-  const handleShowText = () => {
-    setShowText(!showText);
-  };
-
-  const handlePlaylist = () => {
-    Alert.alert('Playlist', 'Fonctionnalité à venir');
+    toggleLoop();
   };
 
   const handleBack = () => {
-    navigation.navigate('Dashboard' as never);
+    navigation.goBack();
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContent}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
+      <ScrollView contentContainerStyle={[styles.scrollContent, isSmallScreen && { paddingBottom: 100 }]}>
         <View style={styles.content}>
           {/* Header */}
           <View style={styles.header}>
-            <TouchableOpacity style={styles.backButton} onPress={handleBack} accessibilityLabel="Retour" accessibilityRole="button">
-              <Text style={styles.backIcon}>←</Text>
+            <TouchableOpacity style={styles.backButton} onPress={handleBack} accessibilityLabel={t('audio.back')} accessibilityRole="button">
+              <Text style={[styles.backIcon, { color: colors.primary }]}>←</Text>
             </TouchableOpacity>
-            <Text style={styles.headerTitle} accessibilityRole="header">Lecteur Audio</Text>
+            <Text style={[styles.headerTitle, { color: colors.text }]} accessibilityRole="header">
+              {t('audio.title')}
+            </Text>
             <View style={styles.placeholder} />
           </View>
 
           {/* Surah Info */}
-          <View style={styles.surahInfo}>
-            <Text style={styles.surahNumber} accessibilityLabel={currentSurah ? `Sourate ${currentSurah.number}` : 'Aucune sourate'}>
-              {currentSurah ? `Sourate ${currentSurah.number}` : 'Aucune sourate'}
+          <View style={[styles.surahInfo, isSmallScreen && { paddingVertical: 20 }]}>
+            <Text style={[styles.surahNumber, { color: colors.textSecondary }]}>
+              {`${t('audio.surah', 'Sourate')} ${currentSurah.number}`}
             </Text>
-            <Text style={styles.surahName} accessibilityLabel={currentSurah?.englishName || 'Sélectionnez une sourate'}>
-              {currentSurah?.name || '١'}
+            <Text style={[styles.surahName, { color: colors.text }]}>
+              {currentSurah.name}
             </Text>
-            <Text style={styles.surahEnglish}>
-              {currentSurah?.englishName || 'Sélectionnez une sourate'}
+            <Text style={[styles.surahEnglish, { color: colors.textSecondary }]}>
+              {currentSurah.englishName}
             </Text>
-            {currentSurah && (
-              <Text style={styles.ayahInfo} accessibilityLabel={`Verset ${currentAyah} sur ${currentSurah.ayahsCount}`}>
-                Verset {currentAyah} / {currentSurah.ayahsCount}
-              </Text>
-            )}
+            <Text style={[styles.ayahInfo, { color: colors.textSecondary }]}>
+              {t('audio.verse')} {currentAyah} / {currentSurah.ayahsCount}
+            </Text>
           </View>
 
           {/* Reciter Info */}
           <View style={styles.reciterInfo}>
-            <Text style={styles.reciterLabel}>Récitateur</Text>
-            <Text style={styles.reciterName}>{settings?.language === 'ar' ? (settings?.reciter?.name || 'عبد الباسط') : (settings?.reciter?.englishName || 'Abdul Basit')}</Text>
+            <Text style={[styles.reciterLabel, { color: colors.textSecondary }]}>{t('audio.reciter')}</Text>
+            <Text style={[styles.reciterName, { color: colors.textSecondary }]}>
+              {settings?.language === 'ar' ? (settings?.reciter?.name || 'عبد الباسط') : (settings?.reciter?.englishName || 'Abdul Basit')}
+            </Text>
           </View>
+
+          {/* Error */}
+          {audioError && (
+            <Text style={styles.errorText}>⚠️ {audioError}</Text>
+          )}
 
           {/* Progress */}
           <View style={styles.progressContainer}>
             <Slider
               style={styles.slider}
               minimumValue={0}
-              maximumValue={duration}
-              value={position}
+              maximumValue={duration || 1}
+              value={currentTime}
               onValueChange={seek}
-              minimumTrackTintColor="#2196F3"
-              maximumTrackTintColor="#ccc"
-              thumbTintColor="#2196F3"
+              minimumTrackTintColor={colors.primary}
+              maximumTrackTintColor={colors.border}
+              thumbTintColor={colors.primary}
             />
             <View style={styles.timeInfo}>
-              <Text style={styles.timeText}>{formatTime(position)}</Text>
-              <Text style={styles.timeText}>{formatTime(duration)}</Text>
+              <Text style={[styles.timeText, { color: colors.textSecondary }]}>{formatTime(currentTime)}</Text>
+              <Text style={[styles.timeText, { color: colors.textSecondary }]}>{formatTime(duration)}</Text>
             </View>
           </View>
 
@@ -170,55 +196,58 @@ export const AudioPlayerScreen: React.FC = () => {
           <View style={styles.controls}>
             <TouchableOpacity
               style={styles.controlButton}
-              onPress={previousAyah}
-              disabled={!currentSurah || currentAyah <= 1}
-              accessibilityLabel="Verset précédent"
+              onPress={handlePreviousAyah}
+              disabled={currentAyah <= 1}
+              accessibilityLabel={t('audio.previous')}
               accessibilityRole="button"
             >
-              <Text style={[styles.controlIcon, (!currentSurah || currentAyah <= 1) && styles.disabledIcon]}>⏮</Text>
-              <Text style={[styles.controlLabel, (!currentSurah || currentAyah <= 1) && styles.disabledIcon]}>Précédent</Text>
+              <Text style={[styles.controlIcon, currentAyah <= 1 && styles.disabledIcon]}>⏮</Text>
+              <Text style={[styles.controlLabel, { color: colors.textSecondary }, currentAyah <= 1 && styles.disabledIcon]}>{t('audio.previous')}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={[styles.playButton, !currentSurah && styles.disabledButton]}
+              style={[styles.playButton, { backgroundColor: colors.primary }]}
               onPress={handlePlayPause}
-              accessibilityLabel={isPlaying ? 'Pause' : 'Lecture'}
+              accessibilityLabel={isPlaying ? t('audio.pause') : t('audio.play')}
               accessibilityRole="button"
             >
-              <Text style={styles.playIcon}>{isPlaying ? '⏸' : '▶'}</Text>
+              <Text style={styles.playIcon}>{isLoading ? '⏳' : isPlaying ? '⏸' : '▶'}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
               style={styles.controlButton}
-              onPress={nextAyah}
-              disabled={!currentSurah || (currentSurah && currentAyah >= currentSurah.ayahsCount)}
-              accessibilityLabel="Verset suivant"
+              onPress={handleNextAyah}
+              disabled={currentAyah >= currentSurah.ayahsCount}
+              accessibilityLabel={t('audio.next')}
               accessibilityRole="button"
             >
-              <Text style={[styles.controlIcon, (!currentSurah || (currentSurah && currentAyah >= currentSurah.ayahsCount)) && styles.disabledIcon]}>⏭</Text>
-              <Text style={[styles.controlLabel, (!currentSurah || (currentSurah && currentAyah >= currentSurah.ayahsCount)) && styles.disabledIcon]}>Suivant</Text>
+              <Text style={[styles.controlIcon, currentAyah >= currentSurah.ayahsCount && styles.disabledIcon]}>⏭</Text>
+              <Text style={[styles.controlLabel, { color: colors.textSecondary }, currentAyah >= currentSurah.ayahsCount && styles.disabledIcon]}>{t('audio.next')}</Text>
             </TouchableOpacity>
           </View>
 
           {/* Speed Control */}
           <View style={styles.speedContainer}>
             <TouchableOpacity
-              style={styles.speedButton}
+              style={[styles.speedButton, { backgroundColor: colors.surface }]}
               onPress={() => setShowSpeedOptions(!showSpeedOptions)}
-              accessibilityLabel={`Vitesse: ${playbackSpeed}x`}
+              accessibilityLabel={`${t('audio.speed')}: ${playbackSpeed}x`}
               accessibilityRole="button"
             >
-              <Text style={styles.speedLabel}>Vitesse: {playbackSpeed}x</Text>
+              <Text style={[styles.speedLabel, { color: colors.textSecondary }]}>
+                {t('audio.speed')}: {playbackSpeed}x
+              </Text>
             </TouchableOpacity>
 
             {showSpeedOptions && (
-              <View style={styles.speedOptions} accessibilityRole="list">
+              <View style={styles.speedOptions}>
                 {SPEEDS.map((speed) => (
                   <TouchableOpacity
                     key={speed}
                     style={[
                       styles.speedOption,
-                      playbackSpeed === speed && styles.speedOptionActive,
+                      { backgroundColor: colors.surface },
+                      playbackSpeed === speed && { backgroundColor: colors.primary },
                     ]}
                     onPress={() => handleSpeedChange(speed)}
                     accessibilityLabel={`${speed}x`}
@@ -228,6 +257,7 @@ export const AudioPlayerScreen: React.FC = () => {
                     <Text
                       style={[
                         styles.speedOptionText,
+                        { color: colors.textSecondary },
                         playbackSpeed === speed && styles.speedOptionTextActive,
                       ]}
                     >
@@ -242,46 +272,44 @@ export const AudioPlayerScreen: React.FC = () => {
           {/* Additional Controls */}
           <View style={styles.additionalControls}>
             <TouchableOpacity
-              style={[styles.additionalButton, repeatMode && styles.activeButton]}
+              style={[styles.additionalButton, isLooping && { backgroundColor: colors.primary + '20', borderColor: colors.primary, borderWidth: 2, borderRadius: 8 }]}
               onPress={handleRepeat}
-              accessibilityLabel="Mode répétition"
+              accessibilityLabel={t('audio.repeat')}
               accessibilityRole="button"
-              accessibilityState={{ expanded: repeatMode }}
             >
               <Text style={styles.additionalIcon}>🔄</Text>
-              <Text style={styles.additionalLabel}>Répéter</Text>
-              {repeatMode && <Text style={styles.activeIndicator}>✓</Text>}
+              <Text style={[styles.additionalLabel, { color: colors.textSecondary }]}>{t('audio.repeat')}</Text>
+              {isLooping && <Text style={[styles.activeIndicator, { color: colors.primary }]}>✓</Text>}
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={[styles.additionalButton, showText && styles.activeButton]}
-              onPress={handleShowText}
-              accessibilityLabel="Afficher le texte"
+              style={[styles.additionalButton, showText && { backgroundColor: colors.primary + '20', borderColor: colors.primary, borderWidth: 2, borderRadius: 8 }]}
+              onPress={() => setShowText(!showText)}
+              accessibilityLabel={t('audio.text')}
               accessibilityRole="button"
-              accessibilityState={{ expanded: showText }}
             >
               <Text style={styles.additionalIcon}>📜</Text>
-              <Text style={styles.additionalLabel}>Texte</Text>
+              <Text style={[styles.additionalLabel, { color: colors.textSecondary }]}>{t('audio.text')}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
               style={styles.additionalButton}
-              onPress={handlePlaylist}
-              accessibilityLabel="Playlist"
+              onPress={() => Alert.alert(t('audio.playlist'), t('audio.playlistSoon', 'Fonctionnalité à venir'))}
+              accessibilityLabel={t('audio.playlist')}
               accessibilityRole="button"
             >
               <Text style={styles.additionalIcon}>📑</Text>
-              <Text style={styles.additionalLabel}>Playlist</Text>
+              <Text style={[styles.additionalLabel, { color: colors.textSecondary }]}>{t('audio.playlist')}</Text>
             </TouchableOpacity>
           </View>
 
           {/* Text Display */}
-          {showText && currentSurah && (
-            <View style={styles.textDisplay} accessibilityRole="text">
-              <Text style={styles.arabicText}>
+          {showText && (
+            <View style={[styles.textDisplay, { backgroundColor: colors.surface }]} accessibilityRole="text">
+              <Text style={[styles.arabicText, { color: colors.text }]}>
                 بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
               </Text>
-              <Text style={styles.translationText}>
+              <Text style={[styles.translationText, { color: colors.textSecondary }]}>
                 Au nom d'Allah, le Tout Miséricordieux, le Très Miséricordieux
               </Text>
             </View>
@@ -295,11 +323,10 @@ export const AudioPlayerScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
   },
   scrollContent: {
     flexGrow: 1,
-    paddingBottom: isSmallScreen ? 100 : 20,
+    paddingBottom: 20,
   },
   content: {
     flex: 1,
@@ -320,40 +347,34 @@ const styles = StyleSheet.create({
   },
   backIcon: {
     fontSize: 24,
-    color: '#2196F3',
   },
   headerTitle: {
     fontSize: 20,
     fontWeight: '600',
-    color: '#333',
   },
   placeholder: {
     width: 44,
   },
   surahInfo: {
     alignItems: 'center',
-    paddingVertical: isSmallScreen ? 20 : 40,
+    paddingVertical: 40,
   },
   surahNumber: {
     fontSize: 14,
-    color: '#757575',
     marginBottom: 8,
   },
   surahName: {
     fontSize: 48,
     fontWeight: 'bold',
-    color: '#333',
     marginBottom: 8,
     textAlign: 'center',
   },
   surahEnglish: {
     fontSize: 20,
-    color: '#666',
     marginBottom: 8,
   },
   ayahInfo: {
     fontSize: 14,
-    color: '#757575',
   },
   reciterInfo: {
     alignItems: 'center',
@@ -361,12 +382,16 @@ const styles = StyleSheet.create({
   },
   reciterLabel: {
     fontSize: 12,
-    color: '#757575',
     marginBottom: 4,
   },
   reciterName: {
     fontSize: 16,
-    color: '#666',
+  },
+  errorText: {
+    color: '#EF4444',
+    fontSize: 14,
+    textAlign: 'center',
+    marginBottom: 12,
   },
   progressContainer: {
     marginBottom: 32,
@@ -381,7 +406,6 @@ const styles = StyleSheet.create({
   },
   timeText: {
     fontSize: 12,
-    color: '#757575',
   },
   controls: {
     flexDirection: 'row',
@@ -404,13 +428,11 @@ const styles = StyleSheet.create({
   },
   controlLabel: {
     fontSize: 12,
-    color: '#666',
   },
   playButton: {
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: '#2196F3',
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 4,
@@ -418,9 +440,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
-  },
-  disabledButton: {
-    backgroundColor: '#ccc',
   },
   playIcon: {
     fontSize: 32,
@@ -433,12 +452,10 @@ const styles = StyleSheet.create({
   speedButton: {
     paddingVertical: 12,
     paddingHorizontal: 24,
-    backgroundColor: '#f5f5f5',
     borderRadius: 20,
   },
   speedLabel: {
     fontSize: 16,
-    color: '#666',
   },
   speedOptions: {
     flexDirection: 'row',
@@ -450,15 +467,10 @@ const styles = StyleSheet.create({
   speedOption: {
     paddingVertical: 8,
     paddingHorizontal: 16,
-    backgroundColor: '#f5f5f5',
     borderRadius: 16,
-  },
-  speedOptionActive: {
-    backgroundColor: '#2196F3',
   },
   speedOptionText: {
     fontSize: 14,
-    color: '#666',
   },
   speedOptionTextActive: {
     color: '#fff',
@@ -482,25 +494,16 @@ const styles = StyleSheet.create({
   },
   additionalLabel: {
     fontSize: 12,
-    color: '#666',
-  },
-  activeButton: {
-    backgroundColor: '#E3F2FD',
-    borderRadius: 8,
-    borderWidth: 2,
-    borderColor: '#2196F3',
   },
   activeIndicator: {
     position: 'absolute',
     top: 4,
     right: 4,
     fontSize: 12,
-    color: '#2196F3',
   },
   textDisplay: {
     margin: 20,
     padding: 16,
-    backgroundColor: '#F5F5F5',
     borderRadius: 12,
     alignItems: 'center',
   },
@@ -512,7 +515,6 @@ const styles = StyleSheet.create({
   },
   translationText: {
     fontSize: 14,
-    color: '#666',
     textAlign: 'center',
     fontStyle: 'italic',
   },

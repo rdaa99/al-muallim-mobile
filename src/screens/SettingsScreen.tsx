@@ -1,59 +1,20 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  Switch,
   Alert,
   Platform,
 } from 'react-native';
+import Slider from '@react-native-community/slider';
+import { useTranslation } from 'react-i18next';
+import i18n from '../i18n';
 import { useAppStore } from '@/stores/appStore';
+import { useUserStore } from '../stores/userStore';
+import { useTheme } from '../context/ThemeContext';
 import type { UserSettings } from '@/types';
-
-// Simple Slider component fallback
-// Note: For production, install @react-native-community/slider
-interface SliderProps {
-  value: number;
-  minimumValue: number;
-  maximumValue: number;
-  step?: number;
-  onValueChange?: (value: number) => void;
-  onSlidingComplete?: (value: number) => void;
-  style?: any;
-  minimumTrackTintColor?: string;
-  maximumTrackTintColor?: string;
-  thumbTintColor?: string;
-}
-
-const Slider: React.FC<SliderProps> = (props) => {
-  const { value, minimumValue, maximumValue, step, onSlidingComplete, onValueChange, style } = props;
-  
-  const handleDecrease = () => {
-    const newValue = Math.max(minimumValue, value - (step || 1));
-    onValueChange?.(newValue);
-    onSlidingComplete?.(newValue);
-  };
-  
-  const handleIncrease = () => {
-    const newValue = Math.min(maximumValue, value + (step || 1));
-    onValueChange?.(newValue);
-    onSlidingComplete?.(newValue);
-  };
-
-  return (
-    <View style={[{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }, style]}>
-      <TouchableOpacity onPress={handleDecrease} style={styles.sliderButton}>
-        <Text style={styles.sliderButtonText}>−</Text>
-      </TouchableOpacity>
-      <Text style={styles.sliderDisplayValue}>{value}</Text>
-      <TouchableOpacity onPress={handleIncrease} style={styles.sliderButton}>
-        <Text style={styles.sliderButtonText}>+</Text>
-      </TouchableOpacity>
-    </View>
-  );
-};
 
 const RECITERS = [
   { id: 'abdul_basit', name: 'Abdul Basit' },
@@ -63,15 +24,26 @@ const RECITERS = [
   { id: 'minshawi', name: 'Mohamed Siddiq Al-Minshawi' },
 ];
 
+const LANGUAGES = [
+  { id: 'fr', label: 'Français' },
+  { id: 'en', label: 'English' },
+  { id: 'ar', label: 'العربية' },
+];
+
 export const SettingsScreen: React.FC = () => {
   const { settings, loadSettings, updateSettings } = useAppStore();
+  const { settings: displaySettings, updateSettings: updateDisplaySettings } = useUserStore();
+  const { colors, toggleTheme, isDark } = useTheme();
+  const { t } = useTranslation();
   const [localSettings, setLocalSettings] = useState(settings);
   const [saving, setSaving] = useState(false);
-  const [debounceTimer, setDebounceTimer] = useState<NodeJS.Timeout | null>(null);
+  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
   const [showReciterPicker, setShowReciterPicker] = useState(false);
+  const [showLanguagePicker, setShowLanguagePicker] = useState(false);
 
   useEffect(() => {
     loadSettings();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -80,83 +52,153 @@ export const SettingsScreen: React.FC = () => {
     }
   }, [settings]);
 
-  // Debounced save function
+  // Cleanup debounce timer on unmount
+  useEffect(() => {
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
+  }, []);
+
   const debouncedSave = useCallback(
     async (newSettings: Partial<UserSettings>) => {
-      if (debounceTimer) {
-        clearTimeout(debounceTimer);
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
       }
 
-      const timer = setTimeout(async () => {
+      debounceTimerRef.current = setTimeout(async () => {
         setSaving(true);
         try {
           await updateSettings(newSettings);
-          showToast('Paramètres sauvegardés ✓');
-        } catch (error) {
-          showToast('Erreur lors de la sauvegarde');
+          showToast(t('settings.saved', 'Paramètres sauvegardés ✓'));
+        } catch {
+          showToast(t('settings.saveError', 'Erreur lors de la sauvegarde'));
         } finally {
           setSaving(false);
         }
       }, 1000);
-
-      setDebounceTimer(timer);
     },
-    [updateSettings, debounceTimer]
+    [updateSettings, t]
   );
 
   const showToast = (message: string) => {
     if (Platform.OS === 'web') {
-      // Simple web notification
-      console.log(message);
-    } else {
-      Alert.alert('', message, [{ text: 'OK' }], {
-        cancelable: true,
-      });
+      return;
     }
+    Alert.alert('', message, [{ text: 'OK' }], { cancelable: true });
   };
 
   const updateSetting = async <K extends keyof UserSettings>(
     key: K,
     value: UserSettings[K]
   ) => {
-    if (!localSettings) return;
-    const newSettings = { ...localSettings, [key]: value } as UserSettings;
+    if (!localSettings) {return;}
+    const newSettings = { ...localSettings, [key]: value };
     setLocalSettings(newSettings);
     await debouncedSave({ [key]: value } as Partial<UserSettings>);
   };
 
+  const handleLanguageChange = (langId: string) => {
+    i18n.changeLanguage(langId);
+    updateDisplaySettings({ language: langId });
+    setShowLanguagePicker(false);
+  };
+
   if (!localSettings) {
     return (
-      <View style={styles.container}>
-        <Text style={styles.loadingText}>Chargement...</Text>
+      <View style={[styles.container, { backgroundColor: colors.background }]}>
+        <Text style={[styles.loadingText, { color: colors.textSecondary }]}>
+          {t('common.loading', 'Chargement...')}
+        </Text>
       </View>
     );
   }
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={[styles.container, { backgroundColor: colors.background }]}>
       {/* Saving indicator */}
       {saving && (
-        <View style={styles.savingBanner}>
-          <Text style={styles.savingText}>Sauvegarde en cours...</Text>
+        <View style={[styles.savingBanner, { backgroundColor: colors.primary }]}>
+          <Text style={styles.savingText}>{t('settings.saving', 'Sauvegarde en cours...')}</Text>
         </View>
       )}
 
+      {/* Language */}
+      <View style={[styles.section, { backgroundColor: colors.surface }]}>
+        <Text style={[styles.sectionTitle, { color: colors.text }]}>{t('settings.language')}</Text>
+
+        <TouchableOpacity
+          style={[styles.reciterButton, { backgroundColor: colors.border }]}
+          onPress={() => setShowLanguagePicker(!showLanguagePicker)}
+        >
+          <Text style={[styles.reciterText, { color: colors.primary }]}>
+            {LANGUAGES.find(l => l.id === (displaySettings?.language || 'fr'))?.label || 'Français'}
+          </Text>
+          <Text style={[styles.reciterArrow, { color: colors.textSecondary }]}>
+            {showLanguagePicker ? '▲' : '▼'}
+          </Text>
+        </TouchableOpacity>
+
+        {showLanguagePicker && (
+          <View style={[styles.pickerContainer, { backgroundColor: colors.border }]}>
+            {LANGUAGES.map((lang) => (
+              <TouchableOpacity
+                key={lang.id}
+                style={[
+                  styles.pickerOption,
+                  { borderBottomColor: colors.background },
+                  displaySettings?.language === lang.id && { backgroundColor: colors.primary },
+                ]}
+                onPress={() => handleLanguageChange(lang.id)}
+              >
+                <Text
+                  style={[
+                    styles.pickerOptionText,
+                    { color: colors.textSecondary },
+                    displaySettings?.language === lang.id && styles.pickerOptionTextActive,
+                  ]}
+                >
+                  {lang.label}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        )}
+      </View>
+
+      {/* Dark Mode Toggle */}
+      <View style={[styles.section, { backgroundColor: colors.surface }]}>
+        <Text style={[styles.sectionTitle, { color: colors.text }]}>{t('settings.display')}</Text>
+        <TouchableOpacity
+          style={[styles.optionButton, isDark && { backgroundColor: colors.primary }]}
+          onPress={toggleTheme}
+        >
+          <Text style={[styles.optionText, { color: isDark ? '#FFFFFF' : colors.textSecondary }]}>
+            {isDark ? '🌙 ' : '☀️ '}{t('settings.darkMode')}
+          </Text>
+        </TouchableOpacity>
+      </View>
+
       {/* Learning Mode */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Mode d'apprentissage</Text>
+      <View style={[styles.section, { backgroundColor: colors.surface }]}>
+        <Text style={[styles.sectionTitle, { color: colors.text }]}>
+          {t('settings.learningMode', "Mode d'apprentissage")}
+        </Text>
         {(['active', 'revision_only', 'paused'] as const).map((mode) => (
           <TouchableOpacity
             key={mode}
             style={[
               styles.optionButton,
-              localSettings.learning_mode === mode && styles.optionActive,
+              { backgroundColor: colors.border },
+              localSettings.learning_mode === mode && { backgroundColor: colors.primary },
             ]}
             onPress={() => updateSetting('learning_mode', mode)}
           >
             <Text
               style={[
                 styles.optionText,
+                { color: colors.textSecondary },
                 localSettings.learning_mode === mode && styles.optionTextActive,
               ]}
             >
@@ -167,13 +209,19 @@ export const SettingsScreen: React.FC = () => {
       </View>
 
       {/* Daily Settings with Sliders */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Quotidien</Text>
+      <View style={[styles.section, { backgroundColor: colors.surface }]}>
+        <Text style={[styles.sectionTitle, { color: colors.text }]}>
+          {t('settings.daily', 'Quotidien')}
+        </Text>
 
         <View style={styles.sliderContainer}>
           <View style={styles.sliderHeader}>
-            <Text style={styles.sliderLabel}>Nouveaux versets/jour</Text>
-            <Text style={styles.sliderValue}>{localSettings.daily_new_lines ?? 3}</Text>
+            <Text style={[styles.sliderLabel, { color: colors.textSecondary }]}>
+              {t('settings.newVersesDay', 'Nouveaux versets/jour')}
+            </Text>
+            <Text style={[styles.sliderValue, { color: colors.primary }]}>
+              {localSettings.daily_new_lines ?? 3}
+            </Text>
           </View>
           <Slider
             style={styles.slider}
@@ -185,16 +233,20 @@ export const SettingsScreen: React.FC = () => {
               setLocalSettings({ ...localSettings, daily_new_lines: value });
             }}
             onSlidingComplete={(value) => updateSetting('daily_new_lines', value)}
-            minimumTrackTintColor="#10B981"
-            maximumTrackTintColor="#334155"
-            thumbTintColor="#10B981"
+            minimumTrackTintColor={colors.primary}
+            maximumTrackTintColor={colors.border}
+            thumbTintColor={colors.primary}
           />
         </View>
 
         <View style={styles.sliderContainer}>
           <View style={styles.sliderHeader}>
-            <Text style={styles.sliderLabel}>Durée session (min)</Text>
-            <Text style={styles.sliderValue}>{localSettings.session_duration}</Text>
+            <Text style={[styles.sliderLabel, { color: colors.textSecondary }]}>
+              {t('settings.sessionDuration', 'Durée session (min)')}
+            </Text>
+            <Text style={[styles.sliderValue, { color: colors.primary }]}>
+              {localSettings.session_duration}
+            </Text>
           </View>
           <Slider
             style={styles.slider}
@@ -206,16 +258,20 @@ export const SettingsScreen: React.FC = () => {
               setLocalSettings({ ...localSettings, session_duration: value });
             }}
             onSlidingComplete={(value) => updateSetting('session_duration', value)}
-            minimumTrackTintColor="#10B981"
-            maximumTrackTintColor="#334155"
-            thumbTintColor="#10B981"
+            minimumTrackTintColor={colors.primary}
+            maximumTrackTintColor={colors.border}
+            thumbTintColor={colors.primary}
           />
         </View>
 
         <View style={styles.sliderContainer}>
           <View style={styles.sliderHeader}>
-            <Text style={styles.sliderLabel}>Capacité d'apprentissage</Text>
-            <Text style={styles.sliderValue}>{localSettings.learning_capacity}</Text>
+            <Text style={[styles.sliderLabel, { color: colors.textSecondary }]}>
+              {t('settings.learningCapacity', "Capacité d'apprentissage")}
+            </Text>
+            <Text style={[styles.sliderValue, { color: colors.primary }]}>
+              {localSettings.learning_capacity}
+            </Text>
           </View>
           <Slider
             style={styles.slider}
@@ -227,21 +283,27 @@ export const SettingsScreen: React.FC = () => {
               setLocalSettings({ ...localSettings, learning_capacity: value });
             }}
             onSlidingComplete={(value) => updateSetting('learning_capacity', value)}
-            minimumTrackTintColor="#10B981"
-            maximumTrackTintColor="#334155"
-            thumbTintColor="#10B981"
+            minimumTrackTintColor={colors.primary}
+            maximumTrackTintColor={colors.border}
+            thumbTintColor={colors.primary}
           />
         </View>
       </View>
 
       {/* Juz Range */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Focus Juz</Text>
+      <View style={[styles.section, { backgroundColor: colors.surface }]}>
+        <Text style={[styles.sectionTitle, { color: colors.text }]}>
+          {t('settings.focusJuz', 'Focus Juz')}
+        </Text>
 
         <View style={styles.sliderContainer}>
           <View style={styles.sliderHeader}>
-            <Text style={styles.sliderLabel}>Début</Text>
-            <Text style={styles.sliderValue}>Juz {localSettings.focus_juz_start ?? 1}</Text>
+            <Text style={[styles.sliderLabel, { color: colors.textSecondary }]}>
+              {t('settings.start', 'Début')}
+            </Text>
+            <Text style={[styles.sliderValue, { color: colors.primary }]}>
+              Juz {localSettings.focus_juz_start ?? 1}
+            </Text>
           </View>
           <Slider
             style={styles.slider}
@@ -253,16 +315,20 @@ export const SettingsScreen: React.FC = () => {
               setLocalSettings({ ...localSettings, focus_juz_start: value });
             }}
             onSlidingComplete={(value) => updateSetting('focus_juz_start', value)}
-            minimumTrackTintColor="#10B981"
-            maximumTrackTintColor="#334155"
-            thumbTintColor="#10B981"
+            minimumTrackTintColor={colors.primary}
+            maximumTrackTintColor={colors.border}
+            thumbTintColor={colors.primary}
           />
         </View>
 
         <View style={styles.sliderContainer}>
           <View style={styles.sliderHeader}>
-            <Text style={styles.sliderLabel}>Fin</Text>
-            <Text style={styles.sliderValue}>Juz {localSettings.focus_juz_end ?? 30}</Text>
+            <Text style={[styles.sliderLabel, { color: colors.textSecondary }]}>
+              {t('settings.end', 'Fin')}
+            </Text>
+            <Text style={[styles.sliderValue, { color: colors.primary }]}>
+              Juz {localSettings.focus_juz_end ?? 30}
+            </Text>
           </View>
           <Slider
             style={styles.slider}
@@ -274,28 +340,32 @@ export const SettingsScreen: React.FC = () => {
               setLocalSettings({ ...localSettings, focus_juz_end: value });
             }}
             onSlidingComplete={(value) => updateSetting('focus_juz_end', value)}
-            minimumTrackTintColor="#10B981"
-            maximumTrackTintColor="#334155"
-            thumbTintColor="#10B981"
+            minimumTrackTintColor={colors.primary}
+            maximumTrackTintColor={colors.border}
+            thumbTintColor={colors.primary}
           />
         </View>
       </View>
 
       {/* Direction */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Direction</Text>
+      <View style={[styles.section, { backgroundColor: colors.surface }]}>
+        <Text style={[styles.sectionTitle, { color: colors.text }]}>
+          {t('settings.direction', 'Direction')}
+        </Text>
         {(['desc', 'asc'] as const).map((dir) => (
           <TouchableOpacity
             key={dir}
             style={[
               styles.optionButton,
-              localSettings.direction === dir && styles.optionActive,
+              { backgroundColor: colors.border },
+              localSettings.direction === dir && { backgroundColor: colors.primary },
             ]}
             onPress={() => updateSetting('direction', dir)}
           >
             <Text
               style={[
                 styles.optionText,
+                { color: colors.textSecondary },
                 localSettings.direction === dir && styles.optionTextActive,
               ]}
             >
@@ -306,27 +376,32 @@ export const SettingsScreen: React.FC = () => {
       </View>
 
       {/* Reciter Picker */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Récitateur préféré</Text>
-        
+      <View style={[styles.section, { backgroundColor: colors.surface }]}>
+        <Text style={[styles.sectionTitle, { color: colors.text }]}>
+          {t('settings.reciter')}
+        </Text>
+
         <TouchableOpacity
-          style={styles.reciterButton}
+          style={[styles.reciterButton, { backgroundColor: colors.border }]}
           onPress={() => setShowReciterPicker(!showReciterPicker)}
         >
-          <Text style={styles.reciterText}>
+          <Text style={[styles.reciterText, { color: colors.primary }]}>
             {RECITERS.find(r => r.id === localSettings.preferred_reciter)?.name || 'Sélectionner'}
           </Text>
-          <Text style={styles.reciterArrow}>{showReciterPicker ? '▲' : '▼'}</Text>
+          <Text style={[styles.reciterArrow, { color: colors.textSecondary }]}>
+            {showReciterPicker ? '▲' : '▼'}
+          </Text>
         </TouchableOpacity>
 
         {showReciterPicker && (
-          <View style={styles.pickerContainer}>
+          <View style={[styles.pickerContainer, { backgroundColor: colors.border }]}>
             {RECITERS.map((reciter) => (
               <TouchableOpacity
                 key={reciter.id}
                 style={[
                   styles.pickerOption,
-                  localSettings.preferred_reciter === reciter.id && styles.pickerOptionActive,
+                  { borderBottomColor: colors.background },
+                  localSettings.preferred_reciter === reciter.id && { backgroundColor: colors.primary },
                 ]}
                 onPress={() => {
                   updateSetting('preferred_reciter', reciter.id);
@@ -336,6 +411,7 @@ export const SettingsScreen: React.FC = () => {
                 <Text
                   style={[
                     styles.pickerOptionText,
+                    { color: colors.textSecondary },
                     localSettings.preferred_reciter === reciter.id && styles.pickerOptionTextActive,
                   ]}
                 >
@@ -348,10 +424,10 @@ export const SettingsScreen: React.FC = () => {
       </View>
 
       {/* Info */}
-      <View style={styles.infoCard}>
+      <View style={[styles.infoCard, { backgroundColor: colors.surface }]}>
         <Text style={styles.infoIcon}>💡</Text>
-        <Text style={styles.infoText}>
-          Les changements sont sauvegardés automatiquement après 1 seconde.
+        <Text style={[styles.infoText, { color: colors.textSecondary }]}>
+          {t('settings.autoSaveInfo', 'Les changements sont sauvegardés automatiquement après 1 seconde.')}
         </Text>
       </View>
     </ScrollView>
@@ -361,17 +437,14 @@ export const SettingsScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0F172A',
     padding: 20,
   },
   loadingText: {
-    color: '#94A3B8',
     fontSize: 16,
     textAlign: 'center',
     marginTop: 20,
   },
   savingBanner: {
-    backgroundColor: '#10B981',
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 8,
@@ -383,29 +456,22 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   section: {
-    backgroundColor: '#1E293B',
     borderRadius: 16,
     padding: 20,
     marginBottom: 20,
   },
   sectionTitle: {
-    color: '#FFFFFF',
     fontSize: 18,
     fontWeight: '600',
     marginBottom: 16,
   },
   optionButton: {
-    backgroundColor: '#334155',
     paddingVertical: 12,
     paddingHorizontal: 16,
     borderRadius: 8,
     marginBottom: 8,
   },
-  optionActive: {
-    backgroundColor: '#10B981',
-  },
   optionText: {
-    color: '#CBD5E1',
     fontSize: 16,
   },
   optionTextActive: {
@@ -422,11 +488,9 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   sliderLabel: {
-    color: '#CBD5E1',
     fontSize: 16,
   },
   sliderValue: {
-    color: '#10B981',
     fontSize: 16,
     fontWeight: '600',
   },
@@ -434,45 +498,22 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 40,
   },
-  sliderButton: {
-    backgroundColor: '#334155',
-    width: 44,
-    height: 44,
-    borderRadius: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  sliderButtonText: {
-    color: '#FFFFFF',
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sliderDisplayValue: {
-    color: '#10B981',
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginHorizontal: 20,
-  },
   reciterButton: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#334155',
     paddingVertical: 12,
     paddingHorizontal: 16,
     borderRadius: 8,
   },
   reciterText: {
-    color: '#10B981',
     fontSize: 16,
   },
   reciterArrow: {
-    color: '#94A3B8',
     fontSize: 12,
   },
   pickerContainer: {
     marginTop: 8,
-    backgroundColor: '#334155',
     borderRadius: 8,
     overflow: 'hidden',
   },
@@ -480,13 +521,8 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#475569',
-  },
-  pickerOptionActive: {
-    backgroundColor: '#10B981',
   },
   pickerOptionText: {
-    color: '#CBD5E1',
     fontSize: 16,
   },
   pickerOptionTextActive: {
@@ -494,7 +530,6 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   infoCard: {
-    backgroundColor: '#1E293B',
     borderRadius: 12,
     padding: 16,
     flexDirection: 'row',
@@ -506,7 +541,6 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   infoText: {
-    color: '#94A3B8',
     fontSize: 14,
     flex: 1,
     lineHeight: 20,

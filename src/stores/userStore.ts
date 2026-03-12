@@ -30,7 +30,7 @@ export const useUserStore = create<UserState>()(
         weeklyProgress: [0, 0, 0, 0, 0, 0, 0],
       },
       settings: {
-        language: 'ar',
+        language: 'fr',
         reciter: DEFAULT_RECITER,
         notificationsEnabled: true,
         dailyReminderTime: '08:00',

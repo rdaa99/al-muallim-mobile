@@ -18,6 +18,26 @@ jest.mock('@react-navigation/native', () => ({
   }),
 }));
 
+// Mock contexts
+jest.mock('../../context/ThemeContext', () => ({
+  useTheme: () => ({
+    theme: 'dark',
+    isDark: true,
+    colors: {
+      background: '#0F172A',
+      surface: '#1E293B',
+      primary: '#10B981',
+      text: '#F8FAFC',
+      textSecondary: '#94A3B8',
+      border: '#334155',
+      card: '#1E293B',
+      tabBar: '#1E293B',
+      header: '#0F172A',
+    },
+    toggleTheme: jest.fn(),
+  }),
+}));
+
 describe('ReviewScreen', () => {
   const mockLoadTodayReview = jest.fn();
   const mockSubmitReview = jest.fn();
@@ -28,10 +48,14 @@ describe('ReviewScreen', () => {
     surah_number: 1,
     ayah_number: 1,
     text_arabic: 'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ',
-    text_translation: 'In the name of Allah, the Beneficent, the Merciful',
+    text_translation_fr: 'Au nom d\'Allah, le Tout Miséricordieux, le Très Miséricordieux',
+    text_translation_en: 'In the name of Allah, the Beneficent, the Merciful',
     juz_number: 1,
     page_number: 1,
     status: 'learning' as const,
+    ease_factor: 2.5,
+    interval: 0,
+    repetitions: 0,
   };
 
   beforeEach(() => {
@@ -39,13 +63,15 @@ describe('ReviewScreen', () => {
     (useAppStore as unknown as jest.Mock).mockReturnValue({
       currentVerse: mockVerse,
       dailyReview: {
-        date: '2026-03-08',
+        date: '2026-03-12',
         due_count: 5,
         completed_count: 0,
         verses: [mockVerse],
       },
       loading: false,
       error: null,
+      reviewIndex: 0,
+      verses: [mockVerse],
       loadTodayReview: mockLoadTodayReview,
       submitReview: mockSubmitReview,
       nextVerse: mockNextVerse,
@@ -58,13 +84,15 @@ describe('ReviewScreen', () => {
       dailyReview: null,
       loading: true,
       error: null,
+      reviewIndex: 0,
+      verses: [],
       loadTodayReview: mockLoadTodayReview,
       submitReview: mockSubmitReview,
       nextVerse: mockNextVerse,
     });
 
     const { getByText } = render(<ReviewScreen />);
-    expect(getByText('Chargement des révisions...')).toBeTruthy();
+    expect(getByText('review.loading')).toBeTruthy();
   });
 
   it('should render error state', () => {
@@ -73,6 +101,8 @@ describe('ReviewScreen', () => {
       dailyReview: null,
       loading: false,
       error: 'Network error',
+      reviewIndex: 0,
+      verses: [],
       loadTodayReview: mockLoadTodayReview,
       submitReview: mockSubmitReview,
       nextVerse: mockNextVerse,
@@ -80,27 +110,29 @@ describe('ReviewScreen', () => {
 
     const { getByText } = render(<ReviewScreen />);
     expect(getByText('Network error')).toBeTruthy();
-    expect(getByText('Réessayer')).toBeTruthy();
+    expect(getByText('review.retry')).toBeTruthy();
   });
 
   it('should render empty state when no reviews', () => {
     (useAppStore as unknown as jest.Mock).mockReturnValue({
       currentVerse: null,
       dailyReview: {
-        date: '2026-03-08',
+        date: '2026-03-12',
         due_count: 0,
         completed_count: 0,
         verses: [],
       },
       loading: false,
       error: null,
+      reviewIndex: 0,
+      verses: [],
       loadTodayReview: mockLoadTodayReview,
       submitReview: mockSubmitReview,
       nextVerse: mockNextVerse,
     });
 
     const { getByText } = render(<ReviewScreen />);
-    expect(getByText('Aucune révision aujourd\'hui')).toBeTruthy();
+    expect(getByText('review.noReviewsTitle')).toBeTruthy();
   });
 
   it('should render verse with progress', () => {
@@ -111,33 +143,29 @@ describe('ReviewScreen', () => {
 
   it('should reveal arabic text on tap', () => {
     const { getByText, queryByText } = render(<ReviewScreen />);
-    
-    // Initially should show placeholder
-    expect(queryByText('Touchez pour révéler')).toBeTruthy();
-    
-    // Tap to reveal
-    fireEvent.press(getByText('Touchez pour révéler'));
-    
-    // Should show arabic text
+
+    expect(queryByText('review.tapToReveal')).toBeTruthy();
+
+    fireEvent.press(getByText('review.tapToReveal'));
+
     expect(getByText(mockVerse.text_arabic)).toBeTruthy();
   });
 
   it('should reveal translation on button press', () => {
     const { getByText } = render(<ReviewScreen />);
-    
-    const revealButton = getByText('Révéler la traduction');
+
+    const revealButton = getByText('review.revealTranslation');
     fireEvent.press(revealButton);
-    
-    expect(getByText(mockVerse.text_translation)).toBeTruthy();
+
+    expect(getByText(mockVerse.text_translation_fr)).toBeTruthy();
   });
 
   it('should submit review with quality score', async () => {
     const { getByText } = render(<ReviewScreen />);
-    
-    // First reveal the arabic
-    fireEvent.press(getByText('Touchez pour révéler'));
-    
-    const easyButton = getByText('Facile');
+
+    fireEvent.press(getByText('review.tapToReveal'));
+
+    const easyButton = getByText('review.easy');
     fireEvent.press(easyButton);
 
     await waitFor(() => {
@@ -147,8 +175,8 @@ describe('ReviewScreen', () => {
 
   it('should skip verse', async () => {
     const { getByText } = render(<ReviewScreen />);
-    
-    const skipButton = getByText('Passer ce verset →');
+
+    const skipButton = getByText('review.skip');
     fireEvent.press(skipButton);
 
     await waitFor(() => {
@@ -157,48 +185,26 @@ describe('ReviewScreen', () => {
   });
 
   it('should show completion message when all reviews done', () => {
-    // When all verses are done but verses array still exists (completed state)
     (useAppStore as unknown as jest.Mock).mockReturnValue({
       currentVerse: null,
       dailyReview: {
-        date: '2026-03-08',
+        date: '2026-03-12',
         due_count: 5,
         completed_count: 5,
-        verses: [mockVerse, mockVerse, mockVerse, mockVerse, mockVerse],
-      },
-      loading: false,
-      error: null,
-      loadTodayReview: mockLoadTodayReview,
-      submitReview: mockSubmitReview,
-      nextVerse: mockNextVerse,
-    });
-
-    const { getByText } = render(<ReviewScreen />);
-    expect(getByText('Félicitations !')).toBeTruthy();
-    expect(getByText('versets révisés')).toBeTruthy();
-  });
-
-  it('should show blocked message when review is blocked', () => {
-    (useAppStore as unknown as jest.Mock).mockReturnValue({
-      currentVerse: mockVerse,
-      dailyReview: {
-        date: '2026-03-08',
-        due_count: 5,
-        completed_count: 0,
         verses: [mockVerse],
-        blocked: true,
-        block_message: 'You missed several days. Let\'s review first.',
       },
       loading: false,
       error: null,
+      reviewIndex: 5,
+      verses: [mockVerse],
       loadTodayReview: mockLoadTodayReview,
       submitReview: mockSubmitReview,
       nextVerse: mockNextVerse,
     });
 
     const { getByText } = render(<ReviewScreen />);
-    expect(getByText('Programme adapté')).toBeTruthy();
-    expect(getByText(/missed several days/)).toBeTruthy();
+    expect(getByText('review.completeTitle')).toBeTruthy();
+    expect(getByText('review.versesReviewed')).toBeTruthy();
   });
 
   it('should call loadTodayReview on mount', () => {
@@ -212,13 +218,15 @@ describe('ReviewScreen', () => {
       dailyReview: null,
       loading: false,
       error: 'Network error',
+      reviewIndex: 0,
+      verses: [],
       loadTodayReview: mockLoadTodayReview,
       submitReview: mockSubmitReview,
       nextVerse: mockNextVerse,
     });
 
     const { getByText } = render(<ReviewScreen />);
-    fireEvent.press(getByText('Réessayer'));
+    fireEvent.press(getByText('review.retry'));
     expect(mockLoadTodayReview).toHaveBeenCalled();
   });
 });

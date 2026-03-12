@@ -4,7 +4,8 @@
     "dashboard": "Tableau de bord",
     "settings": "Paramètres",
     "review": "Révision",
-    "audio": "Audio"
+    "audio": "Audio",
+    "loading": "Chargement..."
   },
   "dashboard": {
     "title": "Tableau de bord",
@@ -31,6 +32,28 @@
     "fri": "Ven",
     "sat": "Sam"
   },
+  "review": {
+    "title": "Révision",
+    "loading": "Chargement des révisions...",
+    "retry": "Réessayer",
+    "noReviewsTitle": "Aucune révision aujourd'hui",
+    "noReviewsBody": "Profitez de votre journée ou révisez des versets supplémentaires !",
+    "refresh": "Actualiser",
+    "completeTitle": "Félicitations !",
+    "completeBody": "Vous avez terminé toutes les révisions du jour !",
+    "versesReviewed": "versets révisés",
+    "viewProgram": "Voir le programme",
+    "adapted": "Programme adapté",
+    "tapToReveal": "Touchez pour révéler",
+    "revealTranslation": "Révéler la traduction",
+    "hard": "Difficile",
+    "medium": "Moyen",
+    "easy": "Facile",
+    "skip": "Passer ce verset →",
+    "nextVerse": "Verset suivant",
+    "previousVerse": "Verset précédent",
+    "submitReview": "Valider"
+  },
   "settings": {
     "title": "Paramètres",
     "language": "Langue",
@@ -44,7 +67,20 @@
     "reciter": "Récitateur",
     "display": "Affichage",
     "about": "À propos",
-    "version": "Version"
+    "version": "Version",
+    "learningMode": "Mode d'apprentissage",
+    "daily": "Quotidien",
+    "newVersesDay": "Nouveaux versets/jour",
+    "sessionDuration": "Durée session (min)",
+    "learningCapacity": "Capacité d'apprentissage",
+    "focusJuz": "Focus Juz",
+    "start": "Début",
+    "end": "Fin",
+    "direction": "Direction",
+    "saved": "Paramètres sauvegardés ✓",
+    "saveError": "Erreur lors de la sauvegarde",
+    "saving": "Sauvegarde en cours...",
+    "autoSaveInfo": "Les changements sont sauvegardés automatiquement après 1 seconde."
   },
   "audio": {
     "title": "Lecteur Audio",
@@ -54,8 +90,10 @@
     "speed": "Vitesse",
     "text": "Texte",
     "playlist": "Playlist",
+    "playlistSoon": "Fonctionnalité à venir",
     "noSurah": "Aucune sourate",
     "selectSurah": "Sélectionnez une sourate",
+    "surah": "Sourate",
     "verse": "Verset",
     "reciter": "Récitateur",
     "back": "Retour",
@@ -74,43 +112,5 @@
     "next": "Suivant",
     "hifzMode": "Mode Hifz",
     "progress": "Progression"
-  },
-  "wordBreakdown": {
-    "title": "Analyse des mots",
-    "translation": "Traduction",
-    "transliteration": "Translittération",
-    "root": "Racine",
-    "grammar": "Grammaire",
-    "meaning": "Signification",
-    "fullVerse": "Verset complet"
-  },
-  "goals": {
-    "title": "Objectifs",
-    "dailyGoals": "Objectifs quotidiens",
-    "achievements": "Accomplissements",
-    "points": "Points"
-  },
-  "mistakes": {
-    "title": "Erreurs",
-    "pronunciation": "Prononciation",
-    "tajweed": "Tajweed",
-    "memory": "Mémoire",
-    "fluency": "Fluidité"
-  },
-  "focus": {
-    "title": "Mode Focus",
-    "selectSurahs": "Sélectionner les sourates",
-    "duration": "Durée",
-    "minutes": "min",
-    "startSession": "Commencer la session",
-    "sessionComplete": "Session terminée !",
-    "timeUp": "Le temps est écoulé",
-    "selectSurah": "Sélectionner une sourate",
-    "selectAtLeastOne": "Sélectionnez au moins une sourate",
-    "sessionEnded": "Session terminée",
-    "keepPracticing": "Continuez à pratiquer !",
-    "timeRemaining": "Temps restant",
-    "surahsSelected": "sourates sélectionnées",
-    "endSession": "Terminer"
   }
 }

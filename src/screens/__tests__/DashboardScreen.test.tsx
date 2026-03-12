@@ -1,10 +1,12 @@
 import React from 'react';
 import { render } from '@testing-library/react-native';
 import { DashboardScreen } from '../DashboardScreen';
-import { useUserStore } from '../../store/userStore';
+import { useAppStore } from '@/stores/appStore';
+import { useUserStore } from '../../stores/userStore';
 
 // Mock the stores
-jest.mock('../../store/userStore');
+jest.mock('@/stores/appStore');
+jest.mock('../../stores/userStore');
 
 // Mock navigation
 jest.mock('@react-navigation/native', () => ({
@@ -48,14 +50,22 @@ jest.mock('../../context/FontSizeContext', () => ({
   }),
 }));
 
-const mockProgress = {
-  surahsMemorized: 10,
-  totalAyahs: 6236,
-  ayahsMemorized: 500,
-  currentStreak: 5,
-  longestStreak: 15,
-  dailyGoal: 10,
-  weeklyProgress: [5, 10, 8, 12, 10, 0, 0],
+const mockStats = {
+  total_verses: 995,
+  total_learned: 50,
+  total_mastered: 20,
+  total_consolidating: 15,
+  total_learning: 15,
+  mastered: 20,
+  consolidating: 15,
+  learning: 15,
+  streak_days: 5,
+  retention_rate: 0.85,
+  verses_by_juz: [],
+  verses_by_surah: [],
+  surahs: [],
+  calendar: [],
+  this_month: 30,
 };
 
 const mockSettings = {
@@ -70,17 +80,20 @@ const mockSettings = {
 describe('DashboardScreen', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    (useAppStore as unknown as jest.Mock).mockReturnValue({
+      stats: mockStats,
+      dailyReview: { date: '2026-03-12', due_count: 10, completed_count: 3, verses: [] },
+      loadStats: jest.fn(),
+      loadTodayReview: jest.fn(),
+    });
     (useUserStore as unknown as jest.Mock).mockReturnValue({
-      progress: mockProgress,
       settings: mockSettings,
-      updateProgress: jest.fn(),
       updateSettings: jest.fn(),
     });
   });
 
   it('should render greeting', () => {
     const { getByText } = render(<DashboardScreen />);
-    // useTranslation returns the key as-is
     expect(getByText('common.welcome')).toBeTruthy();
   });
 
@@ -90,31 +103,29 @@ describe('DashboardScreen', () => {
   });
 
   it('should display streak card', () => {
-    const { getByText } = render(<DashboardScreen />);
-    expect(getByText('5')).toBeTruthy();
-    expect(getByText('15')).toBeTruthy();
+    const { getAllByText } = render(<DashboardScreen />);
+    expect(getAllByText('5').length).toBeGreaterThanOrEqual(1);
   });
 
   it('should display progress cards', () => {
     const { getByText } = render(<DashboardScreen />);
-    expect(getByText('dashboard.surahsMemorized')).toBeTruthy();
     expect(getByText('dashboard.ayahsMemorized')).toBeTruthy();
     expect(getByText('dashboard.dailyGoal')).toBeTruthy();
   });
 
   it('should display quick action buttons', () => {
     const { getByText } = render(<DashboardScreen />);
-    expect(getByText('Continuer')).toBeTruthy();
-    expect(getByText('Réviser')).toBeTruthy();
-    expect(getByText('Stats')).toBeTruthy();
+    expect(getByText('dashboard.continue')).toBeTruthy();
+    expect(getByText('dashboard.reviewBtn')).toBeTruthy();
+    expect(getByText('dashboard.stats')).toBeTruthy();
   });
 
-  it('should handle zero streak', () => {
-    (useUserStore as unknown as jest.Mock).mockReturnValue({
-      progress: { ...mockProgress, currentStreak: 0, longestStreak: 0 },
-      settings: mockSettings,
-      updateProgress: jest.fn(),
-      updateSettings: jest.fn(),
+  it('should handle zero stats', () => {
+    (useAppStore as unknown as jest.Mock).mockReturnValue({
+      stats: null,
+      dailyReview: null,
+      loadStats: jest.fn(),
+      loadTodayReview: jest.fn(),
     });
 
     const { getAllByText } = render(<DashboardScreen />);

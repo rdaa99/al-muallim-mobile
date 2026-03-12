@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import type { ThemeColors } from '../context/ThemeContext';
 
 interface ProgressCardProps {
   title: string;
@@ -7,6 +8,7 @@ interface ProgressCardProps {
   total?: number;
   unit?: string;
   color?: string;
+  colors?: ThemeColors;
 }
 
 export const ProgressCard: React.FC<ProgressCardProps> = ({
@@ -15,28 +17,34 @@ export const ProgressCard: React.FC<ProgressCardProps> = ({
   total,
   unit = '',
   color = '#4CAF50',
+  colors,
 }) => {
   const percentage = total ? Math.round((value / total) * 100) : 0;
 
+  const cardBg = colors?.card || '#fff';
+  const titleColor = colors?.textSecondary || '#666';
+  const valueColor = colors?.text || '#333';
+  const barBg = colors?.border || '#e0e0e0';
+  const percentColor = colors?.textSecondary || '#999';
+
   return (
-    <View style={[styles.card, { borderLeftColor: color }]}>
-      <Text style={styles.title}>{title}</Text>
-      <Text style={styles.value}>
-        {value}{unit} {total && `/ ${total}${unit}`}
+    <View style={[styles.card, { backgroundColor: cardBg, borderLeftColor: color }]}>
+      <Text style={[styles.title, { color: titleColor }]}>{title}</Text>
+      <Text style={[styles.value, { color: valueColor }]}>
+        {value}{unit} {total != null && `/ ${total}${unit}`}
       </Text>
-      {total && (
-        <View style={styles.progressBar}>
+      {total != null && (
+        <View style={[styles.progressBar, { backgroundColor: barBg }]}>
           <View style={[styles.progressFill, { width: `${percentage}%`, backgroundColor: color }]} />
         </View>
       )}
-      {total && <Text style={styles.percentage}>{percentage}%</Text>}
+      {total != null && <Text style={[styles.percentage, { color: percentColor }]}>{percentage}%</Text>}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#fff',
     borderRadius: 12,
     padding: 16,
     marginVertical: 8,
@@ -50,17 +58,14 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 14,
-    color: '#666',
     marginBottom: 8,
   },
   value: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#333',
   },
   progressBar: {
     height: 8,
-    backgroundColor: '#e0e0e0',
     borderRadius: 4,
     marginTop: 12,
     overflow: 'hidden',
@@ -71,7 +76,6 @@ const styles = StyleSheet.create({
   },
   percentage: {
     fontSize: 12,
-    color: '#999',
     marginTop: 4,
     textAlign: 'right',
   },

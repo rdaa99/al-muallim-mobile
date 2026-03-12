@@ -4,7 +4,8 @@
     "dashboard": "لوحة القيادة",
     "settings": "الإعدادات",
     "review": "مراجعة",
-    "audio": "صوتي"
+    "audio": "صوتي",
+    "loading": "جاري التحميل..."
   },
   "dashboard": {
     "title": "لوحة القيادة",
@@ -31,6 +32,28 @@
     "fri": "جمعة",
     "sat": "سبت"
   },
+  "review": {
+    "title": "مراجعة",
+    "loading": "جاري تحميل المراجعات...",
+    "retry": "إعادة المحاولة",
+    "noReviewsTitle": "لا مراجعات اليوم",
+    "noReviewsBody": "استمتع بيومك أو راجع آيات إضافية!",
+    "refresh": "تحديث",
+    "completeTitle": "تهانينا!",
+    "completeBody": "لقد أتممت جميع مراجعات اليوم!",
+    "versesReviewed": "آيات مراجعة",
+    "viewProgram": "عرض البرنامج",
+    "adapted": "برنامج مُعدّل",
+    "tapToReveal": "انقر للكشف",
+    "revealTranslation": "كشف الترجمة",
+    "hard": "صعب",
+    "medium": "متوسط",
+    "easy": "سهل",
+    "skip": "← تخطي هذه الآية",
+    "nextVerse": "الآية التالية",
+    "previousVerse": "الآية السابقة",
+    "submitReview": "إرسال"
+  },
   "settings": {
     "title": "الإعدادات",
     "language": "اللغة",
@@ -44,13 +67,20 @@
     "reciter": "القارئ",
     "display": "العرض",
     "about": "حول",
-    "version": "الإصدار"
-  },
-  "review": {
-    "title": "مراجعة",
-    "nextVerse": "الآية التالية",
-    "previousVerse": "الآية السابقة",
-    "submitReview": "إرسال"
+    "version": "الإصدار",
+    "learningMode": "وضع التعلم",
+    "daily": "يومي",
+    "newVersesDay": "آيات جديدة/يوم",
+    "sessionDuration": "مدة الجلسة (دقيقة)",
+    "learningCapacity": "قدرة التعلم",
+    "focusJuz": "الجزء المركّز",
+    "start": "البداية",
+    "end": "النهاية",
+    "direction": "الاتجاه",
+    "saved": "✓ تم حفظ الإعدادات",
+    "saveError": "خطأ في حفظ الإعدادات",
+    "saving": "جاري الحفظ...",
+    "autoSaveInfo": "يتم حفظ التغييرات تلقائيًا بعد ثانية واحدة."
   },
   "audio": {
     "title": "مشغل الصوت",
@@ -60,8 +90,10 @@
     "speed": "السرعة",
     "text": "نص",
     "playlist": "قائمة التشغيل",
+    "playlistSoon": "قريبًا",
     "noSurah": "لا توجد سورة",
     "selectSurah": "اختر سورة",
+    "surah": "سورة",
     "verse": "آية",
     "reciter": "القارئ",
     "back": "رجوع",

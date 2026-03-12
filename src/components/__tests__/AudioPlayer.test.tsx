@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, fireEvent, waitFor } from '@testing-library/react-native';
+import { render, fireEvent } from '@testing-library/react-native';
 import { AudioPlayer } from '../AudioPlayer';
 
 // Mock the useAudioPlayer hook
@@ -38,14 +38,14 @@ describe('AudioPlayer', () => {
 
   it('should render correctly with default props', () => {
     const { queryByTestId } = render(<AudioPlayer {...defaultProps} />);
-    
+
     // Check if container is rendered
     expect(queryByTestId).toBeTruthy();
   });
 
   it('should generate correct audio URL', () => {
-    const { getByText } = render(<AudioPlayer {...defaultProps} />);
-    
+    render(<AudioPlayer {...defaultProps} />);
+
     // URL should be: https://cdn.islamic.network/quran/audio/128/ar.alafasy/001001.mp3
     // The hook should be called with this URL
     expect(mockAudioPlayerState.play).not.toHaveBeenCalled();
@@ -53,7 +53,7 @@ describe('AudioPlayer', () => {
 
   it('should show play button when not playing', () => {
     const { queryByText } = render(<AudioPlayer {...defaultProps} />);
-    
+
     expect(queryByText('▶')).toBeTruthy();
   });
 
@@ -64,7 +64,7 @@ describe('AudioPlayer', () => {
     });
 
     const { queryByText } = render(<AudioPlayer {...defaultProps} />);
-    
+
     expect(queryByText('⏸')).toBeTruthy();
   });
 
@@ -75,7 +75,7 @@ describe('AudioPlayer', () => {
     });
 
     const { getByText } = render(<AudioPlayer {...defaultProps} />);
-    
+
     expect(getByText('Chargement...')).toBeTruthy();
   });
 
@@ -86,16 +86,16 @@ describe('AudioPlayer', () => {
     });
 
     const { getByText } = render(<AudioPlayer {...defaultProps} />);
-    
+
     expect(getByText(/Test error message/)).toBeTruthy();
   });
 
   it('should call play when play button is pressed', () => {
     const { getByText } = render(<AudioPlayer {...defaultProps} />);
-    
+
     const playButton = getByText('▶');
     fireEvent.press(playButton);
-    
+
     expect(mockAudioPlayerState.play).toHaveBeenCalledWith(
       'https://cdn.islamic.network/quran/audio/128/ar.alafasy/001001.mp3'
     );
@@ -108,37 +108,37 @@ describe('AudioPlayer', () => {
     });
 
     const { getByText } = render(<AudioPlayer {...defaultProps} />);
-    
+
     const pauseButton = getByText('⏸');
     fireEvent.press(pauseButton);
-    
+
     expect(mockAudioPlayerState.pause).toHaveBeenCalled();
   });
 
   it('should call stop when stop button is pressed', () => {
     const { getByText } = render(<AudioPlayer {...defaultProps} />);
-    
+
     const stopButton = getByText('⏹');
     fireEvent.press(stopButton);
-    
+
     expect(mockAudioPlayerState.stop).toHaveBeenCalled();
   });
 
   it('should call replay when replay button is pressed', () => {
     const { getByText } = render(<AudioPlayer {...defaultProps} />);
-    
+
     const replayButton = getByText('🔄');
     fireEvent.press(replayButton);
-    
+
     expect(mockAudioPlayerState.replay).toHaveBeenCalled();
   });
 
   it('should toggle loop when loop button is pressed', () => {
     const { getByText } = render(<AudioPlayer {...defaultProps} />);
-    
+
     const loopButton = getByText('🔁');
     fireEvent.press(loopButton);
-    
+
     expect(mockAudioPlayerState.toggleLoop).toHaveBeenCalled();
   });
 
@@ -149,13 +149,13 @@ describe('AudioPlayer', () => {
     });
 
     const { getByText } = render(<AudioPlayer {...defaultProps} />);
-    
+
     expect(getByText('Répétition activée')).toBeTruthy();
   });
 
   it('should auto-play when autoPlay is true', () => {
     render(<AudioPlayer {...defaultProps} autoPlay={true} />);
-    
+
     expect(mockAudioPlayerState.play).toHaveBeenCalledWith(
       'https://cdn.islamic.network/quran/audio/128/ar.alafasy/001001.mp3'
     );
@@ -169,11 +169,11 @@ describe('AudioPlayer', () => {
     };
 
     render(<AudioPlayer {...props} />);
-    
+
     // When play button is pressed
     const { getByText } = render(<AudioPlayer {...props} />);
     fireEvent.press(getByText('▶'));
-    
+
     expect(mockAudioPlayerState.play).toHaveBeenCalledWith(
       'https://cdn.islamic.network/quran/audio/128/ar.alafasy/002255.mp3'
     );
@@ -186,10 +186,10 @@ describe('AudioPlayer', () => {
     });
 
     const { getByText } = render(<AudioPlayer {...defaultProps} />);
-    
+
     const playButton = getByText('▶');
     fireEvent.press(playButton);
-    
+
     expect(mockAudioPlayerState.play).toHaveBeenCalledWith(
       'https://cdn.islamic.network/quran/audio/128/ar.alafasy/001001.mp3'
     );
@@ -202,11 +202,11 @@ describe('AudioPlayer', () => {
     });
 
     const { getByText } = render(<AudioPlayer {...defaultProps} />);
-    
+
     // Play button shows loading icon when loading
     const playButton = getByText('⏳');
     expect(playButton).toBeTruthy();
-    
+
     // Note: The button has disabled={isLoading} but fireEvent.press bypasses this
     // In a real device, the button would be truly disabled
     // So we just verify the loading state is shown

@@ -1,43 +1,6 @@
 // Jest setup file
 require('@testing-library/jest-native/extend-expect');
 
-// Mock Audio for React Native
-global.Audio = class Audio {
-  constructor(src) {
-    this.src = src;
-    this.loop = false;
-    this.currentTime = 0;
-    this.duration = 0;
-    this.paused = true;
-    this._eventListeners = {};
-  }
-
-  addEventListener(type, listener) {
-    if (!this._eventListeners[type]) {
-      this._eventListeners[type] = [];
-    }
-    this._eventListeners[type].push(listener);
-  }
-
-  removeEventListener(type, listener) {
-    if (this._eventListeners[type]) {
-      const index = this._eventListeners[type].indexOf(listener);
-      if (index > -1) {
-        this._eventListeners[type].splice(index, 1);
-      }
-    }
-  }
-
-  play() {
-    this.paused = false;
-    return Promise.resolve();
-  }
-
-  pause() {
-    this.paused = true;
-  }
-};
-
 // Mock @react-native-async-storage/async-storage
 jest.mock('@react-native-async-storage/async-storage', () => ({
   setItem: jest.fn(() => Promise.resolve()),
@@ -66,6 +29,7 @@ jest.mock('i18next', () => ({
   use: jest.fn().mockReturnThis(),
   init: jest.fn(),
   t: (key) => key,
+  changeLanguage: jest.fn(),
 }));
 
 // Mock react-native-quick-sqlite
@@ -78,8 +42,8 @@ jest.mock('react-native-quick-sqlite', () => ({
 
 // Mock react-native-sound
 jest.mock('react-native-sound', () => {
-  const mockSound = jest.fn().mockImplementation(() => ({
-    play: jest.fn(),
+  const mockSoundInstance = {
+    play: jest.fn((cb) => cb && cb(true)),
     pause: jest.fn(),
     stop: jest.fn(),
     release: jest.fn(),
@@ -87,7 +51,15 @@ jest.mock('react-native-sound', () => {
     getCurrentTime: jest.fn((cb) => cb(0, false)),
     setCurrentTime: jest.fn(),
     setVolume: jest.fn(),
-  }));
+  };
+
+  const mockSound = jest.fn().mockImplementation((_url, _basePath, callback) => {
+    // Invoke callback asynchronously to simulate loading
+    if (callback) {
+      setTimeout(() => callback(null), 0);
+    }
+    return mockSoundInstance;
+  });
 
   mockSound.setCategory = jest.fn();
 

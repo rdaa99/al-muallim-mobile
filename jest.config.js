@@ -16,6 +16,5 @@ module.exports = {
   transformIgnorePatterns: [
     'node_modules/(?!(react-native|@react-navigation|zustand|@react-native|react-native-quick-sqlite|@react-native-async-storage|@react-native-community|i18next|react-i18next)/)',
   ],
-  testEnvironment: 'node',
   testPathIgnorePatterns: ['/node_modules/', '/android/', '/ios/'],
 };

@@ -1,50 +1,69 @@
-import React, { useEffect } from 'react';
-import { StatusBar } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, StatusBar, ActivityIndicator } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { ThemeProvider, useTheme } from './src/context/ThemeContext';
+import { FontSizeProvider } from './src/context/FontSizeContext';
 import { ReviewScreen } from '@/screens/ReviewScreen';
 import { DashboardScreen } from '@/screens/DashboardScreen';
 import { SettingsScreen } from '@/screens/SettingsScreen';
+import { AudioPlayerScreen } from '@/screens/AudioPlayerScreen';
 import { initDatabase, seedDatabase } from './src/services/database';
 
 const Tab = createBottomTabNavigator();
 
-const App: React.FC = () => {
+const AppContent: React.FC = () => {
+  const [dbReady, setDbReady] = useState(false);
+  const [dbError, setDbError] = useState<string | null>(null);
+  const { colors, isDark } = useTheme();
+
   useEffect(() => {
     const setup = async () => {
       try {
-        console.log('Initializing database...');
         await initDatabase();
         await seedDatabase();
-        console.log('Database ready!');
+        setDbReady(true);
       } catch (error) {
-        console.error('Database initialization error:', error);
+        setDbError('Erreur d\'initialisation de la base de données');
       }
     };
     setup();
   }, []);
 
+  if (dbError) {
+    return (
+      <View style={[styles.centerContainer, { backgroundColor: colors.background }]}>
+        <Text style={{ color: '#EF4444', fontSize: 16, textAlign: 'center' }}>{dbError}</Text>
+      </View>
+    );
+  }
+
+  if (!dbReady) {
+    return (
+      <View style={[styles.centerContainer, { backgroundColor: colors.background }]}>
+        <ActivityIndicator size="large" color={colors.primary} />
+        <Text style={{ color: colors.textSecondary, marginTop: 12 }}>Chargement...</Text>
+      </View>
+    );
+  }
+
   return (
     <NavigationContainer>
-      <StatusBar barStyle="light-content" backgroundColor="#0F172A" />
+      <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} backgroundColor={colors.background} />
       <Tab.Navigator
         screenOptions={{
-          headerStyle: {
-            backgroundColor: '#0F172A',
-          },
-          headerTintColor: '#FFFFFF',
-          headerTitleStyle: {
-            fontWeight: '600',
-          },
+          headerStyle: { backgroundColor: colors.header },
+          headerTintColor: colors.text,
+          headerTitleStyle: { fontWeight: '600' },
           tabBarStyle: {
-            backgroundColor: '#1E293B',
-            borderTopColor: '#334155',
+            backgroundColor: colors.tabBar,
+            borderTopColor: colors.border,
             paddingBottom: 8,
             paddingTop: 8,
             height: 60,
           },
-          tabBarActiveTintColor: '#10B981',
-          tabBarInactiveTintColor: '#64748B',
+          tabBarActiveTintColor: colors.primary,
+          tabBarInactiveTintColor: colors.textSecondary,
         }}
       >
         <Tab.Screen
@@ -64,6 +83,14 @@ const App: React.FC = () => {
           }}
         />
         <Tab.Screen
+          name="AudioPlayer"
+          component={AudioPlayerScreen}
+          options={{
+            title: 'Lecteur',
+            tabBarLabel: 'Audio',
+          }}
+        />
+        <Tab.Screen
           name="Settings"
           component={SettingsScreen}
           options={{
@@ -75,5 +102,24 @@ const App: React.FC = () => {
     </NavigationContainer>
   );
 };
+
+const App: React.FC = () => {
+  return (
+    <ThemeProvider>
+      <FontSizeProvider>
+        <AppContent />
+      </FontSizeProvider>
+    </ThemeProvider>
+  );
+};
+
+const styles = StyleSheet.create({
+  centerContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+});
 
 export default App;

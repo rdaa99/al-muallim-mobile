@@ -39,11 +39,15 @@ export const useAudioStore = create<AudioStore>()(
       setPlaybackSpeed: (speed) => set({ playbackSpeed: speed }),
 
       nextAyah: () =>
-        set((state) => ({
-          currentAyah: state.currentAyah + 1,
-          position: 0,
-          duration: 0,
-        })),
+        set((state) => {
+          const maxAyah = state.currentSurah?.ayahsCount ?? Infinity;
+          if (state.currentAyah >= maxAyah) {return state;}
+          return {
+            currentAyah: state.currentAyah + 1,
+            position: 0,
+            duration: 0,
+          };
+        }),
 
       previousAyah: () =>
         set((state) => ({
@@ -55,7 +59,6 @@ export const useAudioStore = create<AudioStore>()(
     {
       name: 'al-muallim-audio-storage',
       storage: createJSONStorage(() => AsyncStorage),
-      // Only persist these fields (not isPlaying, position, duration)
       partialize: (state) => ({
         currentSurah: state.currentSurah,
         currentAyah: state.currentAyah,

@@ -205,7 +205,7 @@ describe('useAudioPlayer', () => {
 
   it('should call Sound.setCategory when hook is initialized', () => {
     const Sound = require('react-native-sound').default;
-    
+
     renderHook(() => useAudioPlayer());
 
     expect(Sound.setCategory).toHaveBeenCalledWith('Playback');

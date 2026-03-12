@@ -6,20 +6,23 @@ import {
   StyleSheet,
   ActivityIndicator,
   Animated,
-  Dimensions,
-  ScrollView,
+  useWindowDimensions,
 } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { useAppStore } from '@/stores/appStore';
+import { useTheme } from '../context/ThemeContext';
 import { AudioPlayer } from '@/components/AudioPlayer';
 
-const { width } = Dimensions.get('window');
-
 export const ReviewScreen: React.FC = () => {
+  const { width } = useWindowDimensions();
+  const { t } = useTranslation();
+  const { colors } = useTheme();
   const {
     currentVerse,
     dailyReview,
     loading,
     error,
+    reviewIndex,
     loadTodayReview,
     submitReview,
     nextVerse,
@@ -28,11 +31,11 @@ export const ReviewScreen: React.FC = () => {
   const [showTranslation, setShowTranslation] = useState(false);
   const [showArabic, setShowArabic] = useState(false);
   const [fadeAnim] = useState(new Animated.Value(1));
-  const [slideAnim] = useState(new Animated.Value(0));
   const isAnimating = useRef(false);
 
   useEffect(() => {
     loadTodayReview();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Reset reveal state when verse changes
@@ -42,17 +45,15 @@ export const ReviewScreen: React.FC = () => {
   }, [currentVerse?.id]);
 
   const animateTransition = (callback: () => void) => {
-    if (isAnimating.current) return;
+    if (isAnimating.current) {return;}
     isAnimating.current = true;
 
-    // Fade out
     Animated.timing(fadeAnim, {
       toValue: 0,
       duration: 200,
       useNativeDriver: true,
     }).start(() => {
       callback();
-      // Fade in
       Animated.timing(fadeAnim, {
         toValue: 1,
         duration: 200,
@@ -79,22 +80,28 @@ export const ReviewScreen: React.FC = () => {
     setShowArabic(!showArabic);
   };
 
+  // Session progress: use reviewIndex for in-session tracking
+  const sessionCompleted = reviewIndex;
+  const sessionTotal = dailyReview?.due_count || 0;
+
   if (loading) {
     return (
-      <View style={styles.container}>
-        <ActivityIndicator size="large" color="#10B981" />
-        <Text style={styles.loadingText}>Chargement des révisions...</Text>
+      <View style={[styles.container, { backgroundColor: colors.background }]}>
+        <ActivityIndicator size="large" color={colors.primary} />
+        <Text style={[styles.loadingText, { color: colors.textSecondary }]}>
+          {t('review.loading', 'Chargement des révisions...')}
+        </Text>
       </View>
     );
   }
 
   if (error) {
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, { backgroundColor: colors.background }]}>
         <Text style={styles.errorIcon}>⚠️</Text>
         <Text style={styles.errorText}>{error}</Text>
-        <TouchableOpacity style={styles.retryButton} onPress={loadTodayReview}>
-          <Text style={styles.retryButtonText}>Réessayer</Text>
+        <TouchableOpacity style={[styles.retryButton, { backgroundColor: colors.primary }]} onPress={loadTodayReview}>
+          <Text style={styles.retryButtonText}>{t('review.retry', 'Réessayer')}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -103,14 +110,18 @@ export const ReviewScreen: React.FC = () => {
   // No reviews today
   if (!dailyReview || dailyReview.verses.length === 0) {
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, { backgroundColor: colors.background }]}>
         <Text style={styles.emptyIcon}>📚</Text>
-        <Text style={styles.emptyTitle}>Aucune révision aujourd'hui</Text>
-        <Text style={styles.emptyText}>
-          Profitez de votre journée ou révisez des versets supplémentaires !
+        <Text style={[styles.emptyTitle, { color: colors.text }]}>
+          {t('review.noReviewsTitle', 'Aucune révision aujourd\'hui')}
         </Text>
-        <TouchableOpacity style={styles.refreshButton} onPress={loadTodayReview}>
-          <Text style={styles.refreshButtonText}>Actualiser</Text>
+        <Text style={[styles.emptyText, { color: colors.textSecondary }]}>
+          {t('review.noReviewsBody', 'Profitez de votre journée ou révisez des versets supplémentaires !')}
+        </Text>
+        <TouchableOpacity style={[styles.refreshButton, { backgroundColor: colors.surface }]} onPress={loadTodayReview}>
+          <Text style={[styles.refreshButtonText, { color: colors.text }]}>
+            {t('review.refresh', 'Actualiser')}
+          </Text>
         </TouchableOpacity>
       </View>
     );
@@ -119,20 +130,26 @@ export const ReviewScreen: React.FC = () => {
   // All reviews completed
   if (!currentVerse) {
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, { backgroundColor: colors.background }]}>
         <Text style={styles.completeIcon}>🎉</Text>
-        <Text style={styles.completeTitle}>Félicitations !</Text>
-        <Text style={styles.completeText}>
-          Vous avez terminé toutes les révisions du jour !
+        <Text style={[styles.completeTitle, { color: colors.primary }]}>
+          {t('review.completeTitle', 'Félicitations !')}
         </Text>
-        <View style={styles.statsContainer}>
-          <Text style={styles.statsNumber}>
-            {dailyReview?.completed_count || 0}
+        <Text style={[styles.completeText, { color: colors.textSecondary }]}>
+          {t('review.completeBody', 'Vous avez terminé toutes les révisions du jour !')}
+        </Text>
+        <View style={[styles.statsContainer, { backgroundColor: colors.surface }]}>
+          <Text style={[styles.statsNumber, { color: colors.primary }]}>
+            {sessionTotal}
           </Text>
-          <Text style={styles.statsLabel}>versets révisés</Text>
+          <Text style={[styles.statsLabel, { color: colors.textSecondary }]}>
+            {t('review.versesReviewed', 'versets révisés')}
+          </Text>
         </View>
-        <TouchableOpacity style={styles.refreshButton} onPress={loadTodayReview}>
-          <Text style={styles.refreshButtonText}>Voir le programme</Text>
+        <TouchableOpacity style={[styles.refreshButton, { backgroundColor: colors.surface }]} onPress={loadTodayReview}>
+          <Text style={[styles.refreshButtonText, { color: colors.text }]}>
+            {t('review.viewProgram', 'Voir le programme')}
+          </Text>
         </TouchableOpacity>
       </View>
     );
@@ -141,27 +158,31 @@ export const ReviewScreen: React.FC = () => {
   // Show blocked message if any
   if (dailyReview.blocked && dailyReview.block_message) {
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, { backgroundColor: colors.background }]}>
         <Text style={styles.blockedIcon}>ℹ️</Text>
-        <Text style={styles.blockedTitle}>Programme adapté</Text>
-        <Text style={styles.blockedText}>{dailyReview.block_message}</Text>
+        <Text style={styles.blockedTitle}>{t('review.adapted', 'Programme adapté')}</Text>
+        <Text style={[styles.blockedText, { color: colors.textSecondary }]}>{dailyReview.block_message}</Text>
       </View>
     );
   }
 
+  // Get translation based on current language
+  const translation = currentVerse.text_translation_fr || currentVerse.text_translation_en;
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       {/* Progress */}
       <View style={styles.progressContainer}>
-        <Text style={styles.progress}>
-          {(dailyReview?.completed_count || 0) + 1} / {dailyReview?.due_count || 0}
+        <Text style={[styles.progress, { color: colors.primary }]}>
+          {sessionCompleted + 1} / {sessionTotal}
         </Text>
-        <View style={styles.progressBar}>
+        <View style={[styles.progressBar, { width: width - 80, backgroundColor: colors.border }]}>
           <View
             style={[
               styles.progressFill,
               {
-                width: `${((dailyReview?.completed_count || 0) / (dailyReview?.due_count || 1)) * 100}%`,
+                width: `${(sessionCompleted / Math.max(sessionTotal, 1)) * 100}%`,
+                backgroundColor: colors.primary,
               },
             ]}
           />
@@ -172,49 +193,43 @@ export const ReviewScreen: React.FC = () => {
       <Animated.View
         style={[
           styles.verseContainer,
-          {
-            opacity: fadeAnim,
-            transform: [
-              {
-                translateX: slideAnim.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: [0, width],
-                }),
-              },
-            ],
-          },
+          { backgroundColor: colors.surface, opacity: fadeAnim },
         ]}
       >
         {/* Arabic text with reveal */}
         <TouchableOpacity onPress={toggleArabic} activeOpacity={0.9}>
           <View style={styles.arabicContainer}>
             {showArabic ? (
-              <Text style={styles.arabicText}>{currentVerse.text_arabic}</Text>
+              <Text style={[styles.arabicText, { color: colors.text }]}>{currentVerse.text_arabic}</Text>
             ) : (
               <View style={styles.hiddenText}>
-                <Text style={styles.hiddenPlaceholder}>● ● ● ● ● ● ●</Text>
-                <Text style={styles.tapToReveal}>Touchez pour révéler</Text>
+                <Text style={[styles.hiddenPlaceholder, { color: colors.textSecondary }]}>● ● ● ● ● ● ●</Text>
+                <Text style={[styles.tapToReveal, { color: colors.textSecondary }]}>
+                  {t('review.tapToReveal', 'Touchez pour révéler')}
+                </Text>
               </View>
             )}
           </View>
         </TouchableOpacity>
 
-        <Text style={styles.reference}>
+        <Text style={[styles.reference, { color: colors.textSecondary }]}>
           {currentVerse.surah_number}:{currentVerse.ayah_number}
         </Text>
 
         {/* Translation with reveal */}
-        {currentVerse.text_translation && (
+        {translation && (
           <TouchableOpacity
             style={styles.translationButton}
             onPress={() => setShowTranslation(!showTranslation)}
           >
             {showTranslation ? (
-              <Text style={styles.translationText}>
-                {currentVerse.text_translation}
+              <Text style={[styles.translationText, { color: colors.textSecondary }]}>
+                {translation}
               </Text>
             ) : (
-              <Text style={styles.revealText}>Révéler la traduction</Text>
+              <Text style={[styles.revealText, { color: colors.primary }]}>
+                {t('review.revealTranslation', 'Révéler la traduction')}
+              </Text>
             )}
           </TouchableOpacity>
         )}
@@ -236,7 +251,7 @@ export const ReviewScreen: React.FC = () => {
           onPress={() => handleSubmit(1)}
         >
           <Text style={styles.qualityButtonEmoji}>😓</Text>
-          <Text style={styles.qualityButtonText}>Difficile</Text>
+          <Text style={styles.qualityButtonText}>{t('review.hard', 'Difficile')}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -244,7 +259,7 @@ export const ReviewScreen: React.FC = () => {
           onPress={() => handleSubmit(3)}
         >
           <Text style={styles.qualityButtonEmoji}>🤔</Text>
-          <Text style={styles.qualityButtonText}>Moyen</Text>
+          <Text style={styles.qualityButtonText}>{t('review.medium', 'Moyen')}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -252,13 +267,15 @@ export const ReviewScreen: React.FC = () => {
           onPress={() => handleSubmit(5)}
         >
           <Text style={styles.qualityButtonEmoji}>😊</Text>
-          <Text style={styles.qualityButtonText}>Facile</Text>
+          <Text style={styles.qualityButtonText}>{t('review.easy', 'Facile')}</Text>
         </TouchableOpacity>
       </View>
 
       {/* Skip button */}
       <TouchableOpacity style={styles.skipButton} onPress={handleSkip}>
-        <Text style={styles.skipButtonText}>Passer ce verset →</Text>
+        <Text style={[styles.skipButtonText, { color: colors.textSecondary }]}>
+          {t('review.skip', 'Passer ce verset →')}
+        </Text>
       </TouchableOpacity>
     </View>
   );
@@ -267,13 +284,11 @@ export const ReviewScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0F172A',
     padding: 20,
     justifyContent: 'center',
     alignItems: 'center',
   },
   loadingText: {
-    color: '#94A3B8',
     marginTop: 12,
     fontSize: 16,
   },
@@ -288,7 +303,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   retryButton: {
-    backgroundColor: '#10B981',
     paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 8,
@@ -303,14 +317,12 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   emptyTitle: {
-    color: '#FFFFFF',
     fontSize: 24,
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 12,
   },
   emptyText: {
-    color: '#94A3B8',
     fontSize: 16,
     textAlign: 'center',
     marginBottom: 24,
@@ -320,42 +332,35 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   completeTitle: {
-    color: '#10B981',
     fontSize: 28,
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 12,
   },
   completeText: {
-    color: '#94A3B8',
     fontSize: 16,
     textAlign: 'center',
     marginBottom: 24,
   },
   statsContainer: {
-    backgroundColor: '#1E293B',
     borderRadius: 16,
     padding: 24,
     alignItems: 'center',
     marginBottom: 24,
   },
   statsNumber: {
-    color: '#10B981',
     fontSize: 48,
     fontWeight: 'bold',
   },
   statsLabel: {
-    color: '#94A3B8',
     fontSize: 16,
   },
   refreshButton: {
-    backgroundColor: '#334155',
     paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 8,
   },
   refreshButtonText: {
-    color: '#FFFFFF',
     fontSize: 16,
     fontWeight: '600',
   },
@@ -371,7 +376,6 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   blockedText: {
-    color: '#94A3B8',
     fontSize: 16,
     textAlign: 'center',
     lineHeight: 24,
@@ -381,24 +385,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   progress: {
-    color: '#10B981',
     fontSize: 18,
     marginBottom: 12,
     fontWeight: '600',
   },
   progressBar: {
-    width: width - 80,
     height: 4,
-    backgroundColor: '#334155',
     borderRadius: 2,
   },
   progressFill: {
     height: '100%',
-    backgroundColor: '#10B981',
     borderRadius: 2,
   },
   verseContainer: {
-    backgroundColor: '#1E293B',
     borderRadius: 16,
     padding: 24,
     width: '100%',
@@ -410,7 +409,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   arabicText: {
-    color: '#FFFFFF',
     fontSize: 32,
     textAlign: 'center',
     lineHeight: 56,
@@ -420,18 +418,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   hiddenPlaceholder: {
-    color: '#64748B',
     fontSize: 28,
     letterSpacing: 8,
     marginBottom: 8,
   },
   tapToReveal: {
-    color: '#64748B',
     fontSize: 12,
     fontStyle: 'italic',
   },
   reference: {
-    color: '#64748B',
     fontSize: 14,
     textAlign: 'center',
     marginBottom: 12,
@@ -442,13 +437,11 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   translationText: {
-    color: '#CBD5E1',
     fontSize: 16,
     textAlign: 'center',
     lineHeight: 24,
   },
   revealText: {
-    color: '#10B981',
     fontSize: 14,
     textAlign: 'center',
   },
@@ -485,7 +478,6 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   skipButtonText: {
-    color: '#64748B',
     fontSize: 14,
     textAlign: 'center',
   },

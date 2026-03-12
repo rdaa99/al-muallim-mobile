@@ -100,7 +100,7 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
         <TouchableOpacity
           style={styles.button}
           onPress={handleStop}
-          disabled={isLoading || !isPlaying}
+          disabled={isLoading}
         >
           <Text style={styles.buttonIcon}>⏹</Text>
         </TouchableOpacity>

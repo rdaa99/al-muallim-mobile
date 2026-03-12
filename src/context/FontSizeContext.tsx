@@ -1,5 +1,5 @@
 import React, { createContext, useContext, ReactNode } from 'react';
-import { useUserStore } from '../store/userStore';
+import { useUserStore } from '../stores/userStore';
 
 type FontSize = 'small' | 'medium' | 'large';
 

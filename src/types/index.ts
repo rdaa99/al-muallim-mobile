@@ -5,14 +5,15 @@ export interface Verse {
   surah_number: number;
   ayah_number: number;
   text_arabic: string;
-  text_translation?: string;
+  text_translation_fr?: string;
+  text_translation_en?: string;
   juz_number: number;
   page_number: number;
   status: VerseStatus;
   // SRS fields
-  ease_factor?: number;
-  interval?: number;
-  repetitions?: number;
+  ease_factor: number;
+  interval: number;
+  repetitions: number;
   next_review_date?: string;
   last_reviewed_at?: string;
 }
@@ -24,12 +25,10 @@ export interface ReviewResult {
   quality: QualityScore;
   reviewed_at?: string;
   next_review_date: string;
-  new_interval?: number;
-  new_ease_factor?: number;
-  status?: VerseStatus;
-  interval?: number;
-  ease_factor?: number;
-  repetitions?: number;
+  status: VerseStatus;
+  interval: number;
+  ease_factor: number;
+  repetitions: number;
 }
 
 export type QualityScore = 0 | 1 | 2 | 3 | 4 | 5;
@@ -39,7 +38,7 @@ export interface DailyReview {
   due_count: number;
   completed_count: number;
   verses: Verse[];
-  sections?: any[];
+  sections?: { verses: Verse[]; completed?: boolean }[];
   blocked?: boolean;
   block_message?: string | null;
 }
@@ -54,13 +53,12 @@ export interface ProgressStats {
   consolidating: number;
   learning: number;
   streak_days: number;
-  streak?: number;
   retention_rate: number;
   verses_by_juz: JuzProgress[];
   verses_by_surah: SurahProgress[];
-  surahs?: SurahProgress[];
-  calendar?: { date: string; has_activity: boolean }[];
-  this_month?: number;
+  surahs: SurahProgress[];
+  calendar: { date: string; has_activity: boolean }[];
+  this_month: number;
 }
 
 export interface JuzProgress {
@@ -81,16 +79,15 @@ export interface SurahProgress {
 }
 
 export interface UserSettings {
-  learning_mode?: 'active' | 'revision_only' | 'paused';
-  focus_juz_start?: number;
-  focus_juz_end?: number;
-  evaluation_day?: number;
-  learning_capacity?: number;
-  daily_new_lines?: number;
-  direction?: 'desc' | 'asc';
-  session_duration?: number;
-  preferred_reciter?: string;
-  [key: string]: any;
+  learning_mode: 'active' | 'revision_only' | 'paused';
+  focus_juz_start: number;
+  focus_juz_end: number;
+  evaluation_day: number;
+  learning_capacity: number;
+  daily_new_lines: number;
+  direction: 'desc' | 'asc';
+  session_duration: number;
+  preferred_reciter: string;
 }
 
 export interface UserDisplaySettings {

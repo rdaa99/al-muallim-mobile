@@ -1,27 +1,48 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ScrollView, View, Text, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
-import { useUserStore } from '../store/userStore';
+import { useAppStore } from '@/stores/appStore';
 import { useTheme } from '../context/ThemeContext';
 import { useFonts } from '../context/FontSizeContext';
 import { ProgressCard } from '../components/ProgressCard';
 import { StreakCard } from '../components/StreakCard';
 import { WeeklyProgress } from '../components/WeeklyProgress';
+import { useUserStore } from '../stores/userStore';
 
 export const DashboardScreen: React.FC = () => {
-  const { progress, settings } = useUserStore();
+  const { stats, dailyReview, loadStats, loadTodayReview } = useAppStore();
+  const { settings } = useUserStore();
   const { t } = useTranslation();
   const { colors } = useTheme();
   const { fonts } = useFonts();
   const navigation = useNavigation();
   const isRTL = settings?.language === 'ar';
 
+  useEffect(() => {
+    loadStats();
+    loadTodayReview();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const handleQuickAction = (action: string) => {
-    if (action !== 'stats') {
-      navigation.navigate('AudioPlayer' as never);
+    switch (action) {
+      case 'continue':
+      case 'review':
+        navigation.navigate('Review' as never);
+        break;
+      case 'listen':
+        navigation.navigate('AudioPlayer' as never);
+        break;
+      case 'stats':
+        // Already on stats page, refresh
+        loadStats();
+        break;
     }
   };
+
+  const todayCompleted = dailyReview?.completed_count || 0;
+  const todayDue = dailyReview?.due_count || 0;
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }, isRTL && { direction: 'rtl' }]}>
@@ -36,49 +57,45 @@ export const DashboardScreen: React.FC = () => {
         </View>
 
         <StreakCard
-          currentStreak={progress.currentStreak}
-          longestStreak={progress.longestStreak}
-        />
-
-        <ProgressCard
-          title={t('dashboard.surahsMemorized')}
-          value={progress.surahsMemorized}
-          total={114}
-          color="#2196F3"
+          currentStreak={stats?.streak_days || 0}
+          longestStreak={stats?.streak_days || 0}
+          colors={colors}
         />
 
         <ProgressCard
           title={t('dashboard.ayahsMemorized')}
-          value={progress.ayahsMemorized}
-          total={progress.totalAyahs}
-          unit=""
-          color="#4CAF50"
+          value={stats?.total_learned || 0}
+          total={stats?.total_verses || 995}
+          color={colors.primary}
+          colors={colors}
         />
 
         <ProgressCard
           title={t('dashboard.dailyGoal')}
-          value={progress.ayahsMemorized % progress.dailyGoal}
-          total={progress.dailyGoal}
-          unit=" versets"
+          value={todayCompleted}
+          total={Math.max(todayDue, 1)}
+          unit={` ${t('dashboard.verses')}`}
           color="#FF9800"
+          colors={colors}
         />
 
         <WeeklyProgress
-          data={progress.weeklyProgress}
-          dailyGoal={progress.dailyGoal}
+          data={[0, 0, 0, 0, 0, 0, 0]}
+          dailyGoal={10}
           language={settings?.language || 'fr'}
+          colors={colors}
         />
 
         <View style={[styles.quickActions, { backgroundColor: colors.surface }]}>
           <Text style={[styles.sectionTitle, { color: colors.text, fontSize: fonts.heading }]}>
-            Actions rapides
+            {t('dashboard.quickActions')}
           </Text>
           <View style={styles.actionGrid}>
-            {[ 
-              { icon: '📖', label: 'Continuer', action: 'continue' },
-              { icon: '🎯', label: 'Réviser', action: 'review' },
-              { icon: '🎧', label: 'Écouter', action: 'listen' },
-              { icon: '📊', label: 'Stats', action: 'stats' },
+            {[
+              { icon: '📖', label: t('dashboard.continue'), action: 'continue' },
+              { icon: '🎯', label: t('dashboard.reviewBtn'), action: 'review' },
+              { icon: '🎧', label: t('dashboard.listen'), action: 'listen' },
+              { icon: '📊', label: t('dashboard.stats'), action: 'stats' },
             ].map(({ icon, label, action }) => (
               <TouchableOpacity
                 key={action}
@@ -104,7 +121,7 @@ const styles = StyleSheet.create({
   greeting: { fontWeight: 'bold', textAlign: 'right' },
   subtitle: { marginTop: 4 },
   sectionTitle: { fontWeight: '600', marginBottom: 12, marginHorizontal: 16 },
-  quickActions: { marginTop: 16, padding: 16 },
+  quickActions: { marginTop: 16, padding: 16, marginHorizontal: 16, borderRadius: 12 },
   actionGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 12 },
   actionButton: { flex: 1, minWidth: '45%', borderRadius: 12, padding: 16, alignItems: 'center', elevation: 3 },
   actionIcon: { fontSize: 32, marginBottom: 8 },

@@ -6,6 +6,7 @@ export const useAudioPlayer = () => {
   useEffect(() => {
     Sound.setCategory('Playback');
   }, []);
+
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isLooping, setIsLooping] = useState(false);
@@ -16,6 +17,19 @@ export const useAudioPlayer = () => {
   const soundRef = useRef<Sound | null>(null);
   const urlRef = useRef<string | null>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const isLoopingRef = useRef(false);
+
+  // Keep ref in sync with state to avoid stale closure
+  useEffect(() => {
+    isLoopingRef.current = isLooping;
+  }, [isLooping]);
+
+  const clearTrackingInterval = useCallback(() => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+  }, []);
 
   // Cleanup on unmount
   useEffect(() => {
@@ -24,11 +38,20 @@ export const useAudioPlayer = () => {
         soundRef.current.stop();
         soundRef.current.release();
       }
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
+      clearTrackingInterval();
     };
-  }, []);
+  }, [clearTrackingInterval]);
+
+  const startTracking = useCallback(() => {
+    clearTrackingInterval();
+    intervalRef.current = setInterval(() => {
+      if (soundRef.current) {
+        soundRef.current.getCurrentTime((seconds) => {
+          setCurrentTime(seconds);
+        });
+      }
+    }, 500);
+  }, [clearTrackingInterval]);
 
   const play = useCallback((url: string) => {
     // Cleanup previous sound
@@ -36,9 +59,7 @@ export const useAudioPlayer = () => {
       soundRef.current.stop();
       soundRef.current.release();
     }
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-    }
+    clearTrackingInterval();
 
     setIsLoading(true);
     setError(null);
@@ -55,38 +76,33 @@ export const useAudioPlayer = () => {
       setIsLoading(false);
 
       sound.play((success) => {
-        if (success) {
-          setIsPlaying(false);
-          if (isLooping && soundRef.current) {
-            soundRef.current.setCurrentTime(0);
-            soundRef.current.play();
-          }
-        } else {
+        setIsPlaying(false);
+        clearTrackingInterval();
+
+        if (success && isLoopingRef.current && soundRef.current) {
+          soundRef.current.setCurrentTime(0);
+          soundRef.current.play();
+          setIsPlaying(true);
+          startTracking();
+        } else if (!success) {
           setError('Erreur de lecture');
         }
       });
 
       setIsPlaying(true);
-
-      // Track current time
-      intervalRef.current = setInterval(() => {
-        if (soundRef.current) {
-          soundRef.current.getCurrentTime((seconds) => {
-            setCurrentTime(seconds);
-          });
-        }
-      }, 100);
+      startTracking();
     });
 
     soundRef.current = sound;
-  }, [isLooping]);
+  }, [clearTrackingInterval, startTracking]);
 
   const pause = useCallback(() => {
     if (soundRef.current) {
       soundRef.current.pause();
       setIsPlaying(false);
+      clearTrackingInterval();
     }
-  }, []);
+  }, [clearTrackingInterval]);
 
   const stop = useCallback(() => {
     if (soundRef.current) {
@@ -95,17 +111,14 @@ export const useAudioPlayer = () => {
       setIsPlaying(false);
       setCurrentTime(0);
     }
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-    }
-  }, []);
+    clearTrackingInterval();
+  }, [clearTrackingInterval]);
 
   const replay = useCallback(() => {
-    if (soundRef.current && urlRef.current) {
-      stop();
+    if (urlRef.current) {
       play(urlRef.current);
     }
-  }, [play, stop]);
+  }, [play]);
 
   const toggleLoop = useCallback(() => {
     setIsLooping(prev => !prev);

@@ -1,10 +1,10 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { useColorScheme } from 'react-native';
-import { useUserStore } from '../store/userStore';
+import { useUserStore } from '../stores/userStore';
 
 type Theme = 'light' | 'dark';
 
-interface ThemeColors {
+export interface ThemeColors {
   background: string;
   surface: string;
   primary: string;
@@ -16,7 +16,7 @@ interface ThemeColors {
   header: string;
 }
 
-const colors: Record<Theme, ThemeColors> = {
+const themeColors: Record<Theme, ThemeColors> = {
   light: {
     background: '#F8FAFC',
     surface: '#FFFFFF',
@@ -53,25 +53,28 @@ const ThemeContext = createContext<ThemeContextValue | null>(null);
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const { settings, updateSettings } = useUserStore();
   const systemColorScheme = useColorScheme();
-  const [theme, setTheme] = useState<Theme>('light');
+  const [theme, setTheme] = useState<Theme>(() => {
+    if (settings.darkMode) {return 'dark';}
+    return systemColorScheme === 'dark' ? 'dark' : 'light';
+  });
 
   useEffect(() => {
-    // Use user preference if set, otherwise follow system
     if (settings.darkMode !== undefined) {
       setTheme(settings.darkMode ? 'dark' : 'light');
-    } else {
+    } else if (systemColorScheme) {
       setTheme(systemColorScheme === 'dark' ? 'dark' : 'light');
     }
   }, [settings.darkMode, systemColorScheme]);
 
   const toggleTheme = () => {
     const newTheme = theme === 'light' ? 'dark' : 'light';
+    setTheme(newTheme);
     updateSettings({ darkMode: newTheme === 'dark' });
   };
 
   const value: ThemeContextValue = {
     theme,
-    colors: colors[theme],
+    colors: themeColors[theme],
     isDark: theme === 'dark',
     toggleTheme,
   };

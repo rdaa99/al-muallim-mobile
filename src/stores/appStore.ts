@@ -53,16 +53,22 @@ export const useAppStore = create<AppState>((set, get) => ({
         loading: false,
       });
     } catch (error) {
-      set({ error: 'Failed to load review', loading: false });
+      const message = error instanceof Error ? error.message : 'Failed to load review';
+      set({ error: message, loading: false });
     }
   },
 
   submitReview: async (quality) => {
-    const { currentVerse, reviewIndex, verses } = get();
-    if (!currentVerse) return;
+    const { currentVerse, reviewIndex, verses, dailyReview } = get();
+    if (!currentVerse) {return;}
 
     try {
       await db.submitReview(currentVerse.id, quality);
+
+      // Update completed count in dailyReview
+      const updatedReview = dailyReview
+        ? { ...dailyReview, completed_count: dailyReview.completed_count + 1 }
+        : null;
 
       // Move to next verse
       const nextIndex = reviewIndex + 1;
@@ -70,13 +76,18 @@ export const useAppStore = create<AppState>((set, get) => ({
         set({
           currentVerse: verses[nextIndex],
           reviewIndex: nextIndex,
+          dailyReview: updatedReview,
         });
       } else {
         // Review complete
-        set({ currentVerse: null });
+        set({
+          currentVerse: null,
+          dailyReview: updatedReview,
+        });
       }
     } catch (error) {
-      set({ error: 'Failed to submit review' });
+      const message = error instanceof Error ? error.message : 'Failed to submit review';
+      set({ error: message });
     }
   },
 
@@ -96,7 +107,8 @@ export const useAppStore = create<AppState>((set, get) => ({
       const stats = await db.getProgressStats();
       set({ stats });
     } catch (error) {
-      set({ error: 'Failed to load stats' });
+      const message = error instanceof Error ? error.message : 'Failed to load stats';
+      set({ error: message });
     }
   },
 
@@ -105,7 +117,8 @@ export const useAppStore = create<AppState>((set, get) => ({
       const settings = await db.getSettings();
       set({ settings });
     } catch (error) {
-      set({ error: 'Failed to load settings' });
+      const message = error instanceof Error ? error.message : 'Failed to load settings';
+      set({ error: message });
     }
   },
 
@@ -114,7 +127,8 @@ export const useAppStore = create<AppState>((set, get) => ({
       const settings = await db.updateSettings(newSettings);
       set({ settings });
     } catch (error) {
-      set({ error: 'Failed to update settings' });
+      const message = error instanceof Error ? error.message : 'Failed to update settings';
+      set({ error: message });
     }
   },
 
