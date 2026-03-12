@@ -1,5 +1,5 @@
 import SQLite from 'react-native-quick-sqlite';
-import type { Verse, DailyReview, ProgressStats, UserSettings, ReviewResult, QualityScore, VerseStatus } from '@/types';
+import type { Verse, DailyReview, ProgressStats, UserSettings, ReviewResult, QualityScore, VerseStatus, JuzProgress, SurahProgress } from '@/types';
 import { VERSES_JUZ_29_30 } from '@/data/verses-juz-29-30';
 
 // Open database
@@ -30,6 +30,24 @@ function getRowCount(rows: unknown): number {
   if (typeof r.length === 'number') {return r.length;}
   return 0;
 }
+
+// Surah name mapping for Juz 29-30
+const SURAH_NAMES: Record<number, string> = {
+  67: 'Al-Mulk', 68: 'Al-Qalam', 69: 'Al-Haqqah', 70: 'Al-Ma\'arij',
+  71: 'Nuh', 72: 'Al-Jinn', 73: 'Al-Muzzammil', 74: 'Al-Muddaththir',
+  75: 'Al-Qiyamah', 76: 'Al-Insan', 77: 'Al-Mursalat',
+  78: 'An-Naba', 79: 'An-Nazi\'at', 80: 'Abasa', 81: 'At-Takwir',
+  82: 'Al-Infitar', 83: 'Al-Mutaffifin', 84: 'Al-Inshiqaq',
+  85: 'Al-Buruj', 86: 'At-Tariq', 87: 'Al-A\'la', 88: 'Al-Ghashiyah',
+  89: 'Al-Fajr', 90: 'Al-Balad', 91: 'Ash-Shams', 92: 'Al-Layl',
+  93: 'Ad-Duha', 94: 'Ash-Sharh', 95: 'At-Tin', 96: 'Al-Alaq',
+  97: 'Al-Qadr', 98: 'Al-Bayyinah', 99: 'Az-Zalzalah', 100: 'Al-Adiyat',
+  101: 'Al-Qari\'ah', 102: 'At-Takathur', 103: 'Al-Asr',
+  104: 'Al-Humazah', 105: 'Al-Fil', 106: 'Quraysh',
+  107: 'Al-Ma\'un', 108: 'Al-Kawthar', 109: 'Al-Kafirun',
+  110: 'An-Nasr', 111: 'Al-Masad', 112: 'Al-Ikhlas',
+  113: 'Al-Falaq', 114: 'An-Nas',
+};
 
 // Initialize schema
 export const initDatabase = async (): Promise<void> => {
@@ -86,7 +104,7 @@ export const initDatabase = async (): Promise<void> => {
   }
 };
 
-// Seed Juz 29-30 (995 verses) with transaction
+// Seed Juz 29-30 (995 verses) with batch inserts
 export const seedDatabase = async (): Promise<void> => {
   const checkResult = await db.execute('SELECT COUNT(*) as count FROM verses');
   const count = (getRow(checkResult.rows, 0) as { count?: number })?.count || 0;
@@ -95,15 +113,18 @@ export const seedDatabase = async (): Promise<void> => {
     return;
   }
 
-  // Use transaction for batch insert
+  const BATCH_SIZE = 50;
   await db.execute('BEGIN TRANSACTION;');
   try {
-    for (const verse of VERSES_JUZ_29_30) {
+    for (let i = 0; i < VERSES_JUZ_29_30.length; i += BATCH_SIZE) {
+      const batch = VERSES_JUZ_29_30.slice(i, i + BATCH_SIZE);
+      const placeholders = batch.map(() => '(?, ?, ?, ?, ?, ?, ?)').join(', ');
+      const values = batch.flat();
       await db.execute(
         `INSERT INTO verses
          (surah_number, ayah_number, text_arabic, text_translation_fr, text_translation_en, juz_number, page_number)
-         VALUES (?, ?, ?, ?, ?, ?, ?)`,
-        verse
+         VALUES ${placeholders}`,
+        values
       );
     }
     await db.execute('COMMIT;');
@@ -114,7 +135,7 @@ export const seedDatabase = async (): Promise<void> => {
 };
 
 // SM-2 Algorithm with input validation
-function calculateSM2(
+export function calculateSM2(
   verse: { ease_factor?: number; interval?: number; repetitions?: number },
   quality: QualityScore
 ): { ease_factor: number; interval: number; repetitions: number } {
@@ -247,7 +268,7 @@ export const submitReview = async (verseId: number, quality: QualityScore): Prom
   };
 };
 
-// Get progress stats - single optimized query
+// Get progress stats - comprehensive query
 export const getProgressStats = async (): Promise<ProgressStats> => {
   // Single query for all status counts
   const statusResult = await db.execute(`
@@ -305,6 +326,23 @@ export const getProgressStats = async (): Promise<ProgressStats> => {
     }
   }
 
+  // Track longest streak in settings
+  let longest_streak = 0;
+  const longestResult = await db.execute(
+    "SELECT value FROM settings WHERE key = 'longest_streak'"
+  );
+  const longestRow = getRow(longestResult.rows, 0);
+  if (longestRow) {
+    longest_streak = parseInt(longestRow.value as string, 10) || 0;
+  }
+  if (streak_days > longest_streak) {
+    longest_streak = streak_days;
+    await db.execute(
+      "INSERT OR REPLACE INTO settings (key, value) VALUES ('longest_streak', ?)",
+      [String(longest_streak)]
+    );
+  }
+
   // Calculate retention rate
   const retentionResult = await db.execute(
     `SELECT
@@ -324,6 +362,63 @@ export const getProgressStats = async (): Promise<ProgressStats> => {
   );
   const this_month = (getRow(monthResult.rows, 0) as { count?: number })?.count || 0;
 
+  // Verses by juz
+  const juzResult = await db.execute(`
+    SELECT juz_number,
+      COUNT(*) as total,
+      SUM(CASE WHEN status = 'mastered' THEN 1 ELSE 0 END) as mastered,
+      SUM(CASE WHEN status = 'consolidating' THEN 1 ELSE 0 END) as consolidating,
+      SUM(CASE WHEN status = 'learning' THEN 1 ELSE 0 END) as learning
+    FROM verses
+    GROUP BY juz_number
+    ORDER BY juz_number
+  `);
+  const verses_by_juz: JuzProgress[] = getRows(juzResult.rows).map(row => ({
+    juz_number: row.juz_number as number,
+    total: row.total as number,
+    mastered: row.mastered as number,
+    consolidating: row.consolidating as number,
+    learning: row.learning as number,
+  }));
+
+  // Verses by surah
+  const surahResult = await db.execute(`
+    SELECT surah_number,
+      COUNT(*) as total,
+      SUM(CASE WHEN status = 'mastered' THEN 1 ELSE 0 END) as mastered,
+      SUM(CASE WHEN status = 'consolidating' THEN 1 ELSE 0 END) as consolidating,
+      SUM(CASE WHEN status = 'learning' THEN 1 ELSE 0 END) as learning
+    FROM verses
+    GROUP BY surah_number
+    ORDER BY surah_number
+  `);
+  const verses_by_surah: SurahProgress[] = getRows(surahResult.rows).map(row => ({
+    surah_number: row.surah_number as number,
+    surah_name: SURAH_NAMES[row.surah_number as number] || `Surah ${row.surah_number}`,
+    total: row.total as number,
+    mastered: row.mastered as number,
+    consolidating: row.consolidating as number,
+    learning: row.learning as number,
+  }));
+
+  // Calendar: last 30 days activity
+  const calendarResult = await db.execute(`
+    SELECT DISTINCT date(reviewed_at) as review_date
+    FROM review_history
+    WHERE reviewed_at >= date('now', '-30 days')
+    ORDER BY review_date
+  `);
+  const activeDates = new Set(
+    getRows(calendarResult.rows).map(r => r.review_date as string)
+  );
+  const calendar: { date: string; has_activity: boolean }[] = [];
+  for (let i = 29; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const dateStr = d.toISOString().split('T')[0];
+    calendar.push({ date: dateStr, has_activity: activeDates.has(dateStr) });
+  }
+
   return {
     total_verses,
     total_learned,
@@ -334,13 +429,44 @@ export const getProgressStats = async (): Promise<ProgressStats> => {
     consolidating,
     learning,
     streak_days,
+    longest_streak,
     retention_rate,
-    verses_by_juz: [],
-    verses_by_surah: [],
-    surahs: [],
-    calendar: [],
+    verses_by_juz,
+    verses_by_surah,
+    surahs: verses_by_surah,
+    calendar,
     this_month,
   };
+};
+
+// Get weekly review counts for last 7 days (Sunday to Saturday)
+export const getWeeklyReviewCounts = async (): Promise<number[]> => {
+  const counts: number[] = [0, 0, 0, 0, 0, 0, 0];
+  const result = await db.execute(`
+    SELECT date(reviewed_at) as review_date, COUNT(DISTINCT verse_id) as count
+    FROM review_history
+    WHERE reviewed_at >= date('now', '-6 days')
+    GROUP BY date(reviewed_at)
+    ORDER BY review_date
+  `);
+
+  for (const row of getRows(result.rows)) {
+    const d = new Date(row.review_date as string);
+    const dayIndex = d.getDay(); // 0=Sun, 6=Sat
+    counts[dayIndex] = (row.count as number) || 0;
+  }
+
+  return counts;
+};
+
+// Get verse by surah and ayah number
+export const getVerseBySurahAyah = async (surahNumber: number, ayahNumber: number): Promise<Verse | null> => {
+  const result = await db.execute(
+    'SELECT * FROM verses WHERE surah_number = ? AND ayah_number = ?',
+    [surahNumber, ayahNumber]
+  );
+  const row = getRow(result.rows, 0);
+  return row ? (row as unknown as Verse) : null;
 };
 
 // Get settings

@@ -6,22 +6,31 @@ import {
   StyleSheet,
   ActivityIndicator,
 } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { useAudioPlayer } from '@/hooks/useAudioPlayer';
+import type { ThemeColors } from '../context/ThemeContext';
 
 interface AudioPlayerProps {
   surahNumber: number;
   ayahNumber: number;
   autoPlay?: boolean;
+  colors?: ThemeColors;
 }
 
 export const AudioPlayer: React.FC<AudioPlayerProps> = ({
   surahNumber,
   ayahNumber,
   autoPlay = false,
+  colors,
 }) => {
+  const { t } = useTranslation();
+
+  const bg = colors?.surface || '#1E293B';
+  const accent = colors?.primary || '#10B981';
+  const textSecondary = colors?.textSecondary || '#94A3B8';
+  const buttonBg = colors?.border || '#334155';
+
   // Generate audio URL
-  // Format: https://cdn.islamic.network/quran/audio/128/ar.alafasy/{surah}{ayah}.mp3
-  // Example: Sourate 1, verset 1 → 1001
   const paddedSurah = String(surahNumber).padStart(3, '0');
   const paddedAyah = String(ayahNumber).padStart(3, '0');
   const audioUrl = `https://cdn.islamic.network/quran/audio/128/ar.alafasy/${paddedSurah}${paddedAyah}.mp3`;
@@ -47,7 +56,6 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
 
   const handlePlayPause = () => {
     if (error) {
-      // Retry on error
       play(audioUrl);
     } else if (isPlaying) {
       pause();
@@ -56,77 +64,61 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
     }
   };
 
-  const handleStop = () => {
-    stop();
-  };
-
-  const handleReplay = () => {
-    replay();
-  };
-
-  const handleToggleLoop = () => {
-    toggleLoop();
-  };
-
   return (
-    <View style={styles.container}>
-      {/* Loading indicator */}
+    <View style={[styles.container, { backgroundColor: bg }]}>
       {isLoading && (
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="small" color="#10B981" />
-          <Text style={styles.loadingText}>Chargement...</Text>
+          <ActivityIndicator size="small" color={accent} />
+          <Text style={[styles.loadingText, { color: textSecondary }]}>
+            {t('audio.loading', 'Chargement...')}
+          </Text>
         </View>
       )}
 
-      {/* Error message */}
       {error && !isLoading && (
-        <Text style={styles.errorText}>⚠️ {error}</Text>
+        <Text style={styles.errorText}>{error}</Text>
       )}
 
-      {/* Controls */}
       <View style={styles.controls}>
-        {/* Play/Pause button */}
         <TouchableOpacity
-          style={[styles.button, styles.primaryButton]}
+          style={[styles.button, { backgroundColor: accent }]}
           onPress={handlePlayPause}
           disabled={isLoading}
         >
           <Text style={styles.buttonIcon}>
-            {isLoading ? '⏳' : isPlaying ? '⏸' : '▶'}
+            {isLoading ? '\u23F3' : isPlaying ? '\u23F8' : '\u25B6'}
           </Text>
         </TouchableOpacity>
 
-        {/* Stop button */}
         <TouchableOpacity
-          style={styles.button}
-          onPress={handleStop}
+          style={[styles.button, { backgroundColor: buttonBg }]}
+          onPress={() => stop()}
           disabled={isLoading}
         >
-          <Text style={styles.buttonIcon}>⏹</Text>
+          <Text style={styles.buttonIcon}>{'\u23F9'}</Text>
         </TouchableOpacity>
 
-        {/* Replay button */}
         <TouchableOpacity
-          style={styles.button}
-          onPress={handleReplay}
+          style={[styles.button, { backgroundColor: buttonBg }]}
+          onPress={() => replay()}
           disabled={isLoading}
         >
-          <Text style={styles.buttonIcon}>🔄</Text>
+          <Text style={styles.buttonIcon}>{'\uD83D\uDD04'}</Text>
         </TouchableOpacity>
 
-        {/* Loop toggle button */}
         <TouchableOpacity
-          style={[styles.button, isLooping && styles.activeButton]}
-          onPress={handleToggleLoop}
+          style={[styles.button, isLooping && { backgroundColor: accent }]}
+          onPress={() => toggleLoop()}
           disabled={isLoading}
         >
-          <Text style={styles.buttonIcon}>🔁</Text>
+          <Text style={styles.buttonIcon}>{'\uD83D\uDD01'}</Text>
         </TouchableOpacity>
       </View>
 
-      {/* Loop indicator */}
       {isLooping && (
-        <Text style={styles.loopIndicator}>Répétition activée</Text>
+        <Text style={[styles.loopIndicator, { color: accent }]}>
+          {t('audio.loopEnabled', 'Répétition activée')}
+        </Text>
       )}
     </View>
   );
@@ -134,7 +126,6 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#1E293B',
     borderRadius: 12,
     padding: 12,
     marginVertical: 8,
@@ -146,7 +137,6 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   loadingText: {
-    color: '#94A3B8',
     fontSize: 12,
     marginLeft: 8,
   },
@@ -170,17 +160,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  primaryButton: {
-    backgroundColor: '#10B981',
-  },
-  activeButton: {
-    backgroundColor: '#10B981',
-  },
   buttonIcon: {
     fontSize: 20,
   },
   loopIndicator: {
-    color: '#10B981',
     fontSize: 11,
     textAlign: 'center',
     marginTop: 8,

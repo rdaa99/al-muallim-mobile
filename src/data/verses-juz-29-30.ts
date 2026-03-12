@@ -1005,7 +1005,7 @@ export const VERSES_JUZ_29_30: Array<[
   [114, 3, 'إِلَـٰهِ ٱلنَّاسِ', 'Dieu des hommes,', '"the God of men,', 30, 604],
   [114, 4, 'مِن شَرِّ ٱلۡوَسۡوَاسِ ٱلۡخَنَّاسِ', 'contre le mal du mauvais conseiller, furtif,', '"from the evil of the whispering, elusive tempter', 30, 604],
   [114, 5, 'ٱلَّذِی یُوَسۡوِسُ فِی صُدُورِ ٱلنَّاسِ', 'qui souffle le mal dans les poitrines des hommes,', '"who whispers in the hearts of men', 30, 604],
-  [114, 6, 'مِنَ ٱلۡجِنَّةِ وَٱلنَّاسِ', 'qu\'il (le conseiller) soit un djinn, ou un être humain».', '"from all [temptation to evil by] invisible forces as well as men,"', 30, 604]
+  [114, 6, 'مِنَ ٱلۡجِنَّةِ وَٱلنَّاسِ', 'qu\'il (le conseiller) soit un djinn, ou un être humain».', '"from all [temptation to evil by] invisible forces as well as men,"', 30, 604],
 ];
 
 // Stats

@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ScrollView, View, Text, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { useTranslation } from 'react-i18next';
 import { useAppStore } from '@/stores/appStore';
 import { useTheme } from '../context/ThemeContext';
@@ -9,6 +10,10 @@ import { ProgressCard } from '../components/ProgressCard';
 import { StreakCard } from '../components/StreakCard';
 import { WeeklyProgress } from '../components/WeeklyProgress';
 import { useUserStore } from '../stores/userStore';
+import { getWeeklyReviewCounts } from '../services/database';
+import type { RootTabParamList } from '../types';
+
+type DashboardNavProp = BottomTabNavigationProp<RootTabParamList, 'Dashboard'>;
 
 export const DashboardScreen: React.FC = () => {
   const { stats, dailyReview, loadStats, loadTodayReview } = useAppStore();
@@ -16,12 +21,14 @@ export const DashboardScreen: React.FC = () => {
   const { t } = useTranslation();
   const { colors } = useTheme();
   const { fonts } = useFonts();
-  const navigation = useNavigation();
+  const navigation = useNavigation<DashboardNavProp>();
   const isRTL = settings?.language === 'ar';
+  const [weeklyData, setWeeklyData] = useState<number[]>([0, 0, 0, 0, 0, 0, 0]);
 
   useEffect(() => {
     loadStats();
     loadTodayReview();
+    getWeeklyReviewCounts().then(setWeeklyData);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -29,13 +36,12 @@ export const DashboardScreen: React.FC = () => {
     switch (action) {
       case 'continue':
       case 'review':
-        navigation.navigate('Review' as never);
+        navigation.navigate('Review');
         break;
       case 'listen':
-        navigation.navigate('AudioPlayer' as never);
+        navigation.navigate('AudioPlayer');
         break;
       case 'stats':
-        // Already on stats page, refresh
         loadStats();
         break;
     }
@@ -48,7 +54,7 @@ export const DashboardScreen: React.FC = () => {
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }, isRTL && { direction: 'rtl' }]}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
-          <Text style={[styles.greeting, { color: colors.text, fontSize: fonts.hero }]}>
+          <Text style={[styles.greeting, { color: colors.text, fontSize: fonts.hero, textAlign: isRTL ? 'right' : 'left' }]}>
             {t('common.welcome')}
           </Text>
           <Text style={[styles.subtitle, { color: colors.textSecondary, fontSize: fonts.body }]}>
@@ -58,7 +64,7 @@ export const DashboardScreen: React.FC = () => {
 
         <StreakCard
           currentStreak={stats?.streak_days || 0}
-          longestStreak={stats?.streak_days || 0}
+          longestStreak={stats?.longest_streak || 0}
           colors={colors}
         />
 
@@ -80,7 +86,7 @@ export const DashboardScreen: React.FC = () => {
         />
 
         <WeeklyProgress
-          data={[0, 0, 0, 0, 0, 0, 0]}
+          data={weeklyData}
           dailyGoal={10}
           language={settings?.language || 'fr'}
           colors={colors}
@@ -92,10 +98,10 @@ export const DashboardScreen: React.FC = () => {
           </Text>
           <View style={styles.actionGrid}>
             {[
-              { icon: '📖', label: t('dashboard.continue'), action: 'continue' },
-              { icon: '🎯', label: t('dashboard.reviewBtn'), action: 'review' },
-              { icon: '🎧', label: t('dashboard.listen'), action: 'listen' },
-              { icon: '📊', label: t('dashboard.stats'), action: 'stats' },
+              { icon: '\uD83D\uDCD6', label: t('dashboard.continue'), action: 'continue' },
+              { icon: '\uD83C\uDFAF', label: t('dashboard.reviewBtn'), action: 'review' },
+              { icon: '\uD83C\uDFA7', label: t('dashboard.listen'), action: 'listen' },
+              { icon: '\uD83D\uDCCA', label: t('dashboard.stats'), action: 'stats' },
             ].map(({ icon, label, action }) => (
               <TouchableOpacity
                 key={action}
@@ -118,7 +124,7 @@ export const DashboardScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: { flex: 1 },
   header: { padding: 20, paddingTop: 10 },
-  greeting: { fontWeight: 'bold', textAlign: 'right' },
+  greeting: { fontWeight: 'bold' },
   subtitle: { marginTop: 4 },
   sectionTitle: { fontWeight: '600', marginBottom: 12, marginHorizontal: 16 },
   quickActions: { marginTop: 16, padding: 16, marginHorizontal: 16, borderRadius: 12 },

@@ -9,20 +9,20 @@ import {
   Alert,
   ScrollView,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { useAudioPlayer } from '../hooks/useAudioPlayer';
 import { useUserStore } from '../stores/userStore';
 import { useTheme } from '../context/ThemeContext';
+import { getVerseBySurahAyah } from '../services/database';
 import Slider from '@react-native-community/slider';
-import type { Surah } from '../types';
+import type { Surah, Verse } from '../types';
 
 const SPEEDS = [0.5, 0.75, 1, 1.25, 1.5, 2];
 
 // Default surah for initial load
 const DEFAULT_SURAH: Surah = {
   number: 1,
-  name: 'الفاتحة',
+  name: '\u0627\u0644\u0641\u0627\u062a\u062d\u0629',
   englishName: 'Al-Fatiha',
   ayahsCount: 7,
   revelationType: 'Meccan',
@@ -31,7 +31,6 @@ const DEFAULT_SURAH: Surah = {
 export const AudioPlayerScreen: React.FC = () => {
   const { width } = useWindowDimensions();
   const isSmallScreen = width < 360;
-  const navigation = useNavigation();
   const { t } = useTranslation();
   const { colors } = useTheme();
   const { settings } = useUserStore();
@@ -49,6 +48,7 @@ export const AudioPlayerScreen: React.FC = () => {
     replay,
     toggleLoop,
     seek,
+    setPlaybackSpeed,
   } = useAudioPlayer();
 
   const [currentSurah] = useState<Surah>(DEFAULT_SURAH);
@@ -56,6 +56,7 @@ export const AudioPlayerScreen: React.FC = () => {
   const [showSpeedOptions, setShowSpeedOptions] = useState(false);
   const [showText, setShowText] = useState(false);
   const [playbackSpeed, setPlaybackSpeedLocal] = useState(1);
+  const [verseText, setVerseText] = useState<Verse | null>(null);
 
   // Build audio URL
   const getAudioUrl = useCallback((surahNum: number, ayahNum: number) => {
@@ -63,6 +64,15 @@ export const AudioPlayerScreen: React.FC = () => {
     const paddedAyah = String(ayahNum).padStart(3, '0');
     return `https://cdn.islamic.network/quran/audio/128/ar.alafasy/${paddedSurah}${paddedAyah}.mp3`;
   }, []);
+
+  // Load verse text when showText is toggled or ayah changes
+  useEffect(() => {
+    if (showText) {
+      getVerseBySurahAyah(currentSurah.number, currentAyah).then(verse => {
+        setVerseText(verse);
+      });
+    }
+  }, [showText, currentSurah.number, currentAyah]);
 
   // Auto-advance when track finishes
   const hasAdvancedRef = useRef(false);
@@ -119,15 +129,12 @@ export const AudioPlayerScreen: React.FC = () => {
 
   const handleSpeedChange = (speed: number) => {
     setPlaybackSpeedLocal(speed);
+    setPlaybackSpeed(speed);
     setShowSpeedOptions(false);
   };
 
   const handleRepeat = () => {
     toggleLoop();
-  };
-
-  const handleBack = () => {
-    navigation.goBack();
   };
 
   return (
@@ -136,13 +143,9 @@ export const AudioPlayerScreen: React.FC = () => {
         <View style={styles.content}>
           {/* Header */}
           <View style={styles.header}>
-            <TouchableOpacity style={styles.backButton} onPress={handleBack} accessibilityLabel={t('audio.back')} accessibilityRole="button">
-              <Text style={[styles.backIcon, { color: colors.primary }]}>←</Text>
-            </TouchableOpacity>
             <Text style={[styles.headerTitle, { color: colors.text }]} accessibilityRole="header">
               {t('audio.title')}
             </Text>
-            <View style={styles.placeholder} />
           </View>
 
           {/* Surah Info */}
@@ -165,13 +168,13 @@ export const AudioPlayerScreen: React.FC = () => {
           <View style={styles.reciterInfo}>
             <Text style={[styles.reciterLabel, { color: colors.textSecondary }]}>{t('audio.reciter')}</Text>
             <Text style={[styles.reciterName, { color: colors.textSecondary }]}>
-              {settings?.language === 'ar' ? (settings?.reciter?.name || 'عبد الباسط') : (settings?.reciter?.englishName || 'Abdul Basit')}
+              {settings?.language === 'ar' ? (settings?.reciter?.name || '\u0639\u0628\u062f \u0627\u0644\u0628\u0627\u0633\u0637') : (settings?.reciter?.englishName || 'Abdul Basit')}
             </Text>
           </View>
 
           {/* Error */}
           {audioError && (
-            <Text style={styles.errorText}>⚠️ {audioError}</Text>
+            <Text style={styles.errorText}>{audioError}</Text>
           )}
 
           {/* Progress */}
@@ -201,7 +204,7 @@ export const AudioPlayerScreen: React.FC = () => {
               accessibilityLabel={t('audio.previous')}
               accessibilityRole="button"
             >
-              <Text style={[styles.controlIcon, currentAyah <= 1 && styles.disabledIcon]}>⏮</Text>
+              <Text style={[styles.controlIcon, currentAyah <= 1 && styles.disabledIcon]}>{'\u23EE'}</Text>
               <Text style={[styles.controlLabel, { color: colors.textSecondary }, currentAyah <= 1 && styles.disabledIcon]}>{t('audio.previous')}</Text>
             </TouchableOpacity>
 
@@ -211,7 +214,7 @@ export const AudioPlayerScreen: React.FC = () => {
               accessibilityLabel={isPlaying ? t('audio.pause') : t('audio.play')}
               accessibilityRole="button"
             >
-              <Text style={styles.playIcon}>{isLoading ? '⏳' : isPlaying ? '⏸' : '▶'}</Text>
+              <Text style={styles.playIcon}>{isLoading ? '\u23F3' : isPlaying ? '\u23F8' : '\u25B6'}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -221,7 +224,7 @@ export const AudioPlayerScreen: React.FC = () => {
               accessibilityLabel={t('audio.next')}
               accessibilityRole="button"
             >
-              <Text style={[styles.controlIcon, currentAyah >= currentSurah.ayahsCount && styles.disabledIcon]}>⏭</Text>
+              <Text style={[styles.controlIcon, currentAyah >= currentSurah.ayahsCount && styles.disabledIcon]}>{'\u23ED'}</Text>
               <Text style={[styles.controlLabel, { color: colors.textSecondary }, currentAyah >= currentSurah.ayahsCount && styles.disabledIcon]}>{t('audio.next')}</Text>
             </TouchableOpacity>
           </View>
@@ -277,9 +280,9 @@ export const AudioPlayerScreen: React.FC = () => {
               accessibilityLabel={t('audio.repeat')}
               accessibilityRole="button"
             >
-              <Text style={styles.additionalIcon}>🔄</Text>
+              <Text style={styles.additionalIcon}>{'\uD83D\uDD04'}</Text>
               <Text style={[styles.additionalLabel, { color: colors.textSecondary }]}>{t('audio.repeat')}</Text>
-              {isLooping && <Text style={[styles.activeIndicator, { color: colors.primary }]}>✓</Text>}
+              {isLooping && <Text style={[styles.activeIndicator, { color: colors.primary }]}>{'\u2713'}</Text>}
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -288,17 +291,17 @@ export const AudioPlayerScreen: React.FC = () => {
               accessibilityLabel={t('audio.text')}
               accessibilityRole="button"
             >
-              <Text style={styles.additionalIcon}>📜</Text>
+              <Text style={styles.additionalIcon}>{'\uD83D\uDCDC'}</Text>
               <Text style={[styles.additionalLabel, { color: colors.textSecondary }]}>{t('audio.text')}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
               style={styles.additionalButton}
-              onPress={() => Alert.alert(t('audio.playlist'), t('audio.playlistSoon', 'Fonctionnalité à venir'))}
+              onPress={() => Alert.alert(t('audio.playlist'), t('audio.playlistSoon', 'Coming soon'))}
               accessibilityLabel={t('audio.playlist')}
               accessibilityRole="button"
             >
-              <Text style={styles.additionalIcon}>📑</Text>
+              <Text style={styles.additionalIcon}>{'\uD83D\uDCD1'}</Text>
               <Text style={[styles.additionalLabel, { color: colors.textSecondary }]}>{t('audio.playlist')}</Text>
             </TouchableOpacity>
           </View>
@@ -307,11 +310,13 @@ export const AudioPlayerScreen: React.FC = () => {
           {showText && (
             <View style={[styles.textDisplay, { backgroundColor: colors.surface }]} accessibilityRole="text">
               <Text style={[styles.arabicText, { color: colors.text }]}>
-                بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
+                {verseText?.text_arabic || t('common.loading')}
               </Text>
-              <Text style={[styles.translationText, { color: colors.textSecondary }]}>
-                Au nom d'Allah, le Tout Miséricordieux, le Très Miséricordieux
-              </Text>
+              {verseText?.text_translation_fr && (
+                <Text style={[styles.translationText, { color: colors.textSecondary }]}>
+                  {verseText.text_translation_fr}
+                </Text>
+              )}
             </View>
           )}
         </View>
@@ -333,27 +338,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   header: {
-    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
     paddingVertical: 16,
-  },
-  backButton: {
-    padding: 8,
-    minWidth: 44,
-    minHeight: 44,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  backIcon: {
-    fontSize: 24,
   },
   headerTitle: {
     fontSize: 20,
     fontWeight: '600',
-  },
-  placeholder: {
-    width: 44,
   },
   surahInfo: {
     alignItems: 'center',

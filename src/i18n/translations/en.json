@@ -5,7 +5,8 @@
     "settings": "Settings",
     "review": "Review",
     "audio": "Audio",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "dbError": "Database initialization error"
   },
   "dashboard": {
     "title": "Dashboard",
@@ -80,7 +81,12 @@
     "saved": "Settings saved ✓",
     "saveError": "Error saving settings",
     "saving": "Saving...",
-    "autoSaveInfo": "Changes are saved automatically after 1 second."
+    "autoSaveInfo": "Changes are saved automatically after 1 second.",
+    "modeActive": "Active",
+    "modeRevision": "Revision only",
+    "modePaused": "Paused",
+    "dirDesc": "An-Nas → Al-Fatiha",
+    "dirAsc": "Al-Fatiha → An-Nas"
   },
   "audio": {
     "title": "Audio Player",
@@ -98,7 +104,9 @@
     "reciter": "Reciter",
     "back": "Back",
     "next": "Next",
-    "previous": "Previous"
+    "previous": "Previous",
+    "loading": "Loading...",
+    "loopEnabled": "Loop enabled"
   },
   "recitation": {
     "modes": {

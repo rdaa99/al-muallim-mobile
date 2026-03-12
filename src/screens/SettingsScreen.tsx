@@ -202,7 +202,7 @@ export const SettingsScreen: React.FC = () => {
                 localSettings.learning_mode === mode && styles.optionTextActive,
               ]}
             >
-              {mode === 'active' ? '🎯 Actif' : mode === 'revision_only' ? '🔄 Révision uniquement' : '⏸️ En pause'}
+              {mode === 'active' ? `\uD83C\uDFAF ${t('settings.modeActive')}` : mode === 'revision_only' ? `\uD83D\uDD04 ${t('settings.modeRevision')}` : `\u23F8\uFE0F ${t('settings.modePaused')}`}
             </Text>
           </TouchableOpacity>
         ))}
@@ -369,7 +369,7 @@ export const SettingsScreen: React.FC = () => {
                 localSettings.direction === dir && styles.optionTextActive,
               ]}
             >
-              {dir === 'desc' ? '⬇️ An-Nas → Al-Fatiha' : '⬆️ Al-Fatiha → An-Nas'}
+              {dir === 'desc' ? `\u2B07\uFE0F ${t('settings.dirDesc')}` : `\u2B06\uFE0F ${t('settings.dirAsc')}`}
             </Text>
           </TouchableOpacity>
         ))}

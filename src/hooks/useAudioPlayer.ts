@@ -131,6 +131,12 @@ export const useAudioPlayer = () => {
     }
   }, []);
 
+  const setPlaybackSpeed = useCallback((speed: number) => {
+    if (soundRef.current) {
+      soundRef.current.setSpeed(speed);
+    }
+  }, []);
+
   return {
     isPlaying,
     isLoading,
@@ -144,5 +150,6 @@ export const useAudioPlayer = () => {
     replay,
     toggleLoop,
     seek,
+    setPlaybackSpeed,
   };
 };

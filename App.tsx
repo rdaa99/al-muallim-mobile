@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, StatusBar, ActivityIndicator } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { useTranslation } from 'react-i18next';
 import { ThemeProvider, useTheme } from './src/context/ThemeContext';
 import { FontSizeProvider } from './src/context/FontSizeContext';
 import { ReviewScreen } from '@/screens/ReviewScreen';
@@ -9,13 +10,15 @@ import { DashboardScreen } from '@/screens/DashboardScreen';
 import { SettingsScreen } from '@/screens/SettingsScreen';
 import { AudioPlayerScreen } from '@/screens/AudioPlayerScreen';
 import { initDatabase, seedDatabase } from './src/services/database';
+import type { RootTabParamList } from './src/types';
 
-const Tab = createBottomTabNavigator();
+const Tab = createBottomTabNavigator<RootTabParamList>();
 
 const AppContent: React.FC = () => {
   const [dbReady, setDbReady] = useState(false);
   const [dbError, setDbError] = useState<string | null>(null);
   const { colors, isDark } = useTheme();
+  const { t } = useTranslation();
 
   useEffect(() => {
     const setup = async () => {
@@ -23,12 +26,12 @@ const AppContent: React.FC = () => {
         await initDatabase();
         await seedDatabase();
         setDbReady(true);
-      } catch (error) {
-        setDbError('Erreur d\'initialisation de la base de données');
+      } catch {
+        setDbError(t('common.dbError', 'Database initialization error'));
       }
     };
     setup();
-  }, []);
+  }, [t]);
 
   if (dbError) {
     return (
@@ -42,7 +45,7 @@ const AppContent: React.FC = () => {
     return (
       <View style={[styles.centerContainer, { backgroundColor: colors.background }]}>
         <ActivityIndicator size="large" color={colors.primary} />
-        <Text style={{ color: colors.textSecondary, marginTop: 12 }}>Chargement...</Text>
+        <Text style={{ color: colors.textSecondary, marginTop: 12 }}>{t('common.loading')}</Text>
       </View>
     );
   }
@@ -70,32 +73,36 @@ const AppContent: React.FC = () => {
           name="Review"
           component={ReviewScreen}
           options={{
-            title: 'Révision',
-            tabBarLabel: 'Révision',
+            title: t('common.review'),
+            tabBarLabel: t('common.review'),
+            tabBarIcon: ({ color }) => <Text style={{ fontSize: 20, color }}>{'\uD83D\uDCD6'}</Text>,
           }}
         />
         <Tab.Screen
           name="Dashboard"
           component={DashboardScreen}
           options={{
-            title: 'Tableau de bord',
-            tabBarLabel: 'Stats',
+            title: t('common.dashboard'),
+            tabBarLabel: t('common.dashboard'),
+            tabBarIcon: ({ color }) => <Text style={{ fontSize: 20, color }}>{'\uD83D\uDCCA'}</Text>,
           }}
         />
         <Tab.Screen
           name="AudioPlayer"
           component={AudioPlayerScreen}
           options={{
-            title: 'Lecteur',
-            tabBarLabel: 'Audio',
+            title: t('common.audio'),
+            tabBarLabel: t('common.audio'),
+            tabBarIcon: ({ color }) => <Text style={{ fontSize: 20, color }}>{'\uD83C\uDFA7'}</Text>,
           }}
         />
         <Tab.Screen
           name="Settings"
           component={SettingsScreen}
           options={{
-            title: 'Paramètres',
-            tabBarLabel: 'Paramètres',
+            title: t('common.settings'),
+            tabBarLabel: t('common.settings'),
+            tabBarIcon: ({ color }) => <Text style={{ fontSize: 20, color }}>{'\u2699\uFE0F'}</Text>,
           }}
         />
       </Tab.Navigator>

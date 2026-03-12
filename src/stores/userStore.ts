@@ -1,18 +1,16 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { UserProgress, UserDisplaySettings, Reciter } from '../types';
+import { UserDisplaySettings, Reciter } from '../types';
 
 interface UserState {
-  progress: UserProgress;
   settings: UserDisplaySettings;
-  updateProgress: (progress: Partial<UserProgress>) => void;
   updateSettings: (settings: Partial<UserDisplaySettings>) => void;
 }
 
 const DEFAULT_RECITER: Reciter = {
   id: '1',
-  name: 'عبد الباسط عبد الصمد',
+  name: '\u0639\u0628\u062f \u0627\u0644\u0628\u0627\u0633\u0637 \u0639\u0628\u062f \u0627\u0644\u0635\u0645\u062f',
   englishName: 'Abdul Basit Abdul Samad',
   style: 'Murattal',
 };
@@ -20,15 +18,6 @@ const DEFAULT_RECITER: Reciter = {
 export const useUserStore = create<UserState>()(
   persist(
     (set) => ({
-      progress: {
-        surahsMemorized: 0,
-        totalAyahs: 6236,
-        ayahsMemorized: 0,
-        currentStreak: 0,
-        longestStreak: 0,
-        dailyGoal: 10,
-        weeklyProgress: [0, 0, 0, 0, 0, 0, 0],
-      },
       settings: {
         language: 'fr',
         reciter: DEFAULT_RECITER,
@@ -37,8 +26,6 @@ export const useUserStore = create<UserState>()(
         darkMode: false,
         fontSize: 'medium',
       },
-      updateProgress: (progress) =>
-        set((state) => ({ progress: { ...state.progress, ...progress } })),
       updateSettings: (settings) =>
         set((state) => ({ settings: { ...state.settings, ...settings } })),
     }),

@@ -5,7 +5,8 @@
     "settings": "Paramètres",
     "review": "Révision",
     "audio": "Audio",
-    "loading": "Chargement..."
+    "loading": "Chargement...",
+    "dbError": "Erreur d'initialisation de la base de données"
   },
   "dashboard": {
     "title": "Tableau de bord",
@@ -80,7 +81,12 @@
     "saved": "Paramètres sauvegardés ✓",
     "saveError": "Erreur lors de la sauvegarde",
     "saving": "Sauvegarde en cours...",
-    "autoSaveInfo": "Les changements sont sauvegardés automatiquement après 1 seconde."
+    "autoSaveInfo": "Les changements sont sauvegardés automatiquement après 1 seconde.",
+    "modeActive": "Actif",
+    "modeRevision": "Révision uniquement",
+    "modePaused": "En pause",
+    "dirDesc": "An-Nas → Al-Fatiha",
+    "dirAsc": "Al-Fatiha → An-Nas"
   },
   "audio": {
     "title": "Lecteur Audio",
@@ -98,7 +104,9 @@
     "reciter": "Récitateur",
     "back": "Retour",
     "next": "Suivant",
-    "previous": "Précédent"
+    "previous": "Précédent",
+    "loading": "Chargement...",
+    "loopEnabled": "Répétition activée"
   },
   "recitation": {
     "modes": {

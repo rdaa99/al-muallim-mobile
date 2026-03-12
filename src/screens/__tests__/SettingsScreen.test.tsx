@@ -99,9 +99,9 @@ describe('SettingsScreen', () => {
   it('should display learning mode options', () => {
     const { getByText } = render(<SettingsScreen />);
     expect(getByText('settings.learningMode')).toBeTruthy();
-    expect(getByText('🎯 Actif')).toBeTruthy();
-    expect(getByText('🔄 Révision uniquement')).toBeTruthy();
-    expect(getByText('⏸️ En pause')).toBeTruthy();
+    expect(getByText('\uD83C\uDFAF settings.modeActive')).toBeTruthy();
+    expect(getByText('\uD83D\uDD04 settings.modeRevision')).toBeTruthy();
+    expect(getByText('\u23F8\uFE0F settings.modePaused')).toBeTruthy();
   });
 
   it('should change learning mode on press', async () => {
@@ -109,7 +109,7 @@ describe('SettingsScreen', () => {
 
     const { getByText } = render(<SettingsScreen />);
 
-    const revisionOnlyButton = getByText('🔄 Révision uniquement');
+    const revisionOnlyButton = getByText('\uD83D\uDD04 settings.modeRevision');
     fireEvent.press(revisionOnlyButton);
 
     act(() => {
@@ -145,8 +145,8 @@ describe('SettingsScreen', () => {
   it('should display direction options', () => {
     const { getByText } = render(<SettingsScreen />);
     expect(getByText('settings.direction')).toBeTruthy();
-    expect(getByText('⬇️ An-Nas → Al-Fatiha')).toBeTruthy();
-    expect(getByText('⬆️ Al-Fatiha → An-Nas')).toBeTruthy();
+    expect(getByText('\u2B07\uFE0F settings.dirDesc')).toBeTruthy();
+    expect(getByText('\u2B06\uFE0F settings.dirAsc')).toBeTruthy();
   });
 
   it('should display reciter picker', () => {
@@ -170,7 +170,7 @@ describe('SettingsScreen', () => {
 
     const { getByText } = render(<SettingsScreen />);
 
-    const revisionOnlyButton = getByText('🔄 Révision uniquement');
+    const revisionOnlyButton = getByText('\uD83D\uDD04 settings.modeRevision');
     fireEvent.press(revisionOnlyButton);
 
     // Should not update immediately

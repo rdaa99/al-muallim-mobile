@@ -76,7 +76,7 @@ describe('AudioPlayer', () => {
 
     const { getByText } = render(<AudioPlayer {...defaultProps} />);
 
-    expect(getByText('Chargement...')).toBeTruthy();
+    expect(getByText('audio.loading')).toBeTruthy();
   });
 
   it('should show error message when there is an error', () => {
@@ -150,7 +150,7 @@ describe('AudioPlayer', () => {
 
     const { getByText } = render(<AudioPlayer {...defaultProps} />);
 
-    expect(getByText('Répétition activée')).toBeTruthy();
+    expect(getByText('audio.loopEnabled')).toBeTruthy();
   });
 
   it('should auto-play when autoPlay is true', () => {

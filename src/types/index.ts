@@ -53,6 +53,7 @@ export interface ProgressStats {
   consolidating: number;
   learning: number;
   streak_days: number;
+  longest_streak: number;
   retention_rate: number;
   verses_by_juz: JuzProgress[];
   verses_by_surah: SurahProgress[];
@@ -99,19 +100,6 @@ export interface UserDisplaySettings {
   fontSize: 'small' | 'medium' | 'large';
 }
 
-export interface SRSStats {
-  status_distribution: {
-    learning: number;
-    consolidating: number;
-    mastered: number;
-  };
-  average_ease_factor: number;
-  average_interval: number;
-  retention_rate: number;
-  quality_distribution: Record<QualityScore, number>;
-  forecast_7days: number[];
-}
-
 // Audio types
 export interface Surah {
   number: number;
@@ -121,28 +109,17 @@ export interface Surah {
   revelationType: 'Meccan' | 'Medinan';
 }
 
-export interface AudioState {
-  isPlaying: boolean;
-  currentSurah: Surah | null;
-  currentAyah: number;
-  duration: number;
-  position: number;
-  playbackSpeed: number;
-}
-
-export interface UserProgress {
-  surahsMemorized: number;
-  totalAyahs: number;
-  ayahsMemorized: number;
-  currentStreak: number;
-  longestStreak: number;
-  dailyGoal: number;
-  weeklyProgress: number[];
-}
-
 export interface Reciter {
   id: string;
   name: string;
   englishName: string;
   style?: string;
 }
+
+// Navigation types
+export type RootTabParamList = {
+  Review: undefined;
+  Dashboard: undefined;
+  AudioPlayer: undefined;
+  Settings: undefined;
+};

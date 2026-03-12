@@ -8,12 +8,18 @@ import { useUserStore } from '../../stores/userStore';
 jest.mock('@/stores/appStore');
 jest.mock('../../stores/userStore');
 
+// Mock database
+jest.mock('../../services/database', () => ({
+  getWeeklyReviewCounts: jest.fn().mockResolvedValue([0, 0, 0, 0, 0, 0, 0]),
+}));
+
 // Mock navigation
 jest.mock('@react-navigation/native', () => ({
   useNavigation: () => ({
     navigate: jest.fn(),
   }),
 }));
+
 
 // Mock contexts
 jest.mock('../../context/ThemeContext', () => ({
@@ -60,6 +66,7 @@ const mockStats = {
   consolidating: 15,
   learning: 15,
   streak_days: 5,
+  longest_streak: 10,
   retention_rate: 0.85,
   verses_by_juz: [],
   verses_by_surah: [],
