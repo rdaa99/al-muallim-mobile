@@ -22,10 +22,14 @@ export type VerseStatus = 'learning' | 'consolidating' | 'mastered' | 'new';
 export interface ReviewResult {
   verse_id: number;
   quality: QualityScore;
-  reviewed_at: string;
+  reviewed_at?: string;
   next_review_date: string;
-  new_interval: number;
-  new_ease_factor: number;
+  new_interval?: number;
+  new_ease_factor?: number;
+  status?: VerseStatus;
+  interval?: number;
+  ease_factor?: number;
+  repetitions?: number;
 }
 
 export type QualityScore = 0 | 1 | 2 | 3 | 4 | 5;
@@ -86,7 +90,16 @@ export interface UserSettings {
   direction?: 'desc' | 'asc';
   session_duration?: number;
   preferred_reciter?: string;
-  [key: string]: string | number | undefined;
+  [key: string]: any;
+}
+
+export interface UserDisplaySettings {
+  language: string;
+  reciter: Reciter | null;
+  notificationsEnabled: boolean;
+  dailyReminderTime: string;
+  darkMode: boolean;
+  fontSize: 'small' | 'medium' | 'large';
 }
 
 export interface SRSStats {

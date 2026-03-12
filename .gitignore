@@ -36,3 +36,6 @@ yarn-error.log*
 # Temporary
 tmp/
 temp/
+
+# Nested duplicate project
+al-muallim-mobile/

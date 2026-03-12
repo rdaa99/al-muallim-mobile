@@ -145,7 +145,7 @@ export const AudioPlayerScreen: React.FC = () => {
           {/* Reciter Info */}
           <View style={styles.reciterInfo}>
             <Text style={styles.reciterLabel}>Récitateur</Text>
-            <Text style={styles.reciterName}>{settings.language === 'ar' ? (settings.reciter?.name || 'عبد الباسط') : (settings.reciter?.englishName || 'Abdul Basit')}</Text>
+            <Text style={styles.reciterName}>{settings?.language === 'ar' ? (settings?.reciter?.name || 'عبد الباسط') : (settings?.reciter?.englishName || 'Abdul Basit')}</Text>
           </View>
 
           {/* Progress */}

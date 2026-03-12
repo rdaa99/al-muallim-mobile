@@ -11,27 +11,106 @@
     "surahsMemorized": "Sourates mémorisées",
     "ayahsMemorized": "Versets mémorisés",
     "currentStreak": "Série actuelle",
-    "dailyGoal": "Objectif quotidien"
+    "dailyGoal": "Objectif quotidien",
+    "consecutiveDays": "Jours consécutifs",
+    "record": "Record",
+    "weeklyProgress": "Progression cette semaine",
+    "verses": "versets",
+    "quickActions": "Actions rapides",
+    "continue": "Continuer",
+    "reviewBtn": "Réviser",
+    "listen": "Écouter",
+    "stats": "Stats"
+  },
+  "days": {
+    "sun": "Dim",
+    "mon": "Lun",
+    "tue": "Mar",
+    "wed": "Mer",
+    "thu": "Jeu",
+    "fri": "Ven",
+    "sat": "Sam"
   },
   "settings": {
     "title": "Paramètres",
     "language": "Langue",
+    "languageLabel": "Langue de l'application",
     "darkMode": "Mode sombre",
     "fontSize": "Taille du texte",
     "notifications": "Notifications",
-    "reciter": "Récitateur"
-  },
-  "review": {
-    "title": "Révision",
-    "nextVerse": "Verset suivant",
-    "previousVerse": "Verset précédent",
-    "submitReview": "Valider"
+    "dailyReminders": "Rappels quotidiens",
+    "reminderTime": "Heure du rappel",
+    "recitation": "Récitation",
+    "reciter": "Récitateur",
+    "display": "Affichage",
+    "about": "À propos",
+    "version": "Version"
   },
   "audio": {
-    "title": "Audio",
+    "title": "Lecteur Audio",
     "play": "Lecture",
     "pause": "Pause",
     "repeat": "Répéter",
-    "speed": "Vitesse"
+    "speed": "Vitesse",
+    "text": "Texte",
+    "playlist": "Playlist",
+    "noSurah": "Aucune sourate",
+    "selectSurah": "Sélectionnez une sourate",
+    "verse": "Verset",
+    "reciter": "Récitateur",
+    "back": "Retour",
+    "next": "Suivant",
+    "previous": "Précédent"
+  },
+  "recitation": {
+    "modes": {
+      "learning": "Apprentissage",
+      "test": "Test",
+      "flow": "Flow",
+      "hifz": "Hifz"
+    },
+    "reveal": "Révéler",
+    "review": "Réviser",
+    "next": "Suivant",
+    "hifzMode": "Mode Hifz",
+    "progress": "Progression"
+  },
+  "wordBreakdown": {
+    "title": "Analyse des mots",
+    "translation": "Traduction",
+    "transliteration": "Translittération",
+    "root": "Racine",
+    "grammar": "Grammaire",
+    "meaning": "Signification",
+    "fullVerse": "Verset complet"
+  },
+  "goals": {
+    "title": "Objectifs",
+    "dailyGoals": "Objectifs quotidiens",
+    "achievements": "Accomplissements",
+    "points": "Points"
+  },
+  "mistakes": {
+    "title": "Erreurs",
+    "pronunciation": "Prononciation",
+    "tajweed": "Tajweed",
+    "memory": "Mémoire",
+    "fluency": "Fluidité"
+  },
+  "focus": {
+    "title": "Mode Focus",
+    "selectSurahs": "Sélectionner les sourates",
+    "duration": "Durée",
+    "minutes": "min",
+    "startSession": "Commencer la session",
+    "sessionComplete": "Session terminée !",
+    "timeUp": "Le temps est écoulé",
+    "selectSurah": "Sélectionner une sourate",
+    "selectAtLeastOne": "Sélectionnez au moins une sourate",
+    "sessionEnded": "Session terminée",
+    "keepPracticing": "Continuez à pratiquer !",
+    "timeRemaining": "Temps restant",
+    "surahsSelected": "sourates sélectionnées",
+    "endSession": "Terminer"
   }
 }

@@ -15,7 +15,7 @@ export const DashboardScreen: React.FC = () => {
   const { colors } = useTheme();
   const { fonts } = useFonts();
   const navigation = useNavigation();
-  const isRTL = settings.language === 'ar';
+  const isRTL = settings?.language === 'ar';
 
   const handleQuickAction = (action: string) => {
     if (action !== 'stats') {
@@ -66,7 +66,7 @@ export const DashboardScreen: React.FC = () => {
         <WeeklyProgress
           data={progress.weeklyProgress}
           dailyGoal={progress.dailyGoal}
-          language={settings.language}
+          language={settings?.language || 'fr'}
         />
 
         <View style={[styles.quickActions, { backgroundColor: colors.surface }]}>

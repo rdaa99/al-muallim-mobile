@@ -6,7 +6,7 @@ module.exports = {
     '^@/(.*)$': '<rootDir>/src/$1',
     '^@react-native-community/slider$': '<rootDir>/src/__mocks__/sliderMock.js',
   },
-  testMatch: ['**/__tests__/**/*.test.(ts|tsx|js)'],
+  testMatch: ['**/__tests__/**/*.test.{ts,tsx,js}'],
   collectCoverageFrom: [
     'src/**/*.{ts,tsx}',
     '!src/**/*.d.ts',
@@ -14,7 +14,7 @@ module.exports = {
     '!src/**/__mocks__/**',
   ],
   transformIgnorePatterns: [
-    'node_modules/(?!(react-native|@react-navigation|zustand|@react-native|react-native-quick-sqlite)/)',
+    'node_modules/(?!(react-native|@react-navigation|zustand|@react-native|react-native-quick-sqlite|@react-native-async-storage|@react-native-community|i18next|react-i18next)/)',
   ],
   testEnvironment: 'node',
   testPathIgnorePatterns: ['/node_modules/', '/android/', '/ios/'],

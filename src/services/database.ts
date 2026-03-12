@@ -5,6 +5,29 @@ import { VERSES_JUZ_29_30 } from '@/data/verses-juz-29-30';
 // Open database
 const db = SQLite.open({ name: 'almuallim.db' });
 
+// Helper to safely get row from SQLite result set
+function getRow(rows: any, index: number): any {
+  if (!rows) return undefined;
+  if (rows._array) return rows._array[index];
+  if (typeof rows.item === 'function') return rows.item(index);
+  if (Array.isArray(rows)) return rows[index];
+  return undefined;
+}
+
+function getRows(rows: any): any[] {
+  if (!rows) return [];
+  if (rows._array) return rows._array;
+  if (Array.isArray(rows)) return rows;
+  return [];
+}
+
+function getRowCount(rows: any): number {
+  if (!rows) return 0;
+  if (rows._array) return rows._array.length;
+  if (typeof rows.length === 'number') return rows.length;
+  return 0;
+}
+
 // Initialize schema
 export const initDatabase = async (): Promise<void> => {
   try {
@@ -58,7 +81,7 @@ export const initDatabase = async (): Promise<void> => {
 export const seedDatabase = async (): Promise<void> => {
   // Check if database is already seeded
   const checkResult = await db.execute(`SELECT COUNT(*) as count FROM verses`);
-  const count = checkResult.rows?.[0]?.count || 0;
+  const count = getRow(checkResult.rows, 0)?.count || 0;
 
   if (count > 0) {
     console.log('Database already seeded, skipping...');
@@ -118,13 +141,13 @@ export const getTodayReview = async (): Promise<DailyReview> => {
     [today]
   );
   
-  const completedCount = historyResult.rows?.[0]?.count || 0;
-  
+  const completedCount = getRow(historyResult.rows, 0)?.count || 0;
+
   return {
     date: today,
-    due_count: result.rows?.length || 0,
+    due_count: getRowCount(result.rows),
     completed_count: completedCount,
-    verses: result.rows || [],
+    verses: getRows(result.rows) as Verse[],
   };
 };
 
@@ -136,7 +159,7 @@ export const submitReview = async (verseId: number, quality: QualityScore): Prom
     [verseId]
   );
 
-  const verse = verseResult.rows?.[0];
+  const verse = getRow(verseResult.rows, 0);
   if (!verse) {
     throw new Error('Verse not found');
   }
@@ -191,22 +214,22 @@ export const submitReview = async (verseId: number, quality: QualityScore): Prom
 // Get progress stats
 export const getProgressStats = async (): Promise<ProgressStats> => {
   const totalResult = await db.execute(`SELECT COUNT(*) as count FROM verses`);
-  const total_verses = totalResult.rows?.[0]?.count || 0;
+  const total_verses = getRow(totalResult.rows, 0)?.count || 0;
 
   const masteredResult = await db.execute(
     `SELECT COUNT(*) as count FROM verses WHERE status = 'mastered'`
   );
-  const mastered = masteredResult.rows?.[0]?.count || 0;
+  const mastered = getRow(masteredResult.rows, 0)?.count || 0;
 
   const consolidatingResult = await db.execute(
     `SELECT COUNT(*) as count FROM verses WHERE status = 'consolidating'`
   );
-  const consolidating = consolidatingResult.rows?.[0]?.count || 0;
+  const consolidating = getRow(consolidatingResult.rows, 0)?.count || 0;
 
   const learningResult = await db.execute(
     `SELECT COUNT(*) as count FROM verses WHERE status = 'learning'`
   );
-  const learning = learningResult.rows?.[0]?.count || 0;
+  const learning = getRow(learningResult.rows, 0)?.count || 0;
 
   const total_learned = mastered + consolidating + learning;
 
@@ -220,14 +243,15 @@ export const getProgressStats = async (): Promise<ProgressStats> => {
   );
   
   let streak_days = 0;
-  if (streakResult.rows && streakResult.rows.length > 0) {
+  const streakRows = getRows(streakResult.rows);
+  if (streakRows.length > 0) {
     const today = new Date().toISOString().split('T')[0];
     const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
-    
+
     // Check if reviewed today or yesterday to maintain streak
-    if (streakResult.rows[0].review_date === today || 
-        streakResult.rows[0].review_date === yesterday) {
-      streak_days = streakResult.rows.length;
+    if (streakRows[0].review_date === today ||
+        streakRows[0].review_date === yesterday) {
+      streak_days = streakRows.length;
     }
   }
 
@@ -237,7 +261,7 @@ export const getProgressStats = async (): Promise<ProgressStats> => {
      FROM review_history
      WHERE reviewed_at >= date('now', '-30 days')`
   );
-  const retention_rate = retentionResult.rows?.[0]?.retention_rate || 0.85;
+  const retention_rate = getRow(retentionResult.rows, 0)?.retention_rate || 0.85;
 
   return {
     total_verses,
@@ -277,13 +301,12 @@ export const getSettings = async (): Promise<UserSettings> => {
   };
 
   // Override with stored settings
-  if (result.rows) {
-    for (const row of result.rows) {
-      try {
-        defaultSettings[row.key as keyof UserSettings] = JSON.parse(row.value);
-      } catch {
-        defaultSettings[row.key as keyof UserSettings] = row.value as any;
-      }
+  const settingsRows = getRows(result.rows);
+  for (const row of settingsRows) {
+    try {
+      defaultSettings[row.key as keyof UserSettings] = JSON.parse(row.value);
+    } catch {
+      defaultSettings[row.key as keyof UserSettings] = row.value as any;
     }
   }
 

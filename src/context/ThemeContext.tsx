@@ -57,9 +57,8 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     // Use user preference if set, otherwise follow system
-    const darkModeSetting = settings.darkMode;
-    if (darkModeSetting !== undefined) {
-      setTheme(darkModeSetting ? 'dark' : 'light');
+    if (settings.darkMode !== undefined) {
+      setTheme(settings.darkMode ? 'dark' : 'light');
     } else {
       setTheme(systemColorScheme === 'dark' ? 'dark' : 'light');
     }

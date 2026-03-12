@@ -1,10 +1,10 @@
 import React from 'react';
-import { render, fireEvent, waitFor } from '@testing-library/react-native';
+import { render } from '@testing-library/react-native';
 import { DashboardScreen } from '../DashboardScreen';
-import { useAppStore } from '@/stores/appStore';
+import { useUserStore } from '../../store/userStore';
 
-// Mock the store
-jest.mock('@/stores/appStore');
+// Mock the stores
+jest.mock('../../store/userStore');
 
 // Mock navigation
 jest.mock('@react-navigation/native', () => ({
@@ -13,139 +13,111 @@ jest.mock('@react-navigation/native', () => ({
   }),
 }));
 
+// Mock contexts
+jest.mock('../../context/ThemeContext', () => ({
+  useTheme: () => ({
+    theme: 'dark',
+    isDark: true,
+    colors: {
+      background: '#0F172A',
+      surface: '#1E293B',
+      primary: '#10B981',
+      text: '#F8FAFC',
+      textSecondary: '#94A3B8',
+      border: '#334155',
+      card: '#1E293B',
+      tabBar: '#1E293B',
+      header: '#0F172A',
+    },
+    toggleTheme: jest.fn(),
+  }),
+}));
+
+jest.mock('../../context/FontSizeContext', () => ({
+  useFonts: () => ({
+    fontSize: 'medium',
+    fonts: {
+      caption: 12,
+      body: 14,
+      subheading: 16,
+      heading: 18,
+      title: 24,
+      hero: 28,
+    },
+    scale: (size: number) => size,
+  }),
+}));
+
+const mockProgress = {
+  surahsMemorized: 10,
+  totalAyahs: 6236,
+  ayahsMemorized: 500,
+  currentStreak: 5,
+  longestStreak: 15,
+  dailyGoal: 10,
+  weeklyProgress: [5, 10, 8, 12, 10, 0, 0],
+};
+
+const mockSettings = {
+  language: 'fr',
+  reciter: null,
+  notificationsEnabled: true,
+  dailyReminderTime: '08:00',
+  darkMode: false,
+  fontSize: 'medium' as const,
+};
+
 describe('DashboardScreen', () => {
-  const mockLoadStats = jest.fn();
-
-  const mockStats = {
-    total_verses: 6236,
-    mastered: 100,
-    consolidating: 50,
-    learning: 25,
-    streak_days: 7,
-    retention_rate: 0.85,
-    verses_by_juz: [
-      { juz_number: 30, total: 564, mastered: 100, consolidating: 50, learning: 25 },
-    ],
-    verses_by_surah: [],
-    total_learned: 175,
-    total_mastered: 100,
-  };
-
   beforeEach(() => {
     jest.clearAllMocks();
-    (useAppStore as unknown as jest.Mock).mockReturnValue({
-      stats: mockStats,
-      loading: false,
-      loadStats: mockLoadStats,
+    (useUserStore as unknown as jest.Mock).mockReturnValue({
+      progress: mockProgress,
+      settings: mockSettings,
+      updateProgress: jest.fn(),
+      updateSettings: jest.fn(),
     });
   });
 
-  it('should render loading state', () => {
-    (useAppStore as unknown as jest.Mock).mockReturnValue({
-      stats: null,
-      loading: true,
-      loadStats: mockLoadStats,
-    });
-
+  it('should render greeting', () => {
     const { getByText } = render(<DashboardScreen />);
-    expect(getByText('Chargement des statistiques...')).toBeTruthy();
+    // useTranslation returns the key as-is
+    expect(getByText('common.welcome')).toBeTruthy();
   });
 
-  it('should render empty state for new users', () => {
-    (useAppStore as unknown as jest.Mock).mockReturnValue({
-      stats: {
-        ...mockStats,
-        total_learned: 0,
-        total_mastered: 0,
-        mastered: 0,
-      },
-      loading: false,
-      loadStats: mockLoadStats,
-    });
-
+  it('should render dashboard title', () => {
     const { getByText } = render(<DashboardScreen />);
-    expect(getByText('Bienvenue !')).toBeTruthy();
-    expect(getByText(/Commencez votre voyage/)).toBeTruthy();
+    expect(getByText('dashboard.title')).toBeTruthy();
   });
 
-  it('should display streak correctly', () => {
-    const { getByText, getAllByText } = render(<DashboardScreen />);
-    expect(getByText('jours consécutifs')).toBeTruthy();
-    // 7 appears in streak card AND in quick stats grid
-    const sevens = getAllByText('7');
-    expect(sevens.length).toBeGreaterThan(0);
-  });
-
-  it('should calculate and display progress percentage', () => {
+  it('should display streak card', () => {
     const { getByText } = render(<DashboardScreen />);
-    const percentage = Math.round((mockStats.mastered / mockStats.total_verses) * 100);
-    expect(getByText(`${percentage}%`)).toBeTruthy();
+    expect(getByText('5')).toBeTruthy();
+    expect(getByText('15')).toBeTruthy();
   });
 
-  it('should show status distribution', () => {
+  it('should display progress cards', () => {
     const { getByText } = render(<DashboardScreen />);
-    expect(getByText('✅ Maîtrisés')).toBeTruthy();
-    expect(getByText('🔄 En consolidation')).toBeTruthy();
-    expect(getByText('📖 En apprentissage')).toBeTruthy();
+    expect(getByText('dashboard.surahsMemorized')).toBeTruthy();
+    expect(getByText('dashboard.ayahsMemorized')).toBeTruthy();
+    expect(getByText('dashboard.dailyGoal')).toBeTruthy();
   });
 
-  it('should display retention rate', () => {
+  it('should display quick action buttons', () => {
     const { getByText } = render(<DashboardScreen />);
-    expect(getByText('📊 Taux de rétention')).toBeTruthy();
-    expect(getByText('85%')).toBeTruthy();
-  });
-
-  it('should show juz progress if available', () => {
-    const { getByText } = render(<DashboardScreen />);
-    expect(getByText('Progression par Juz')).toBeTruthy();
-    expect(getByText(/Juz 30/)).toBeTruthy();
-  });
-
-  it('should call loadStats on mount', () => {
-    render(<DashboardScreen />);
-    expect(mockLoadStats).toHaveBeenCalled();
-  });
-
-  it('should refresh stats on pull-to-refresh', async () => {
-    render(<DashboardScreen />);
-    
-    await waitFor(() => {
-      expect(mockLoadStats).toHaveBeenCalled();
-    });
-  });
-
-  it('should display quick stats grid', () => {
-    const { getByText } = render(<DashboardScreen />);
-    expect(getByText('175')).toBeTruthy(); // total learned
-    expect(getByText('Appris')).toBeTruthy();
-    expect(getByText('Jours')).toBeTruthy();
-  });
-
-  it('should show pull-to-refresh hint', () => {
-    const { getByText } = render(<DashboardScreen />);
-    expect(getByText(/Tirez vers le bas pour actualiser/)).toBeTruthy();
+    expect(getByText('Continuer')).toBeTruthy();
+    expect(getByText('Réviser')).toBeTruthy();
+    expect(getByText('Stats')).toBeTruthy();
   });
 
   it('should handle zero streak', () => {
-    (useAppStore as unknown as jest.Mock).mockReturnValue({
-      stats: { ...mockStats, streak_days: 0 },
-      loading: false,
-      loadStats: mockLoadStats,
+    (useUserStore as unknown as jest.Mock).mockReturnValue({
+      progress: { ...mockProgress, currentStreak: 0, longestStreak: 0 },
+      settings: mockSettings,
+      updateProgress: jest.fn(),
+      updateSettings: jest.fn(),
     });
 
-    const { queryAllByText } = render(<DashboardScreen />);
-    // Check for the streak section which will show 0
-    expect(queryAllByText('0').length).toBeGreaterThan(0);
-  });
-
-  it('should handle missing juz data gracefully', () => {
-    (useAppStore as unknown as jest.Mock).mockReturnValue({
-      stats: { ...mockStats, verses_by_juz: [] },
-      loading: false,
-      loadStats: mockLoadStats,
-    });
-
-    const { queryByText } = render(<DashboardScreen />);
-    expect(queryByText('Progression par Juz')).toBeNull();
+    const { getAllByText } = render(<DashboardScreen />);
+    expect(getAllByText('0').length).toBeGreaterThanOrEqual(2);
   });
 });

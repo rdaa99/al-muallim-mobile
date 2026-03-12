@@ -1,16 +1,16 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { UserProgress, UserSettings } from '../types';
+import { UserProgress, UserDisplaySettings, Reciter } from '../types';
 
 interface UserState {
   progress: UserProgress;
-  settings: UserSettings;
+  settings: UserDisplaySettings;
   updateProgress: (progress: Partial<UserProgress>) => void;
-  updateSettings: (settings: Partial<UserSettings>) => void;
+  updateSettings: (settings: Partial<UserDisplaySettings>) => void;
 }
 
-const DEFAULT_RECITER = {
+const DEFAULT_RECITER: Reciter = {
   id: '1',
   name: 'عبد الباسط عبد الصمد',
   englishName: 'Abdul Basit Abdul Samad',
