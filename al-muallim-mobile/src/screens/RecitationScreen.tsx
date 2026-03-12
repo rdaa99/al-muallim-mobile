@@ -7,12 +7,14 @@ import {
   TouchableOpacity,
   ScrollView,
   Dimensions,
+  ActivityIndicator,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useNavigation } from '@react-navigation/native';
 import { useTheme } from '../context/ThemeContext';
 import { useFonts } from '../context/FontSizeContext';
 import { useRecitationStore } from '../store/recitationStore';
+import { getQuranDB } from '../database/QuranDB';
 import { Surah } from '../types';
 
 const { width } = Dimensions.get('window');
@@ -26,6 +28,15 @@ interface RecitationScreenProps {
       mode?: RecitationMode;
     };
   };
+}
+
+interface Verse {
+  id: number;
+  surahNumber: number;
+  verseNumber: number;
+  text: string;
+  juz: number;
+  page: number;
 }
 
 export const RecitationScreen: React.FC<RecitationScreenProps> = ({ route }) => {
@@ -50,6 +61,8 @@ export const RecitationScreen: React.FC<RecitationScreenProps> = ({ route }) => 
   const [isPlaying, setIsPlaying] = useState(false);
   const [showHint, setShowHint] = useState(false);
   const [revealedVerses, setRevealedVerses] = useState<Set<number>>(new Set());
+  const [verses, setVerses] = useState<Verse[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const {
     progress,
@@ -57,26 +70,76 @@ export const RecitationScreen: React.FC<RecitationScreenProps> = ({ route }) => 
     markVerseMemorized,
   } = useRecitationStore();
 
-  // Sample verses for demo (in real app, fetch from DB)
-  const sampleVerses = [
-    { number: 1, text: 'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ', words: 4 },
-    { number: 2, text: 'الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ', words: 4 },
-    { number: 3, text: 'الرَّحْمَٰنِ الرَّحِيمِ', words: 2 },
-    { number: 4, text: 'مَالِكِ يَوْمِ الدِّينِ', words: 3 },
-    { number: 5, text: 'إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ', words: 4 },
-    { number: 6, text: 'اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ', words: 3 },
-    { number: 7, text: 'صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ', words: 9 },
-  ];
+  // Load verses from SQLite DB
+  useEffect(() => {
+    const loadVerses = async () => {
+      try {
+        const db = await getQuranDB();
+        const fetchedVerses = await db.getVersesBySurah(surah.number);
+        setVerses(fetchedVerses);
+      } catch (error) {
+        console.error('Error loading verses:', error);
+        // Fallback to sample verses if DB fails
+        setVerses([
+          { id: 1, surahNumber: 1, verseNumber: 1, text: 'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ', juz: 1, page: 1 },
+          { id: 2, surahNumber: 1, verseNumber: 2, text: 'الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ', juz: 1, page: 1 },
+          { id: 3, surahNumber: 1, verseNumber: 3, text: 'الرَّحْمَٰنِ الرَّحِيمِ', juz: 1, page: 1 },
+          { id: 4, surahNumber: 1, verseNumber: 4, text: 'مَالِكِ يَوْمِ الدِّينِ', juz: 1, page: 1 },
+          { id: 5, surahNumber: 1, verseNumber: 5, text: 'إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ', juz: 1, page: 1 },
+          { id: 6, surahNumber: 1, verseNumber: 6, text: 'اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ', juz: 1, page: 1 },
+          { id: 7, surahNumber: 1, verseNumber: 7, text: 'صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ', juz: 1, page: 1 },
+        ]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    loadVerses();
+  }, [surah.number]);
 
-  const currentVerse = sampleVerses[currentVerseIndex];
+  const currentVerse = verses[currentVerseIndex];
+
+  // Loading state
+  if (loading) {
+    return (
+      <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={colors.primary} />
+          <Text style={[styles.loadingText, { color: colors.text }]}>
+            Chargement des versets...
+          </Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  // Error state - no verses loaded
+  if (verses.length === 0) {
+    return (
+      <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
+        <View style={styles.loadingContainer}>
+          <Text style={[styles.errorText, { color: colors.text }]}>
+            Impossible de charger les versets
+          </Text>
+          <TouchableOpacity
+            style={[styles.retryButton, { backgroundColor: colors.primary }]}
+            onPress={() => setLoading(true)}
+          >
+            <Text style={styles.retryText}>Réessayer</Text>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   useEffect(() => {
-    if (mode === 'learning' && isPlaying) {
+    if (mode === 'learning' && isPlaying && currentVerse) {
+      const words = currentVerse.text.split(' ').length;
       const interval = setInterval(() => {
         setCurrentWordIndex((prev) => {
-          if (prev >= currentVerse.words - 1) {
+          if (prev >= words - 1) {
             // Move to next verse
-            if (currentVerseIndex < sampleVerses.length - 1) {
+            if (currentVerseIndex < verses.length - 1) {
               setCurrentVerseIndex(currentVerseIndex + 1);
               return 0;
             } else {
@@ -90,7 +153,7 @@ export const RecitationScreen: React.FC<RecitationScreenProps> = ({ route }) => 
 
       return () => clearInterval(interval);
     }
-  }, [mode, isPlaying, currentVerseIndex, currentVerse?.words]);
+  }, [mode, isPlaying, currentVerseIndex, currentVerse, verses.length]);
 
   const handleModeChange = (newMode: RecitationMode) => {
     setMode(newMode);
@@ -105,7 +168,7 @@ export const RecitationScreen: React.FC<RecitationScreenProps> = ({ route }) => 
 
   const handleMarkMemorized = (verseIndex: number) => {
     markVerseMemorized(surah.number, verseIndex + 1);
-    if (verseIndex < sampleVerses.length - 1) {
+    if (verseIndex < verses.length - 1) {
       setCurrentVerseIndex(verseIndex + 1);
     }
   };
@@ -137,7 +200,7 @@ export const RecitationScreen: React.FC<RecitationScreenProps> = ({ route }) => 
   const renderLearningMode = () => (
     <View style={styles.verseContainer}>
       <Text style={[styles.verseNumber, { color: colors.textSecondary }]}>
-        {t('audio.verse')} {currentVerse.number}
+        {t('audio.verse')} {currentVerse?.verseNumber}
       </Text>
 
       <View style={styles.wordsContainer}>
@@ -184,8 +247,8 @@ export const RecitationScreen: React.FC<RecitationScreenProps> = ({ route }) => 
 
         <TouchableOpacity
           style={[styles.navButton, { backgroundColor: colors.surface }]}
-          onPress={() => setCurrentVerseIndex(Math.min(sampleVerses.length - 1, currentVerseIndex + 1))}
-          disabled={currentVerseIndex === sampleVerses.length - 1}
+          onPress={() => setCurrentVerseIndex(Math.min(verses.length - 1, currentVerseIndex + 1))}
+          disabled={currentVerseIndex === verses.length - 1}
         >
           <Text style={styles.navIcon}>→</Text>
         </TouchableOpacity>
@@ -195,10 +258,10 @@ export const RecitationScreen: React.FC<RecitationScreenProps> = ({ route }) => 
 
   const renderTestMode = () => (
     <ScrollView style={styles.scrollView}>
-      {sampleVerses.map((verse, verseIndex) => (
+      {verses.map((verse, verseIndex) => (
         <View key={verseIndex} style={[styles.verseCard, { backgroundColor: colors.card }]}>
           <Text style={[styles.verseNumber, { color: colors.textSecondary }]}>
-            {t('audio.verse')} {verse.number}
+            {t('audio.verse')} {verse.verseNumber}
           </Text>
 
           {revealedVerses.has(verseIndex) ? (
@@ -246,13 +309,13 @@ export const RecitationScreen: React.FC<RecitationScreenProps> = ({ route }) => 
   const renderFlowMode = () => (
     <ScrollView style={styles.scrollView}>
       <View style={styles.flowContainer}>
-        {sampleVerses.map((verse, index) => (
+        {verses.map((verse, index) => (
           <View key={index} style={styles.flowVerse}>
             <Text style={[styles.verseText, { color: colors.text, fontSize: fonts.subheading }]}>
               {verse.text}
             </Text>
             <Text style={[styles.verseNumberSmall, { color: colors.textSecondary }]}>
-              ﴿{verse.number}﴾
+              ﴿{verse.verseNumber}﴾
             </Text>
           </View>
         ))}
@@ -268,14 +331,14 @@ export const RecitationScreen: React.FC<RecitationScreenProps> = ({ route }) => 
 
       <View style={styles.progressContainer}>
         <Text style={[styles.progressText, { color: colors.textSecondary }]}>
-          {t('recitation.progress')}: {currentVerseIndex + 1}/{sampleVerses.length}
+          {t('recitation.progress')}: {currentVerseIndex + 1}/{verses.length}
         </Text>
         <View style={[styles.progressBar, { backgroundColor: colors.border }]}>
           <View
             style={[
               styles.progressFill,
               {
-                width: `${((currentVerseIndex + 1) / sampleVerses.length) * 100}%`,
+                width: `${((currentVerseIndex + 1) / verses.length) * 100}%`,
                 backgroundColor: colors.primary,
               },
             ]}
@@ -301,7 +364,7 @@ export const RecitationScreen: React.FC<RecitationScreenProps> = ({ route }) => 
           style={[styles.hifzButton, { backgroundColor: '#4CAF50' }]}
           onPress={() => {
             markVerseMemorized(surah.number, currentVerseIndex + 1);
-            if (currentVerseIndex < sampleVerses.length - 1) {
+            if (currentVerseIndex < verses.length - 1) {
               setCurrentVerseIndex(currentVerseIndex + 1);
             }
           }}
@@ -544,4 +607,30 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     fontSize: 16,
   },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  loadingText: {
+    marginTop: 16,
+    fontSize: 16,
+  },
+  errorText: {
+    fontSize: 16,
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  retryButton: {
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    borderRadius: 8,
+  },
+  retryText: {
+    color: '#fff',
+    fontWeight: '600',
+  },
 });
+
+export default RecitationScreen;
