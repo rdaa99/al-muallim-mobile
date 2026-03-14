@@ -11,6 +11,7 @@ import { SettingsScreen } from '@/screens/SettingsScreen';
 import { AudioPlayerScreen } from '@/screens/AudioPlayerScreen';
 import { QuranScreen } from '@/screens/QuranScreen';
 import { SurahListScreen } from '@/screens/SurahListScreen';
+import { PlanningScreen } from '@/screens/PlanningScreen';
 import { initDatabase, seedDatabase } from './src/services/database';
 import type { RootTabParamList } from './src/types';
 
