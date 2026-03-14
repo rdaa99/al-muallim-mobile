@@ -4,7 +4,8 @@
     "dashboard": "Dashboard",
     "settings": "Settings",
     "review": "Review",
-    "audio": "Audio","quran": "Quran",
+    "audio": "Audio",
+    "quran": "Quran",
     "loading": "Loading...",
     "dbError": "Database initialization error"
   },
@@ -120,5 +121,13 @@
     "next": "Next",
     "hifzMode": "Hifz Mode",
     "progress": "Progress"
+  },
+  "surahList": {
+    "title": "Surah List",
+    "search": "Search surah...",
+    "allTypes": "All Types",
+    "favorites": "Favorites",
+    "surahs": "surahs",
+    "verses": "verses"
   }
 }

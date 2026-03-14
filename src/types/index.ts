@@ -120,7 +120,7 @@ export interface Reciter {
 export type RootTabParamList = {
   Review: undefined;
   Dashboard: undefined;
-  Quran: undefined;
+  SurahList: undefined;
   AudioPlayer: undefined;
   Settings: undefined;
 };

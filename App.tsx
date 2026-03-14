@@ -10,6 +10,7 @@ import { DashboardScreen } from '@/screens/DashboardScreen';
 import { SettingsScreen } from '@/screens/SettingsScreen';
 import { AudioPlayerScreen } from '@/screens/AudioPlayerScreen';
 import { QuranScreen } from '@/screens/QuranScreen';
+import { SurahListScreen } from '@/screens/SurahListScreen';
 import { initDatabase, seedDatabase } from './src/services/database';
 import type { RootTabParamList } from './src/types';
 
@@ -89,8 +90,8 @@ const AppContent: React.FC = () => {
           }}
         />
         <Tab.Screen
-          name="Quran"
-          component={QuranScreen}
+          name="SurahList"
+          component={SurahListScreen}
           options={{
             title: t('common.quran'),
             tabBarLabel: t('common.quran'),

@@ -121,5 +121,13 @@
     "next": "Suivant",
     "hifzMode": "Mode Hifz",
     "progress": "Progression"
+  },
+  "surahList": {
+    "title": "Liste des Sourates",
+    "search": "Rechercher une sourate...",
+    "allTypes": "Tous types",
+    "favorites": "Favoris",
+    "surahs": "sourates",
+    "verses": "versets"
   }
 }

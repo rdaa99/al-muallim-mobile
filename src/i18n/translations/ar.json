@@ -120,5 +120,13 @@
     "next": "التالي",
     "hifzMode": "وضع الحفظ",
     "progress": "التقدم"
+  },
+  "surahList": {
+    "title": "قائمة السور",
+    "search": "البحث عن سورة...",
+    "allTypes": "جميع الأنواع",
+    "favorites": "المفضلة",
+    "surahs": "سورة",
+    "verses": "آية"
   }
 }
