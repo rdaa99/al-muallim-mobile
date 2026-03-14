@@ -2,7 +2,9 @@
   "compilerOptions": {
     "target": "esnext",
     "module": "commonjs",
-    "lib": ["es2019"],
+    "lib": [
+      "es2019"
+    ],
     "allowJs": true,
     "jsx": "react-native",
     "noEmit": true,
@@ -11,14 +13,30 @@
     "moduleResolution": "node",
     "baseUrl": "./",
     "paths": {
-      "@/*": ["src/*"],
-      "@components/*": ["src/components/*"],
-      "@screens/*": ["src/screens/*"],
-      "@hooks/*": ["src/hooks/*"],
-      "@services/*": ["src/services/*"],
-      "@stores/*": ["src/stores/*"],
-      "@types/*": ["src/types/*"],
-      "@utils/*": ["src/utils/*"]
+      "@/*": [
+        "src/*"
+      ],
+      "@components/*": [
+        "src/components/*"
+      ],
+      "@screens/*": [
+        "src/screens/*"
+      ],
+      "@hooks/*": [
+        "src/hooks/*"
+      ],
+      "@services/*": [
+        "src/services/*"
+      ],
+      "@stores/*": [
+        "src/stores/*"
+      ],
+      "@types/*": [
+        "src/types/*"
+      ],
+      "@utils/*": [
+        "src/utils/*"
+      ]
     },
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
@@ -35,5 +53,6 @@
     "**/*.test.ts",
     "**/*.test.tsx",
     "**/__tests__/**"
-  ]
+  ],
+  "extends": "expo/tsconfig.base"
 }

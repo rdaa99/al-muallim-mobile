@@ -1,12 +1,10 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
-import Sound from 'react-native-sound';
+import { Audio } from 'expo-av';
+import { useTranslation } from 'react-i18next';
 
 export const useAudioPlayer = () => {
-  // Enable playback in silence mode (only once)
-  useEffect(() => {
-    Sound.setCategory('Playback');
-  }, []);
-
+  const { t } = useTranslation();
+  
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isLooping, setIsLooping] = useState(false);
@@ -14,15 +12,24 @@ export const useAudioPlayer = () => {
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
 
-  const soundRef = useRef<Sound | null>(null);
+  const soundRef = useRef<Audio.Sound | null>(null);
   const urlRef = useRef<string | null>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const isLoopingRef = useRef(false);
 
-  // Keep ref in sync with state to avoid stale closure
+  // Keep ref in sync with state
   useEffect(() => {
     isLoopingRef.current = isLooping;
   }, [isLooping]);
+
+  // Configure audio mode
+  useEffect(() => {
+    Audio.setAudioModeAsync({
+      playsInSilentModeIOS: true,
+      staysActiveInBackground: true,
+      shouldDuckAndroid: true,
+    });
+  }, []);
 
   const clearTrackingInterval = useCallback(() => {
     if (intervalRef.current) {
@@ -35,8 +42,7 @@ export const useAudioPlayer = () => {
   useEffect(() => {
     return () => {
       if (soundRef.current) {
-        soundRef.current.stop();
-        soundRef.current.release();
+        soundRef.current.unloadAsync();
       }
       clearTrackingInterval();
     };
@@ -44,20 +50,20 @@ export const useAudioPlayer = () => {
 
   const startTracking = useCallback(() => {
     clearTrackingInterval();
-    intervalRef.current = setInterval(() => {
+    intervalRef.current = setInterval(async () => {
       if (soundRef.current) {
-        soundRef.current.getCurrentTime((seconds) => {
-          setCurrentTime(seconds);
-        });
+        const status = await soundRef.current.getStatusAsync();
+        if (status.isLoaded) {
+          setCurrentTime(status.positionMillis / 1000);
+        }
       }
     }, 500);
   }, [clearTrackingInterval]);
 
-  const play = useCallback((url: string) => {
+  const play = useCallback(async (url: string) => {
     // Cleanup previous sound
     if (soundRef.current) {
-      soundRef.current.stop();
-      soundRef.current.release();
+      await soundRef.current.unloadAsync();
     }
     clearTrackingInterval();
 
@@ -65,49 +71,56 @@ export const useAudioPlayer = () => {
     setError(null);
     urlRef.current = url;
 
-    const sound = new Sound(url, '', (loadError) => {
-      if (loadError) {
-        setError('Audio non disponible');
-        setIsLoading(false);
-        return;
-      }
-
-      setDuration(sound.getDuration());
-      setIsLoading(false);
-
-      sound.play((success) => {
-        setIsPlaying(false);
-        clearTrackingInterval();
-
-        if (success && isLoopingRef.current && soundRef.current) {
-          soundRef.current.setCurrentTime(0);
-          soundRef.current.play();
-          setIsPlaying(true);
-          startTracking();
-        } else if (!success) {
-          setError('Erreur de lecture');
+    try {
+      const { sound } = await Audio.Sound.createAsync(
+        { uri: url },
+        { shouldPlay: true },
+        async (status) => {
+          if (status.isLoaded) {
+            if (status.didJustFinish) {
+              setIsPlaying(false);
+              clearTrackingInterval();
+              
+              if (isLoopingRef.current && soundRef.current) {
+                await soundRef.current.replayAsync();
+                setIsPlaying(true);
+                startTracking();
+              }
+            }
+          } else if (status.error) {
+            setError(t('audio.error') || 'Audio non disponible');
+            setIsLoading(false);
+          }
         }
-      });
+      );
 
-      setIsPlaying(true);
-      startTracking();
-    });
+      soundRef.current = sound;
+      
+      const status = await sound.getStatusAsync();
+      if (status.isLoaded) {
+        setDuration(status.durationMillis ? status.durationMillis / 1000 : 0);
+        setIsLoading(false);
+        setIsPlaying(true);
+        startTracking();
+      }
+    } catch (err) {
+      setError(t('audio.error') || 'Audio non disponible');
+      setIsLoading(false);
+      console.error('Audio playback error:', err);
+    }
+  }, [clearTrackingInterval, startTracking, t]);
 
-    soundRef.current = sound;
-  }, [clearTrackingInterval, startTracking]);
-
-  const pause = useCallback(() => {
+  const pause = useCallback(async () => {
     if (soundRef.current) {
-      soundRef.current.pause();
+      await soundRef.current.pauseAsync();
       setIsPlaying(false);
       clearTrackingInterval();
     }
   }, [clearTrackingInterval]);
 
-  const stop = useCallback(() => {
+  const stop = useCallback(async () => {
     if (soundRef.current) {
-      soundRef.current.stop();
-      soundRef.current.setCurrentTime(0);
+      await soundRef.current.stopAsync();
       setIsPlaying(false);
       setCurrentTime(0);
     }
@@ -124,16 +137,16 @@ export const useAudioPlayer = () => {
     setIsLooping(prev => !prev);
   }, []);
 
-  const seek = useCallback((time: number) => {
+  const seek = useCallback(async (time: number) => {
     if (soundRef.current) {
-      soundRef.current.setCurrentTime(time);
+      await soundRef.current.setPositionAsync(time * 1000);
       setCurrentTime(time);
     }
   }, []);
 
-  const setPlaybackSpeed = useCallback((speed: number) => {
+  const setPlaybackSpeed = useCallback(async (speed: number) => {
     if (soundRef.current) {
-      soundRef.current.setSpeed(speed);
+      await soundRef.current.setRateAsync(speed, true);
     }
   }, []);
 
