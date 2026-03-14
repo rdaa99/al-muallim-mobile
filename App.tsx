@@ -9,6 +9,7 @@ import { ReviewScreen } from '@/screens/ReviewScreen';
 import { DashboardScreen } from '@/screens/DashboardScreen';
 import { SettingsScreen } from '@/screens/SettingsScreen';
 import { AudioPlayerScreen } from '@/screens/AudioPlayerScreen';
+import { QuranScreen } from '@/screens/QuranScreen';
 import { initDatabase, seedDatabase } from './src/services/database';
 import type { RootTabParamList } from './src/types';
 
@@ -85,6 +86,15 @@ const AppContent: React.FC = () => {
             title: t('common.dashboard'),
             tabBarLabel: t('common.dashboard'),
             tabBarIcon: ({ color }) => <Text style={{ fontSize: 20, color }}>{'\uD83D\uDCCA'}</Text>,
+          }}
+        />
+        <Tab.Screen
+          name="Quran"
+          component={QuranScreen}
+          options={{
+            title: t('common.quran'),
+            tabBarLabel: t('common.quran'),
+            tabBarIcon: ({ color }) => <Text style={{ fontSize: 20, color }}>{'\uD83D\uDCD6'}</Text>,
           }}
         />
         <Tab.Screen

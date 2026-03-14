@@ -4,7 +4,7 @@
     "dashboard": "Dashboard",
     "settings": "Settings",
     "review": "Review",
-    "audio": "Audio",
+    "audio": "Audio","quran": "Quran",
     "loading": "Loading...",
     "dbError": "Database initialization error"
   },

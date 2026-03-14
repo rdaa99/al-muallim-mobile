@@ -5,6 +5,7 @@
     "settings": "Paramètres",
     "review": "Révision",
     "audio": "Audio",
+    "quran": "Coran",
     "loading": "Chargement...",
     "dbError": "Erreur d'initialisation de la base de données"
   },
