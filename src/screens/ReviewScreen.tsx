@@ -33,6 +33,9 @@ export const ReviewScreen: React.FC = () => {
   const [fadeAnim] = useState(new Animated.Value(1));
   const isAnimating = useRef(false);
 
+  // Tarteel-style: Start with HIDDEN text (empty screen)
+  const [textRevealed, setTextRevealed] = useState(false);
+
   useEffect(() => {
     loadTodayReview();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -42,6 +45,7 @@ export const ReviewScreen: React.FC = () => {
   useEffect(() => {
     setShowTranslation(false);
     setShowArabic(false);
+    setTextRevealed(false); // Reset Tarteel mode
   }, [currentVerse?.id]);
 
   const animateTransition = (callback: () => void) => {
@@ -189,49 +193,64 @@ export const ReviewScreen: React.FC = () => {
         </View>
       </View>
 
-      {/* Verse */}
+      {/* Verse - Tarteel Style: EMPTY by default */}
       <Animated.View
         style={[
           styles.verseContainer,
           { backgroundColor: colors.surface, opacity: fadeAnim },
         ]}
       >
-        {/* Arabic text with reveal */}
-        <TouchableOpacity onPress={toggleArabic} activeOpacity={0.9}>
-          <View style={styles.arabicContainer}>
-            {showArabic ? (
-              <Text style={[styles.arabicText, { color: colors.text }]}>{currentVerse.text_arabic}</Text>
-            ) : (
-              <View style={styles.hiddenText}>
-                <Text style={[styles.hiddenPlaceholder, { color: colors.textSecondary }]}>● ● ● ● ● ● ●</Text>
-                <Text style={[styles.tapToReveal, { color: colors.textSecondary }]}>
-                  {t('review.tapToReveal', 'Touchez pour révéler')}
+        {/* Surah Title at top */}
+        <View style={styles.surahTitleContainer}>
+          <Text style={[styles.surahTitle, { color: colors.text }]}>
+            Sourate {currentVerse.surah_number}
+          </Text>
+        </View>
+
+        {/* EMPTY SPACE - User recites from memory */}
+        {!textRevealed ? (
+          <TouchableOpacity 
+            style={styles.emptyVerseArea}
+            onPress={() => setTextRevealed(true)}
+            activeOpacity={0.9}
+          >
+            <Text style={[styles.revealHint, { color: colors.textSecondary }]}>
+              Touchez pour révéler le texte
+            </Text>
+          </TouchableOpacity>
+        ) : (
+          <>
+            {/* Arabic text with tajweed colors (revealed) */}
+            <TouchableOpacity onPress={toggleArabic} activeOpacity={0.9}>
+              <View style={styles.arabicContainer}>
+                <Text style={[styles.arabicText, { color: colors.text }]}>
+                  {currentVerse.text_arabic}
                 </Text>
               </View>
-            )}
-          </View>
-        </TouchableOpacity>
+            </TouchableOpacity>
 
-        <Text style={[styles.reference, { color: colors.textSecondary }]}>
-          {currentVerse.surah_number}:{currentVerse.ayah_number}
-        </Text>
+            <Text style={[styles.reference, { color: colors.textSecondary }]}>
+              {currentVerse.surah_number}:{currentVerse.ayah_number}
+            </Text>
 
-        {/* Translation with reveal */}
-        {translation && (
-          <TouchableOpacity
-            style={styles.translationButton}
-            onPress={() => setShowTranslation(!showTranslation)}
-          >
-            {showTranslation ? (
-              <Text style={[styles.translationText, { color: colors.textSecondary }]}>
-                {translation}
-              </Text>
-            ) : (
-              <Text style={[styles.revealText, { color: colors.primary }]}>
-                {t('review.revealTranslation', 'Révéler la traduction')}
-              </Text>
+            {/* Translation (optional) */}
+            {translation && (
+              <TouchableOpacity
+                style={styles.translationButton}
+                onPress={() => setShowTranslation(!showTranslation)}
+              >
+                {showTranslation ? (
+                  <Text style={[styles.translationText, { color: colors.textSecondary }]}>
+                    {translation}
+                  </Text>
+                ) : (
+                  <Text style={[styles.revealText, { color: colors.primary }]}>
+                    {t('review.revealTranslation', 'Révéler la traduction')}
+                  </Text>
+                )}
+              </TouchableOpacity>
             )}
-          </TouchableOpacity>
+          </>
         )}
       </Animated.View>
 
@@ -402,6 +421,24 @@ const styles = StyleSheet.create({
     padding: 24,
     width: '100%',
     marginBottom: 30,
+  },
+  surahTitleContainer: {
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  surahTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  emptyVerseArea: {
+    minHeight: 200,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  revealHint: {
+    fontSize: 16,
+    textAlign: 'center',
   },
   arabicContainer: {
     minHeight: 120,
