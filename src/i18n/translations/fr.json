@@ -131,6 +131,34 @@
     "surahs": "sourates",
     "verses": "versets"
   },
+  "common": {
+    "focus": "Focus"
+  },
+  "focus": {
+    "title": "Mode Focus",
+    "focusPhase": "Concentration",
+    "breakPhase": "Pause",
+    "paused": "En pause",
+    "completed": "Terminé !",
+    "ready": "Prêt",
+    "startFocus": "Démarrer",
+    "startBreak": "Commencer la pause",
+    "pause": "Pause",
+    "resume": "Reprendre",
+    "reset": "Réinitialiser",
+    "skip": "Passer",
+    "endSession": "Finir",
+    "focusDuration": "Durée de concentration",
+    "breakDuration": "Durée de pause",
+    "zenMode": "Mode Zen",
+    "autoBreak": "Pause auto",
+    "sessionStats": "Stats de session",
+    "versesReviewed": "Versets",
+    "pomodoros": "Pomodoros",
+    "totalFocusTime": "Temps total",
+    "avgQuality": "Qualité moy.",
+    "minutes": "min"
+  },
   "stats": {
     "title": "Statistiques",
     "subtitle": "Suivez votre progression de mémorisation",

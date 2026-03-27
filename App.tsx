@@ -13,6 +13,7 @@ import { QuranScreen } from '@/screens/QuranScreen';
 import { SurahListScreen } from '@/screens/SurahListScreen';
 import { PlanningScreen } from '@/screens/PlanningScreen';
 import { StatsScreen } from '@/screens/StatsScreen';
+import { FocusModeScreen } from '@/screens/FocusModeScreen';
 import { initDatabase, seedDatabase } from './src/services/database';
 import type { RootTabParamList } from './src/types';
 
@@ -80,6 +81,15 @@ const AppContent: React.FC = () => {
             title: t('common.review'),
             tabBarLabel: t('common.review'),
             tabBarIcon: ({ color }) => <Text style={{ fontSize: 20, color }}>{'\uD83D\uDCD6'}</Text>,
+          }}
+        />
+        <Tab.Screen
+          name="Focus"
+          component={FocusModeScreen}
+          options={{
+            title: t('common.focus', 'Focus'),
+            tabBarLabel: t('common.focus', 'Focus'),
+            tabBarIcon: ({ color }) => <Text style={{ fontSize: 20, color }}>{'\u23F1\uFE0F'}</Text>,
           }}
         />
         <Tab.Screen

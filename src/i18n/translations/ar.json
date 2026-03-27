@@ -131,6 +131,34 @@
     "surahs": "سورة",
     "verses": "آية"
   },
+  "common": {
+    "focus": "تركيز"
+  },
+  "focus": {
+    "title": "وضع التركيز",
+    "focusPhase": "تركيز",
+    "breakPhase": "استراحة",
+    "paused": "متوقف",
+    "completed": "مكتمل!",
+    "ready": "جاهز",
+    "startFocus": "ابدأ التركيز",
+    "startBreak": "ابدأ الاستراحة",
+    "pause": "إيقاف",
+    "resume": "متابعة",
+    "reset": "إعادة",
+    "skip": "تخطي",
+    "endSession": "إنهاء",
+    "focusDuration": "مدة التركيز",
+    "breakDuration": "مدة الاستراحة",
+    "zenMode": "وضع الزن",
+    "autoBreak": "استراحة تلقائية",
+    "sessionStats": "إحصائيات الجلسة",
+    "versesReviewed": "آيات",
+    "pomodoros": "بومودورو",
+    "totalFocusTime": "إجمالي وقت التركيز",
+    "avgQuality": "متوسط الجودة",
+    "minutes": "دقيقة"
+  },
   "stats": {
     "title": "الإحصائيات",
     "subtitle": "تتبع تقدم الحفظ",

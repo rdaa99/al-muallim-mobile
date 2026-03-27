@@ -124,4 +124,5 @@ export type RootTabParamList = {
   SurahList: undefined;
   AudioPlayer: undefined;
   Settings: undefined;
+  Focus: undefined;
 };
