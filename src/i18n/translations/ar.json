@@ -8,7 +8,15 @@
     "loading": "جاري التحميل...",
     "dbError": "خطأ في تهيئة قاعدة البيانات",
     "quran": "القرآن",
-    "stats": "إحصائيات"
+    "stats": "إحصائيات",
+    "error": "خطأ",
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "remove": "إزالة",
+    "edit": "تعديل",
+    "create": "إنشاء",
+    "save": "حفظ",
+    "viewAll": "عرض الكل"
   },
   "dashboard": {
     "title": "لوحة القيادة",
@@ -24,7 +32,8 @@
     "continue": "متابعة",
     "reviewBtn": "مراجعة",
     "listen": "استماع",
-    "stats": "إحصائيات"
+    "stats": "إحصائيات",
+    "favorites": "المفضلة"
   },
   "days": {
     "sun": "أحد",
@@ -184,5 +193,32 @@
     "goalMet": "الهدف محقق",
     "goalPending": "قيد التقدم",
     "verses": "آيات"
+  },
+  "collections": {
+    "title": "المجموعات",
+    "createNew": "إنشاء مجموعة جديدة",
+    "namePlaceholder": "اسم المجموعة",
+    "descriptionPlaceholder": "الوصف (اختياري)",
+    "selectColor": "اختر اللون",
+    "empty": "لا توجد مجموعات",
+    "emptyMsg": "أنشئ مجموعتك الأولى لتنظيم الآيات",
+    "emptyItems": "لا توجد عناصر في هذه المجموعة",
+    "emptyItemsMsg": "أضف الآيات من شاشة القرآن",
+    "nameRequired": "الاسم مطلوب",
+    "nameRequiredMsg": "الرجاء إدخال اسم للمجموعة",
+    "createError": "فشل في إنشاء المجموعة",
+    "updateError": "فشل في تحديث المجموعة",
+    "deleteError": "فشل في حذف المجموعة",
+    "deleteConfirm": "حذف المجموعة",
+    "deleteConfirmMsg": "هل أنت متأكد من حذف \"{{name}}\"؟ لا يمكن التراجع عن هذا الإجراء.",
+    "cannotDelete": "لا يمكن الحذف",
+    "cannotDeleteMsg": "لا يمكن حذف المجموعات المحددة مسبقًا",
+    "predefined": "محدد مسبقًا",
+    "items": "عناصر",
+    "editCollection": "تعديل المجموعة",
+    "removeItem": "إزالة العنصر",
+    "removeItemMsg": "إزالة \"{{name}}\" من هذه المجموعة؟",
+    "removeItemError": "فشل في إزالة العنصر",
+    "notFound": "المجموعة غير موجودة"
   }
 }

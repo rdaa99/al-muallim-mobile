@@ -1,5 +1,5 @@
 import SQLite from 'react-native-quick-sqlite';
-import type { Verse, DailyReview, ProgressStats, UserSettings, ReviewResult, QualityScore, VerseStatus, JuzProgress, SurahProgress } from '@/types';
+import type { Verse, DailyReview, ProgressStats, UserSettings, ReviewResult, QualityScore, VerseStatus, JuzProgress, SurahProgress, Favorite, Collection, CollectionItem } from '@/types';
 import { VERSES_JUZ_29_30 } from '@/data/verses-juz-29-30';
 
 // Open database
@@ -99,6 +99,51 @@ export const initDatabase = async (): Promise<void> => {
 
     await db.execute('CREATE INDEX IF NOT EXISTS idx_review_history_date ON review_history(reviewed_at);');
     await db.execute('CREATE INDEX IF NOT EXISTS idx_review_history_verse ON review_history(verse_id);');
+
+    // Create favorites table
+    await db.execute(`
+      CREATE TABLE IF NOT EXISTS favorites (
+        id TEXT PRIMARY KEY,
+        verse_id INTEGER,
+        surah_number INTEGER,
+        ayah_number INTEGER,
+        created_at TEXT NOT NULL,
+        FOREIGN KEY (verse_id) REFERENCES verses(id)
+      );
+    `);
+
+    await db.execute('CREATE INDEX IF NOT EXISTS idx_favorites_verse ON favorites(verse_id);');
+    await db.execute('CREATE INDEX IF NOT EXISTS idx_favorites_surah ON favorites(surah_number);');
+
+    // Create collections table
+    await db.execute(`
+      CREATE TABLE IF NOT EXISTS collections (
+        id TEXT PRIMARY KEY,
+        name TEXT NOT NULL,
+        description TEXT,
+        color TEXT NOT NULL,
+        created_at TEXT NOT NULL,
+        updated_at TEXT,
+        is_predefined INTEGER DEFAULT 0
+      );
+    `);
+
+    // Create collection_items table
+    await db.execute(`
+      CREATE TABLE IF NOT EXISTS collection_items (
+        id TEXT PRIMARY KEY,
+        collection_id TEXT NOT NULL,
+        verse_id INTEGER,
+        surah_number INTEGER,
+        ayah_number INTEGER,
+        added_at TEXT NOT NULL,
+        FOREIGN KEY (collection_id) REFERENCES collections(id),
+        FOREIGN KEY (verse_id) REFERENCES verses(id)
+      );
+    `);
+
+    await db.execute('CREATE INDEX IF NOT EXISTS idx_collection_items_collection ON collection_items(collection_id);');
+    await db.execute('CREATE INDEX IF NOT EXISTS idx_collection_items_verse ON collection_items(verse_id);');
   } catch (error) {
     throw new Error(`Database init error: ${error instanceof Error ? error.message : String(error)}`);
   }
@@ -128,6 +173,9 @@ export const seedDatabase = async (): Promise<void> => {
       );
     }
     await db.execute('COMMIT;');
+
+    // Initialize predefined collections
+    await initializePredefinedCollections();
   } catch (error) {
     await db.execute('ROLLBACK;');
     throw new Error(`Database seed error: ${error instanceof Error ? error.message : String(error)}`);
@@ -512,6 +560,316 @@ export const updateSettings = async (settings: Partial<UserSettings>): Promise<U
   }
 
   return getSettings();
+};
+
+// ============ SURAHS FUNCTIONS ============
+
+// Get all surahs with metadata
+export const getSurahs = async (): Promise<Surah[]> => {
+  // Return hardcoded surah list for Juz 29-30 (suras 67-114)
+  const surahs: Surah[] = [
+    { number: 67, name: 'الملك', englishName: 'Al-Mulk', ayahsCount: 30, revelationType: 'Meccan' },
+    { number: 68, name: 'القلم', englishName: 'Al-Qalam', ayahsCount: 52, revelationType: 'Meccan' },
+    { number: 69, name: 'الحاقة', englishName: 'Al-Haqqah', ayahsCount: 52, revelationType: 'Meccan' },
+    { number: 70, name: 'المعارج', englishName: "Al-Ma'arij", ayahsCount: 44, revelationType: 'Meccan' },
+    { number: 71, name: 'نوح', englishName: 'Nuh', ayahsCount: 28, revelationType: 'Meccan' },
+    { number: 72, name: 'الجن', englishName: 'Al-Jinn', ayahsCount: 28, revelationType: 'Meccan' },
+    { number: 73, name: 'المزمل', englishName: 'Al-Muzzammil', ayahsCount: 20, revelationType: 'Meccan' },
+    { number: 74, name: 'المدثر', englishName: 'Al-Muddaththir', ayahsCount: 56, revelationType: 'Meccan' },
+    { number: 75, name: 'القيامة', englishName: 'Al-Qiyamah', ayahsCount: 40, revelationType: 'Meccan' },
+    { number: 76, name: 'الإنسان', englishName: 'Al-Insan', ayahsCount: 31, revelationType: 'Medinan' },
+    { number: 77, name: 'المرسلات', englishName: 'Al-Mursalat', ayahsCount: 50, revelationType: 'Meccan' },
+    { number: 78, name: 'النبأ', englishName: "An-Naba'", ayahsCount: 40, revelationType: 'Meccan' },
+    { number: 79, name: 'النازعات', englishName: "An-Nazi'at", ayahsCount: 46, revelationType: 'Meccan' },
+    { number: 80, name: 'عبس', englishName: 'Abasa', ayahsCount: 42, revelationType: 'Meccan' },
+    { number: 81, name: 'التكوير', englishName: 'At-Takwir', ayahsCount: 29, revelationType: 'Meccan' },
+    { number: 82, name: 'الانفطار', englishName: 'Al-Infitar', ayahsCount: 19, revelationType: 'Meccan' },
+    { number: 83, name: 'المطففين', englishName: 'Al-Mutaffifin', ayahsCount: 36, revelationType: 'Meccan' },
+    { number: 84, name: 'الانشقاق', englishName: 'Al-Inshiqaq', ayahsCount: 25, revelationType: 'Meccan' },
+    { number: 85, name: 'البروج', englishName: 'Al-Buruj', ayahsCount: 22, revelationType: 'Meccan' },
+    { number: 86, name: 'الطارق', englishName: 'At-Tariq', ayahsCount: 17, revelationType: 'Meccan' },
+    { number: 87, name: 'الأعلى', englishName: "Al-A'la", ayahsCount: 19, revelationType: 'Meccan' },
+    { number: 88, name: 'الغاشية', englishName: 'Al-Ghashiyah', ayahsCount: 26, revelationType: 'Meccan' },
+    { number: 89, name: 'الفجر', englishName: 'Al-Fajr', ayahsCount: 30, revelationType: 'Meccan' },
+    { number: 90, name: 'البلد', englishName: 'Al-Balad', ayahsCount: 20, revelationType: 'Meccan' },
+    { number: 91, name: 'الشمس', englishName: 'Ash-Shams', ayahsCount: 15, revelationType: 'Meccan' },
+    { number: 92, name: 'الليل', englishName: 'Al-Layl', ayahsCount: 21, revelationType: 'Meccan' },
+    { number: 93, name: 'الضحى', englishName: 'Ad-Duhaa', ayahsCount: 11, revelationType: 'Meccan' },
+    { number: 94, name: 'الشرح', englishName: 'Ash-Sharh', ayahsCount: 8, revelationType: 'Meccan' },
+    { number: 95, name: 'التين', englishName: 'At-Tin', ayahsCount: 8, revelationType: 'Meccan' },
+    { number: 96, name: 'العلق', englishName: 'Al-Alaq', ayahsCount: 19, revelationType: 'Meccan' },
+    { number: 97, name: 'القدر', englishName: 'Al-Qadr', ayahsCount: 5, revelationType: 'Meccan' },
+    { number: 98, name: 'البينة', englishName: 'Al-Bayyinah', ayahsCount: 8, revelationType: 'Medinan' },
+    { number: 99, name: 'الزلزلة', englishName: 'Az-Zalzalah', ayahsCount: 8, revelationType: 'Medinan' },
+    { number: 100, name: 'العاديات', englishName: 'Al-Adiyat', ayahsCount: 11, revelationType: 'Meccan' },
+    { number: 101, name: 'القارعة', englishName: "Al-Qari'ah", ayahsCount: 11, revelationType: 'Meccan' },
+    { number: 102, name: 'التكاثر', englishName: 'At-Takathur', ayahsCount: 8, revelationType: 'Meccan' },
+    { number: 103, name: 'العصر', englishName: 'Al-Asr', ayahsCount: 3, revelationType: 'Meccan' },
+    { number: 104, name: 'الهمزة', englishName: 'Al-Humazah', ayahsCount: 9, revelationType: 'Meccan' },
+    { number: 105, name: 'الفيل', englishName: 'Al-Fil', ayahsCount: 5, revelationType: 'Meccan' },
+    { number: 106, name: 'قريش', englishName: 'Quraysh', ayahsCount: 4, revelationType: 'Meccan' },
+    { number: 107, name: 'الماعون', englishName: "Al-Ma'un", ayahsCount: 7, revelationType: 'Meccan' },
+    { number: 108, name: 'الكوثر', englishName: 'Al-Kawthar', ayahsCount: 3, revelationType: 'Meccan' },
+    { number: 109, name: 'الكافرون', englishName: 'Al-Kafirun', ayahsCount: 6, revelationType: 'Meccan' },
+    { number: 110, name: 'النصر', englishName: 'An-Nasr', ayahsCount: 3, revelationType: 'Medinan' },
+    { number: 111, name: 'المسد', englishName: 'Al-Masad', ayahsCount: 5, revelationType: 'Meccan' },
+    { number: 112, name: 'الإخلاص', englishName: 'Al-Ikhlas', ayahsCount: 4, revelationType: 'Meccan' },
+    { number: 113, name: 'الفلق', englishName: 'Al-Falaq', ayahsCount: 5, revelationType: 'Meccan' },
+    { number: 114, name: 'الناس', englishName: 'An-Nas', ayahsCount: 6, revelationType: 'Meccan' },
+  ];
+
+  return surahs;
+};
+
+// ============ FAVORITES FUNCTIONS ============
+
+// Add to favorites
+export const addFavorite = async (
+  verseId?: number,
+  surahNumber?: number,
+  ayahNumber?: number
+): Promise<string> => {
+  const id = `fav_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+  const createdAt = new Date().toISOString();
+
+  await db.execute(
+    `INSERT INTO favorites (id, verse_id, surah_number, ayah_number, created_at)
+     VALUES (?, ?, ?, ?, ?)`,
+    [id, verseId ?? null, surahNumber ?? null, ayahNumber ?? null, createdAt]
+  );
+
+  return id;
+};
+
+// Remove from favorites
+export const removeFavorite = async (
+  verseId?: number,
+  surahNumber?: number
+): Promise<void> => {
+  if (verseId) {
+    await db.execute('DELETE FROM favorites WHERE verse_id = ?', [verseId]);
+  } else if (surahNumber) {
+    await db.execute('DELETE FROM favorites WHERE surah_number = ?', [surahNumber]);
+  }
+};
+
+// Check if verse/surah is favorite
+export const isFavorite = async (
+  verseId?: number,
+  surahNumber?: number
+): Promise<boolean> => {
+  let query = 'SELECT COUNT(*) as count FROM favorites WHERE ';
+  const params: (number | undefined)[] = [];
+
+  if (verseId) {
+    query += 'verse_id = ?';
+    params.push(verseId);
+  } else if (surahNumber) {
+    query += 'surah_number = ?';
+    params.push(surahNumber);
+  } else {
+    return false;
+  }
+
+  const result = await db.execute(query, params);
+  const row = getRow(result.rows, 0) as { count?: number } | undefined;
+  return (row?.count || 0) > 0;
+};
+
+// Get all favorites
+export const getFavorites = async (): Promise<Favorite[]> => {
+  const result = await db.execute(
+    'SELECT * FROM favorites ORDER BY created_at DESC'
+  );
+  return getRows(result.rows) as unknown as Favorite[];
+};
+
+// Get favorites with verse details
+export const getFavoritesWithDetails = async (): Promise<(Favorite & { verse?: Verse })[]> => {
+  const result = await db.execute(`
+    SELECT f.*, v.*
+    FROM favorites f
+    LEFT JOIN verses v ON f.verse_id = v.id
+    ORDER BY f.created_at DESC
+  `);
+
+  return getRows(result.rows).map(row => ({
+    id: row.id as string,
+    verse_id: row.verse_id as number | undefined,
+    surah_number: row.surah_number as number | undefined,
+    ayah_number: row.ayah_number as number | undefined,
+    created_at: row.created_at as string,
+    verse: row.id ? (row as unknown as Verse) : undefined,
+  }));
+};
+
+// ============ COLLECTIONS FUNCTIONS ============
+
+// Create collection
+export const createCollection = async (
+  name: string,
+  description?: string,
+  color: string = '#4F46E5',
+  isPredefined: boolean = false
+): Promise<string> => {
+  const id = `col_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+  const createdAt = new Date().toISOString();
+
+  await db.execute(
+    `INSERT INTO collections (id, name, description, color, created_at, is_predefined)
+     VALUES (?, ?, ?, ?, ?, ?)`,
+    [id, name, description ?? null, color, createdAt, isPredefined ? 1 : 0]
+  );
+
+  return id;
+};
+
+// Update collection
+export const updateCollection = async (
+  id: string,
+  updates: { name?: string; description?: string; color?: string }
+): Promise<void> => {
+  const updatedAt = new Date().toISOString();
+  const setClause = Object.keys(updates)
+    .map(key => `${key} = ?`)
+    .join(', ');
+  const values = [...Object.values(updates), updatedAt, id];
+
+  await db.execute(
+    `UPDATE collections SET ${setClause}, updated_at = ? WHERE id = ?`,
+    values
+  );
+};
+
+// Delete collection
+export const deleteCollection = async (id: string): Promise<void> => {
+  // Delete collection items first
+  await db.execute('DELETE FROM collection_items WHERE collection_id = ?', [id]);
+  // Delete collection
+  await db.execute('DELETE FROM collections WHERE id = ?', [id]);
+};
+
+// Get all collections
+export const getCollections = async (): Promise<Collection[]> => {
+  const result = await db.execute(
+    'SELECT * FROM collections ORDER BY created_at DESC'
+  );
+  return getRows(result.rows).map(row => ({
+    id: row.id as string,
+    name: row.name as string,
+    description: row.description as string | undefined,
+    color: row.color as string,
+    created_at: row.created_at as string,
+    updated_at: row.updated_at as string | undefined,
+    is_predefined: (row.is_predefined as number) === 1,
+  }));
+};
+
+// Get collection by ID
+export const getCollectionById = async (id: string): Promise<Collection | null> => {
+  const result = await db.execute(
+    'SELECT * FROM collections WHERE id = ?',
+    [id]
+  );
+  const row = getRow(result.rows, 0);
+  if (!row) return null;
+
+  return {
+    id: row.id as string,
+    name: row.name as string,
+    description: row.description as string | undefined,
+    color: row.color as string,
+    created_at: row.created_at as string,
+    updated_at: row.updated_at as string | undefined,
+    is_predefined: (row.is_predefined as number) === 1,
+  };
+};
+
+// Add item to collection
+export const addCollectionItem = async (
+  collectionId: string,
+  verseId?: number,
+  surahNumber?: number,
+  ayahNumber?: number
+): Promise<string> => {
+  const id = `item_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+  const addedAt = new Date().toISOString();
+
+  await db.execute(
+    `INSERT INTO collection_items (id, collection_id, verse_id, surah_number, ayah_number, added_at)
+     VALUES (?, ?, ?, ?, ?, ?)`,
+    [id, collectionId, verseId ?? null, surahNumber ?? null, ayahNumber ?? null, addedAt]
+  );
+
+  return id;
+};
+
+// Remove item from collection
+export const removeCollectionItem = async (
+  collectionId: string,
+  verseId?: number,
+  surahNumber?: number
+): Promise<void> => {
+  let query = 'DELETE FROM collection_items WHERE collection_id = ? AND ';
+  const params: (string | number | undefined)[] = [collectionId];
+
+  if (verseId) {
+    query += 'verse_id = ?';
+    params.push(verseId);
+  } else if (surahNumber) {
+    query += 'surah_number = ?';
+    params.push(surahNumber);
+  }
+
+  await db.execute(query, params);
+};
+
+// Get collection items
+export const getCollectionItems = async (collectionId: string): Promise<CollectionItem[]> => {
+  const result = await db.execute(
+    'SELECT * FROM collection_items WHERE collection_id = ? ORDER BY added_at DESC',
+    [collectionId]
+  );
+  return getRows(result.rows) as unknown as CollectionItem[];
+};
+
+// Get collection items with verse details
+export const getCollectionItemsWithDetails = async (
+  collectionId: string
+): Promise<(CollectionItem & { verse?: Verse })[]> => {
+  const result = await db.execute(`
+    SELECT ci.*, v.*
+    FROM collection_items ci
+    LEFT JOIN verses v ON ci.verse_id = v.id
+    WHERE ci.collection_id = ?
+    ORDER BY ci.added_at DESC
+  `, [collectionId]);
+
+  return getRows(result.rows).map(row => ({
+    id: row.id as string,
+    collection_id: row.collection_id as string,
+    verse_id: row.verse_id as number | undefined,
+    surah_number: row.surah_number as number | undefined,
+    ayah_number: row.ayah_number as number | undefined,
+    added_at: row.added_at as string,
+    verse: row.id ? (row as unknown as Verse) : undefined,
+  }));
+};
+
+// Initialize predefined collections
+export const initializePredefinedCollections = async (): Promise<void> => {
+  const existing = await db.execute(
+    "SELECT COUNT(*) as count FROM collections WHERE is_predefined = 1"
+  );
+  const row = getRow(existing.rows, 0) as { count?: number } | undefined;
+  const count = row?.count || 0;
+
+  if (count > 0) return;
+
+  // Create predefined collections
+  await createCollection('À réviser', 'Versets à réviser régulièrement', '#FF9800', true);
+  await createCollection('Difficiles', 'Versets difficiles à mémoriser', '#EF4444', true);
+  await createCollection('Préférés', 'Mes versets préférés', '#10B981', true);
 };
 
 // Export database instance for advanced usage

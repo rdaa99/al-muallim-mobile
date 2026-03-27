@@ -13,7 +13,6 @@ import { useTranslation } from 'react-i18next';
 import { useFocusStore, selectFormattedTime, selectProgress, FocusDuration, BreakDuration } from '@/stores/focusStore';
 import { useTheme } from '../context/ThemeContext';
 import { useFonts } from '../context/FontSizeContext';
-import { useUserStore } from '../stores/userStore';
 import { CircularProgressBar } from '../components/CircularProgressBar';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -21,8 +20,6 @@ const { width: SCREEN_WIDTH } = Dimensions.get('window');
 export const FocusModeScreen: React.FC = () => {
   const {
     phase,
-    timeRemaining,
-    totalTime,
     config,
     currentVerse,
     versesReviewed,
@@ -40,11 +37,9 @@ export const FocusModeScreen: React.FC = () => {
 
   const formattedTime = useFocusStore(selectFormattedTime);
   const progress = useFocusStore(selectProgress);
-  const { settings } = useUserStore();
   const { t } = useTranslation();
   const { colors } = useTheme();
   const { fonts } = useFonts();
-  const isRTL = settings?.language === 'ar';
 
   // Timer effect
   useEffect(() => {
@@ -72,7 +67,7 @@ export const FocusModeScreen: React.FC = () => {
       if (config.vibrationEnabled) {
         // TODO: Vibrate device
       }
-      
+
       Alert.alert(
         t('focus.completed'),
         t('focus.completedMessage'),
@@ -102,10 +97,10 @@ export const FocusModeScreen: React.FC = () => {
       t('focus.resetMessage'),
       [
         { text: t('common.cancel'), style: 'cancel' },
-        { 
-          text: t('common.confirm'), 
+        {
+          text: t('common.confirm'),
           style: 'destructive',
-          onPress: reset 
+          onPress: reset,
         },
       ]
     );
@@ -117,8 +112,8 @@ export const FocusModeScreen: React.FC = () => {
       t('focus.endSessionMessage'),
       [
         { text: t('common.cancel'), style: 'cancel' },
-        { 
-          text: t('common.confirm'), 
+        {
+          text: t('common.confirm'),
           onPress: () => {
             const session = endSession();
             if (session) {
@@ -178,7 +173,7 @@ export const FocusModeScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
-      <ScrollView 
+      <ScrollView
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >

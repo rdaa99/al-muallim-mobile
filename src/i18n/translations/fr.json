@@ -8,7 +8,15 @@
     "quran": "Coran",
     "loading": "Chargement...",
     "dbError": "Erreur d'initialisation de la base de données",
-    "stats": "Stats"
+    "stats": "Stats",
+    "error": "Erreur",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "remove": "Retirer",
+    "edit": "Modifier",
+    "create": "Créer",
+    "save": "Enregistrer",
+    "viewAll": "Voir tout"
   },
   "dashboard": {
     "title": "Tableau de bord",
@@ -24,7 +32,8 @@
     "continue": "Continuer",
     "reviewBtn": "Réviser",
     "listen": "Écouter",
-    "stats": "Stats"
+    "stats": "Stats",
+    "favorites": "Favoris"
   },
   "days": {
     "sun": "Dim",
@@ -184,5 +193,32 @@
     "goalMet": "Objectif atteint",
     "goalPending": "En cours",
     "verses": "versets"
+  },
+  "collections": {
+    "title": "Collections",
+    "createNew": "Créer une nouvelle collection",
+    "namePlaceholder": "Nom de la collection",
+    "descriptionPlaceholder": "Description (optionnel)",
+    "selectColor": "Choisir une couleur",
+    "empty": "Aucune collection",
+    "emptyMsg": "Créez votre première collection pour organiser les versets",
+    "emptyItems": "Aucun élément dans cette collection",
+    "emptyItemsMsg": "Ajoutez des versets depuis l'écran Coran",
+    "nameRequired": "Nom requis",
+    "nameRequiredMsg": "Veuillez entrer un nom pour la collection",
+    "createError": "Échec de la création de la collection",
+    "updateError": "Échec de la mise à jour de la collection",
+    "deleteError": "Échec de la suppression de la collection",
+    "deleteConfirm": "Supprimer la collection",
+    "deleteConfirmMsg": "Êtes-vous sûr de vouloir supprimer \"{{name}}\" ? Cette action est irréversible.",
+    "cannotDelete": "Impossible de supprimer",
+    "cannotDeleteMsg": "Les collections prédéfinies ne peuvent pas être supprimées",
+    "predefined": "Prédéfinie",
+    "items": "éléments",
+    "editCollection": "Modifier la collection",
+    "removeItem": "Retirer l'élément",
+    "removeItemMsg": "Retirer \"{{name}}\" de cette collection ?",
+    "removeItemError": "Échec du retrait de l'élément",
+    "notFound": "Collection non trouvée"
   }
 }

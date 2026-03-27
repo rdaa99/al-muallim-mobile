@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, StatusBar, ActivityIndicator } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createStackNavigator } from '@react-navigation/stack';
 import { useTranslation } from 'react-i18next';
 import { ThemeProvider, useTheme } from './src/context/ThemeContext';
 import { FontSizeProvider } from './src/context/FontSizeContext';
@@ -14,10 +15,31 @@ import { SurahListScreen } from '@/screens/SurahListScreen';
 import { PlanningScreen } from '@/screens/PlanningScreen';
 import { StatsScreen } from '@/screens/StatsScreen';
 import { FocusModeScreen } from '@/screens/FocusModeScreen';
+import { CollectionsScreen } from '@/screens/CollectionsScreen';
+import { CollectionDetailScreen } from '@/screens/CollectionDetailScreen';
 import { initDatabase, seedDatabase } from './src/services/database';
 import type { RootTabParamList } from './src/types';
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
+const Stack = createStackNavigator();
+
+const CollectionsStack = () => (
+  <Stack.Navigator>
+    <Stack.Screen 
+      name="CollectionsList" 
+      component={CollectionsScreen}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen 
+      name="CollectionDetail" 
+      component={CollectionDetailScreen}
+      options={({ route }) => ({
+        title: 'Collection',
+        headerShown: true,
+      })}
+    />
+  </Stack.Navigator>
+);
 
 const AppContent: React.FC = () => {
   const [dbReady, setDbReady] = useState(false);
@@ -135,6 +157,15 @@ const AppContent: React.FC = () => {
             title: t('common.settings'),
             tabBarLabel: t('common.settings'),
             tabBarIcon: ({ color }) => <Text style={{ fontSize: 20, color }}>{'\u2699\uFE0F'}</Text>,
+          }}
+        />
+        <Tab.Screen
+          name="Collections"
+          component={CollectionsStack}
+          options={{
+            title: t('collections.title', 'Collections'),
+            tabBarLabel: t('collections.title', 'Collections'),
+            tabBarIcon: ({ color }) => <Text style={{ fontSize: 20, color }}>{'\uD83D\uDDC2\uFE0F'}</Text>,
           }}
         />
       </Tab.Navigator>

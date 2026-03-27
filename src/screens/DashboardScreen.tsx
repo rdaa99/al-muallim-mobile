@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { useTranslation } from 'react-i18next';
 import { useAppStore } from '@/stores/appStore';
+import { useCollectionsStore } from '@/stores/collectionsStore';
 import { useTheme } from '../context/ThemeContext';
 import { useFonts } from '../context/FontSizeContext';
 import { ProgressCard } from '../components/ProgressCard';
@@ -18,6 +19,7 @@ type DashboardNavProp = BottomTabNavigationProp<RootTabParamList, 'Dashboard'>;
 export const DashboardScreen: React.FC = () => {
   const { stats, dailyReview, loadStats, loadTodayReview } = useAppStore();
   const { settings } = useUserStore();
+  const { favorites, loadFavorites, loadCollections } = useCollectionsStore();
   const { t } = useTranslation();
   const { colors } = useTheme();
   const { fonts } = useFonts();
@@ -28,6 +30,8 @@ export const DashboardScreen: React.FC = () => {
   useEffect(() => {
     loadStats();
     loadTodayReview();
+    loadFavorites();
+    loadCollections();
     getWeeklyReviewCounts().then(setWeeklyData);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -115,6 +119,40 @@ export const DashboardScreen: React.FC = () => {
           </View>
         </View>
 
+        {/* Favorites Section */}
+        {favorites.length > 0 && (
+          <View style={[styles.favoritesSection, { backgroundColor: colors.surface }]}>
+            <View style={styles.favoritesHeader}>
+              <Text style={[styles.sectionTitle, { color: colors.text, fontSize: fonts.heading }]}>
+                ⭐ {t('dashboard.favorites', 'Favorites')}
+              </Text>
+              <TouchableOpacity onPress={() => navigation.navigate('SurahList')}>
+                <Text style={[styles.viewAllText, { color: colors.primary }]}>
+                  {t('common.viewAll', 'View All')}
+                </Text>
+              </TouchableOpacity>
+            </View>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              {favorites.slice(0, 5).map((fav, index) => (
+                <TouchableOpacity
+                  key={fav.id}
+                  style={[styles.favoriteCard, { backgroundColor: colors.card }]}
+                  onPress={() => {
+                    if (fav.surah_number) {
+                      navigation.navigate('SurahList');
+                    }
+                  }}
+                >
+                  <Text style={styles.favoriteEmoji}>⭐</Text>
+                  <Text style={[styles.favoriteText, { color: colors.text }]}>
+                    {fav.surah_number ? `Surah ${fav.surah_number}` : `Verse`}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          </View>
+        )}
+
         <View style={styles.footer} />
       </ScrollView>
     </SafeAreaView>
@@ -132,5 +170,40 @@ const styles = StyleSheet.create({
   actionButton: { flex: 1, minWidth: '45%', borderRadius: 12, padding: 16, alignItems: 'center', elevation: 3 },
   actionIcon: { fontSize: 32, marginBottom: 8 },
   actionLabel: { fontSize: 14, fontWeight: '500' },
+  favoritesSection: { 
+    marginTop: 16, 
+    padding: 16, 
+    marginHorizontal: 16, 
+    borderRadius: 12 
+  },
+  favoritesHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  viewAllText: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  favoriteCard: {
+    width: 100,
+    height: 100,
+    borderRadius: 12,
+    padding: 12,
+    marginRight: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 3,
+  },
+  favoriteEmoji: {
+    fontSize: 32,
+    marginBottom: 8,
+  },
+  favoriteText: {
+    fontSize: 12,
+    fontWeight: '600',
+    textAlign: 'center',
+  },
   footer: { height: 20 },
 });

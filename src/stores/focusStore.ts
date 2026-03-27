@@ -36,23 +36,23 @@ interface FocusState {
   phase: FocusPhase;
   timeRemaining: number; // in seconds
   totalTime: number; // total time for current phase in seconds
-  
+
   // Configuration
   config: FocusConfig;
-  
+
   // Session tracking
   currentSession: FocusSession | null;
   sessionHistory: FocusSession[];
   completedPomodoros: number;
-  
+
   // Current verse for review during focus
   currentVerse: Verse | null;
   versesReviewed: number;
   qualityScores: QualityScore[];
-  
+
   // Timer reference (for cleanup)
   timerInterval: NodeJS.Timeout | null;
-  
+
   // Actions
   setConfig: (config: Partial<FocusConfig>) => void;
   startFocus: (verse?: Verse) => void;
@@ -62,16 +62,16 @@ interface FocusState {
   reset: () => void;
   skip: () => void;
   tick: () => void;
-  
+
   // Verse tracking during focus
   setCurrentVerse: (verse: Verse | null) => void;
   recordQuality: (quality: QualityScore) => void;
-  
+
   // Session management
   endSession: () => FocusSession | null;
-  getStats: () => { 
-    totalFocusTime: number; 
-    totalVerses: number; 
+  getStats: () => {
+    totalFocusTime: number;
+    totalVerses: number;
     avgQuality: number;
     totalPomodoros: number;
   };
@@ -93,7 +93,7 @@ const generateSessionId = (): string => {
 
 // Helper to calculate average quality
 const calculateAvgQuality = (scores: QualityScore[]): number => {
-  if (scores.length === 0) return 0;
+  if (scores.length === 0) {return 0;}
   const sum = scores.reduce((acc, score) => acc + score, 0);
   return Math.round((sum / scores.length) * 10) / 10;
 };
@@ -118,7 +118,7 @@ export const useFocusStore = create<FocusState>()(
       setConfig: (newConfig) => {
         const config = { ...get().config, ...newConfig };
         set({ config });
-        
+
         // Update timer if duration changed and timer is idle
         if (get().phase === 'idle' && newConfig.focusDuration) {
           set({
@@ -131,12 +131,12 @@ export const useFocusStore = create<FocusState>()(
       // Start focus phase
       startFocus: (verse) => {
         const { config, timerInterval } = get();
-        
+
         // Clear existing timer
         if (timerInterval) {
           clearInterval(timerInterval);
         }
-        
+
         const totalTime = config.focusDuration * 60;
         const session: FocusSession = {
           id: generateSessionId(),
@@ -149,7 +149,7 @@ export const useFocusStore = create<FocusState>()(
           breakDuration: config.breakDuration,
           completedPomodoros: 0,
         };
-        
+
         set({
           phase: 'focus',
           timeRemaining: totalTime,
@@ -165,18 +165,18 @@ export const useFocusStore = create<FocusState>()(
       // Start break phase
       startBreak: () => {
         const { config, timerInterval, completedPomodoros, currentSession } = get();
-        
+
         // Clear existing timer
         if (timerInterval) {
           clearInterval(timerInterval);
         }
-        
+
         const totalTime = config.breakDuration * 60;
         const updatedSession = currentSession ? {
           ...currentSession,
           completedPomodoros: completedPomodoros + 1,
         } : null;
-        
+
         set({
           phase: 'break',
           timeRemaining: totalTime,
@@ -205,7 +205,7 @@ export const useFocusStore = create<FocusState>()(
           // The previous phase (focus or break) is stored in totalTime
           const prevPhase = get().totalTime === get().config.focusDuration * 60 ? 'focus' : 'break';
           set({ phase: prevPhase === 'focus' && get().timeRemaining < get().totalTime ? 'focus' : 'break' });
-          
+
           // Determine the correct phase based on remaining time
           const wasFocus = get().totalTime === get().config.focusDuration * 60;
           set({ phase: wasFocus ? 'focus' : 'break' });
@@ -215,11 +215,11 @@ export const useFocusStore = create<FocusState>()(
       // Reset timer to initial state
       reset: () => {
         const { config, timerInterval, currentSession } = get();
-        
+
         if (timerInterval) {
           clearInterval(timerInterval);
         }
-        
+
         // Save session if it was started
         if (currentSession && get().versesReviewed > 0) {
           const completedSession: FocusSession = {
@@ -230,12 +230,12 @@ export const useFocusStore = create<FocusState>()(
             qualityScores: get().qualityScores,
             avgQuality: calculateAvgQuality(get().qualityScores),
           };
-          
+
           set((state) => ({
             sessionHistory: [completedSession, ...state.sessionHistory].slice(0, 100), // Keep last 100 sessions
           }));
         }
-        
+
         set({
           phase: 'idle',
           timeRemaining: config.focusDuration * 60,
@@ -251,7 +251,7 @@ export const useFocusStore = create<FocusState>()(
       // Skip current phase
       skip: () => {
         const { phase, config } = get();
-        
+
         if (phase === 'focus') {
           // Skip to break
           get().startBreak();
@@ -268,7 +268,7 @@ export const useFocusStore = create<FocusState>()(
       // Timer tick - called every second
       tick: () => {
         const { timeRemaining, phase, currentSession, config } = get();
-        
+
         if (timeRemaining <= 1) {
           // Timer completed
           if (phase === 'focus') {
@@ -279,25 +279,25 @@ export const useFocusStore = create<FocusState>()(
             if (config.vibrationEnabled) {
               // Vibration will be handled by the component
             }
-            
+
             // Update session duration
             const updatedSession = currentSession ? {
               ...currentSession,
               duration: currentSession.duration + (config.focusDuration * 60 - timeRemaining),
             } : null;
-            
-            set({ 
+
+            set({
               phase: 'completed',
               currentSession: updatedSession,
             });
-            
+
             // Auto-start break if configured
             if (config.autoStartBreak) {
               setTimeout(() => get().startBreak(), 1000);
             }
           } else if (phase === 'break') {
             // Break complete
-            set({ 
+            set({
               phase: 'idle',
               timeRemaining: config.focusDuration * 60,
               totalTime: config.focusDuration * 60,
@@ -306,14 +306,14 @@ export const useFocusStore = create<FocusState>()(
         } else {
           // Decrement timer
           const newTimeRemaining = timeRemaining - 1;
-          
+
           // Update session duration
           const updatedSession = currentSession ? {
             ...currentSession,
             duration: currentSession.duration + 1,
           } : null;
-          
-          set({ 
+
+          set({
             timeRemaining: newTimeRemaining,
             currentSession: updatedSession,
           });
@@ -336,13 +336,13 @@ export const useFocusStore = create<FocusState>()(
       // End current session
       endSession: () => {
         const { currentSession, versesReviewed, qualityScores, timerInterval, config } = get();
-        
+
         if (timerInterval) {
           clearInterval(timerInterval);
         }
-        
-        if (!currentSession) return null;
-        
+
+        if (!currentSession) {return null;}
+
         const completedSession: FocusSession = {
           ...currentSession,
           endedAt: new Date().toISOString(),
@@ -352,7 +352,7 @@ export const useFocusStore = create<FocusState>()(
           avgQuality: calculateAvgQuality(qualityScores),
           completedPomodoros: get().completedPomodoros,
         };
-        
+
         set((state) => ({
           sessionHistory: [completedSession, ...state.sessionHistory].slice(0, 100),
           phase: 'idle',
@@ -364,14 +364,14 @@ export const useFocusStore = create<FocusState>()(
           qualityScores: [],
           timerInterval: null,
         }));
-        
+
         return completedSession;
       },
 
       // Get session statistics
       getStats: () => {
         const { sessionHistory } = get();
-        
+
         if (sessionHistory.length === 0) {
           return {
             totalFocusTime: 0,
@@ -380,13 +380,13 @@ export const useFocusStore = create<FocusState>()(
             totalPomodoros: 0,
           };
         }
-        
+
         const totalFocusTime = sessionHistory.reduce((acc, s) => acc + s.duration, 0);
         const totalVerses = sessionHistory.reduce((acc, s) => acc + s.versesReviewed, 0);
         const totalPomodoros = sessionHistory.reduce((acc, s) => acc + s.completedPomodoros, 0);
         const allScores = sessionHistory.flatMap((s) => s.qualityScores);
         const avgQuality = calculateAvgQuality(allScores);
-        
+
         return {
           totalFocusTime,
           totalVerses,
@@ -408,14 +408,14 @@ export const useFocusStore = create<FocusState>()(
 );
 
 // Selectors for common queries
-export const selectIsTimerRunning = (state: FocusState): boolean => 
+export const selectIsTimerRunning = (state: FocusState): boolean =>
   state.phase === 'focus' || state.phase === 'break';
 
-export const selectIsPaused = (state: FocusState): boolean => 
+export const selectIsPaused = (state: FocusState): boolean =>
   state.phase === 'paused';
 
 export const selectProgress = (state: FocusState): number => {
-  if (state.totalTime === 0) return 0;
+  if (state.totalTime === 0) {return 0;}
   return ((state.totalTime - state.timeRemaining) / state.totalTime) * 100;
 };
 

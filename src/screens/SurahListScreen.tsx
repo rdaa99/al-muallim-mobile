@@ -14,6 +14,7 @@ import { useTranslation } from 'react-i18next';
 import { useTheme } from '../context/ThemeContext';
 import { useFonts } from '../context/FontSizeContext';
 import { getSurahs } from '../services/database';
+import { useCollectionsStore } from '@/stores/collectionsStore';
 import type { Surah } from '../types';
 
 interface SurahWithProgress extends Surah {
@@ -36,21 +37,37 @@ export const SurahListScreen: React.FC = () => {
   const [showFavorites, setShowFavorites] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  const { 
+    toggleFavorite: toggleFavoriteStore, 
+    isFavorite: checkIsFavorite,
+    favorites,
+    loadFavorites,
+  } = useCollectionsStore();
+
   useEffect(() => {
     loadSurahs();
+    loadFavorites();
   }, []);
 
   const loadSurahs = async () => {
     try {
       setLoading(true);
       const data = await getSurahs();
-      const surahsWithProgress = data.map(surah => ({
-        ...surah,
-        total_verses: surah.numberOfAyahs,
-        learned_verses: 0, // TODO: Calculate from database
-        progress: 0, // TODO: Calculate from database
-        is_favorite: false, // TODO: Load from AsyncStorage
-      }));
+      
+      // Check favorite status for each surah
+      const surahsWithProgress = await Promise.all(
+        data.map(async (surah) => {
+          const isFav = await checkIsFavorite(undefined, surah.number);
+          return {
+            ...surah,
+            total_verses: surah.numberOfAyahs,
+            learned_verses: 0,
+            progress: 0,
+            is_favorite: isFav,
+          };
+        })
+      );
+      
       setSurahs(surahsWithProgress);
     } catch (error) {
       console.error('Error loading surahs:', error);
@@ -143,13 +160,19 @@ export const SurahListScreen: React.FC = () => {
     </TouchableOpacity>
   );
 
-  const toggleFavorite = (surahNumber: number) => {
-    setSurahs(prev =>
-      prev.map(s =>
-        s.number === surahNumber ? { ...s, is_favorite: !s.is_favorite } : s
-      )
-    );
-    // TODO: Save to AsyncStorage
+  const toggleFavorite = async (surahNumber: number) => {
+    try {
+      await toggleFavoriteStore(undefined, surahNumber);
+      
+      // Update local state
+      setSurahs(prev =>
+        prev.map(s =>
+          s.number === surahNumber ? { ...s, is_favorite: !s.is_favorite } : s
+        )
+      );
+    } catch (error) {
+      console.error('Error toggling favorite:', error);
+    }
   };
 
   const clearFilters = () => {

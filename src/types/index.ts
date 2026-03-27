@@ -116,6 +116,34 @@ export interface Reciter {
   style?: string;
 }
 
+// Collection and Favorites types
+export interface Collection {
+  id: string;
+  name: string;
+  description?: string;
+  color: string;
+  created_at: string;
+  updated_at?: string;
+  is_predefined?: boolean;
+}
+
+export interface CollectionItem {
+  id: string;
+  collection_id: string;
+  verse_id?: number;
+  surah_number?: number;
+  ayah_number?: number;
+  added_at: string;
+}
+
+export interface Favorite {
+  id: string;
+  verse_id?: number;
+  surah_number?: number;
+  ayah_number?: number;
+  created_at: string;
+}
+
 // Navigation types
 export type RootTabParamList = {
   Review: undefined;
@@ -125,4 +153,6 @@ export type RootTabParamList = {
   AudioPlayer: undefined;
   Settings: undefined;
   Focus: undefined;
+  Collections: undefined;
+  CollectionDetail: { collectionId: string };
 };

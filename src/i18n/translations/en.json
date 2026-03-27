@@ -8,7 +8,15 @@
     "quran": "Quran",
     "loading": "Loading...",
     "dbError": "Database initialization error",
-    "stats": "Stats"
+    "stats": "Stats",
+    "error": "Error",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "remove": "Remove",
+    "edit": "Edit",
+    "create": "Create",
+    "save": "Save",
+    "viewAll": "View All"
   },
   "dashboard": {
     "title": "Dashboard",
@@ -24,7 +32,8 @@
     "continue": "Continue",
     "reviewBtn": "Review",
     "listen": "Listen",
-    "stats": "Stats"
+    "stats": "Stats",
+    "favorites": "Favorites"
   },
   "days": {
     "sun": "Sun",
@@ -184,5 +193,32 @@
     "goalMet": "Goal met",
     "goalPending": "In progress",
     "verses": "verses"
+  },
+  "collections": {
+    "title": "Collections",
+    "createNew": "Create New Collection",
+    "namePlaceholder": "Collection name",
+    "descriptionPlaceholder": "Description (optional)",
+    "selectColor": "Select Color",
+    "empty": "No collections yet",
+    "emptyMsg": "Create your first collection to organize verses",
+    "emptyItems": "No items in this collection",
+    "emptyItemsMsg": "Add verses from the Quran screen",
+    "nameRequired": "Name required",
+    "nameRequiredMsg": "Please enter a name for the collection",
+    "createError": "Failed to create collection",
+    "updateError": "Failed to update collection",
+    "deleteError": "Failed to delete collection",
+    "deleteConfirm": "Delete Collection",
+    "deleteConfirmMsg": "Are you sure you want to delete \"{{name}}\"? This action cannot be undone.",
+    "cannotDelete": "Cannot Delete",
+    "cannotDeleteMsg": "Predefined collections cannot be deleted",
+    "predefined": "Predefined",
+    "items": "items",
+    "editCollection": "Edit Collection",
+    "removeItem": "Remove Item",
+    "removeItemMsg": "Remove \"{{name}}\" from this collection?",
+    "removeItemError": "Failed to remove item",
+    "notFound": "Collection not found"
   }
 }
