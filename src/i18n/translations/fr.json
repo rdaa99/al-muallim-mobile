@@ -7,7 +7,8 @@
     "audio": "Audio",
     "quran": "Coran",
     "loading": "Chargement...",
-    "dbError": "Erreur d'initialisation de la base de données"
+    "dbError": "Erreur d'initialisation de la base de données",
+    "stats": "Stats"
   },
   "dashboard": {
     "title": "Tableau de bord",
@@ -128,6 +129,32 @@
     "allTypes": "Tous types",
     "favorites": "Favoris",
     "surahs": "sourates",
+    "verses": "versets"
+  },
+  "stats": {
+    "title": "Statistiques",
+    "subtitle": "Suivez votre progression de mémorisation",
+    "versesMemorized": "Versets mémorisés",
+    "outOf": "sur {{total}} versets",
+    "currentStreak": "Série actuelle",
+    "longestStreak": "Meilleure série",
+    "days": "jours",
+    "mastered": "Maîtrisés",
+    "consolidating": "En consolidation",
+    "learning": "En apprentissage",
+    "retention": "Rétention",
+    "learningProgress": "Progression d'apprentissage",
+    "weeklyProgress": "Progression hebdomadaire",
+    "monthlyActivity": "Activité mensuelle",
+    "juzProgress": "Progression par Juz",
+    "sessionStats": "Statistiques de session",
+    "totalSessions": "Sessions totales",
+    "avgSessionDuration": "Durée moyenne (min)",
+    "versesPerSession": "Versets/session",
+    "lastUpdated": "Dernière mise à jour",
+    "versesThisMonth": "versets ce mois",
+    "goalMet": "Objectif atteint",
+    "goalPending": "En cours",
     "verses": "versets"
   }
 }

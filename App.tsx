@@ -12,6 +12,7 @@ import { AudioPlayerScreen } from '@/screens/AudioPlayerScreen';
 import { QuranScreen } from '@/screens/QuranScreen';
 import { SurahListScreen } from '@/screens/SurahListScreen';
 import { PlanningScreen } from '@/screens/PlanningScreen';
+import { StatsScreen } from '@/screens/StatsScreen';
 import { initDatabase, seedDatabase } from './src/services/database';
 import type { RootTabParamList } from './src/types';
 
@@ -88,6 +89,15 @@ const AppContent: React.FC = () => {
             title: t('common.dashboard'),
             tabBarLabel: t('common.dashboard'),
             tabBarIcon: ({ color }) => <Text style={{ fontSize: 20, color }}>{'\uD83D\uDCCA'}</Text>,
+          }}
+        />
+        <Tab.Screen
+          name="Stats"
+          component={StatsScreen}
+          options={{
+            title: t('common.stats'),
+            tabBarLabel: t('common.stats'),
+            tabBarIcon: ({ color }) => <Text style={{ fontSize: 20, color }}>{'\uD83D\uDCC8'}</Text>,
           }}
         />
         <Tab.Screen

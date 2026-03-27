@@ -6,7 +6,9 @@
     "review": "مراجعة",
     "audio": "صوتي",
     "loading": "جاري التحميل...",
-    "dbError": "خطأ في تهيئة قاعدة البيانات"
+    "dbError": "خطأ في تهيئة قاعدة البيانات",
+    "quran": "القرآن",
+    "stats": "إحصائيات"
   },
   "dashboard": {
     "title": "لوحة القيادة",
@@ -128,5 +130,31 @@
     "favorites": "المفضلة",
     "surahs": "سورة",
     "verses": "آية"
+  },
+  "stats": {
+    "title": "الإحصائيات",
+    "subtitle": "تتبع تقدم الحفظ",
+    "versesMemorized": "الآيات المحفوظة",
+    "outOf": "من {{total}} آية",
+    "currentStreak": "السلسلة الحالية",
+    "longestStreak": "أطول سلسلة",
+    "days": "أيام",
+    "mastered": "مُتقن",
+    "consolidating": "قيد التثبيت",
+    "learning": "قيد التعلم",
+    "retention": "معدل التذكر",
+    "learningProgress": "تقدم التعلم",
+    "weeklyProgress": "التقدم الأسبوعي",
+    "monthlyActivity": "النشاط الشهري",
+    "juzProgress": "تقدم الأجزاء",
+    "sessionStats": "إحصائيات الجلسات",
+    "totalSessions": "إجمالي الجلسات",
+    "avgSessionDuration": "متوسط المدة (دقيقة)",
+    "versesPerSession": "آيات/جلسة",
+    "lastUpdated": "آخر تحديث",
+    "versesThisMonth": "آية هذا الشهر",
+    "goalMet": "الهدف محقق",
+    "goalPending": "قيد التقدم",
+    "verses": "آيات"
   }
 }

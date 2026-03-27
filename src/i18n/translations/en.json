@@ -7,7 +7,8 @@
     "audio": "Audio",
     "quran": "Quran",
     "loading": "Loading...",
-    "dbError": "Database initialization error"
+    "dbError": "Database initialization error",
+    "stats": "Stats"
   },
   "dashboard": {
     "title": "Dashboard",
@@ -128,6 +129,32 @@
     "allTypes": "All Types",
     "favorites": "Favorites",
     "surahs": "surahs",
+    "verses": "verses"
+  },
+  "stats": {
+    "title": "Statistics",
+    "subtitle": "Track your memorization progress",
+    "versesMemorized": "Verses Memorized",
+    "outOf": "out of {{total}} verses",
+    "currentStreak": "Current Streak",
+    "longestStreak": "Longest Streak",
+    "days": "days",
+    "mastered": "Mastered",
+    "consolidating": "Consolidating",
+    "learning": "Learning",
+    "retention": "Retention",
+    "learningProgress": "Learning Progress",
+    "weeklyProgress": "Weekly Progress",
+    "monthlyActivity": "Monthly Activity",
+    "juzProgress": "Juz Progress",
+    "sessionStats": "Session Statistics",
+    "totalSessions": "Total Sessions",
+    "avgSessionDuration": "Avg. Duration (min)",
+    "versesPerSession": "Verses/Session",
+    "lastUpdated": "Last updated",
+    "versesThisMonth": "verses this month",
+    "goalMet": "Goal met",
+    "goalPending": "In progress",
     "verses": "verses"
   }
 }
