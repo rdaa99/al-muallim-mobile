@@ -10,8 +10,10 @@ import {
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useAppStore } from '@/stores/appStore';
+import { useUserStore } from '../stores/userStore';
 import { useTheme } from '../context/ThemeContext';
 import { AudioPlayer } from '@/components/AudioPlayer';
+import { getVerseTranslation, type TranslationLanguage } from '@/services/translationService';
 
 export const ReviewScreen: React.FC = () => {
   const { width } = useWindowDimensions();
@@ -27,6 +29,7 @@ export const ReviewScreen: React.FC = () => {
     submitReview,
     nextVerse,
   } = useAppStore();
+  const { settings: displaySettings } = useUserStore();
 
   const [showTranslation, setShowTranslation] = useState(false);
   const [showArabic, setShowArabic] = useState(false);
@@ -170,8 +173,10 @@ export const ReviewScreen: React.FC = () => {
     );
   }
 
-  // Get translation based on current language
-  const translation = currentVerse.text_translation_fr || currentVerse.text_translation_en;
+  // Get translation based on selected language from settings
+  const selectedTranslation = (displaySettings?.selectedTranslation || 'fr') as TranslationLanguage;
+  const translation = getVerseTranslation(currentVerse, selectedTranslation);
+  const isArabicSelected = selectedTranslation === 'ar';
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
@@ -233,8 +238,8 @@ export const ReviewScreen: React.FC = () => {
               {currentVerse.surah_number}:{currentVerse.ayah_number}
             </Text>
 
-            {/* Translation (optional) */}
-            {translation && (
+            {/* Translation (only if not Arabic selected) */}
+            {!isArabicSelected && translation && translation !== currentVerse.text_arabic && (
               <TouchableOpacity
                 style={styles.translationButton}
                 onPress={() => setShowTranslation(!showTranslation)}

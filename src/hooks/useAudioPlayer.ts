@@ -1,9 +1,18 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { Audio } from 'expo-av';
 import { useTranslation } from 'react-i18next';
+import { getAudioUrl, isValidReciter, DEFAULT_RECITER } from '@/services/reciterService';
 
-export const useAudioPlayer = () => {
+interface UseAudioPlayerOptions {
+  reciterId?: string;
+  autoFallback?: boolean;
+}
+
+export const useAudioPlayer = (options?: UseAudioPlayerOptions) => {
   const { t } = useTranslation();
+  const reciterId = options?.reciterId && isValidReciter(options.reciterId)
+    ? options.reciterId
+    : DEFAULT_RECITER;
   
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -60,7 +69,11 @@ export const useAudioPlayer = () => {
     }, 500);
   }, [clearTrackingInterval]);
 
-  const play = useCallback(async (url: string) => {
+  /**
+   * Play audio for a specific verse
+   * Can accept either a direct URL or verse coordinates with optional reciter override
+   */
+  const play = useCallback(async (urlOrSurah: string | number, ayahNumber?: number, verseReciterId?: string) => {
     // Cleanup previous sound
     if (soundRef.current) {
       await soundRef.current.unloadAsync();
@@ -69,11 +82,27 @@ export const useAudioPlayer = () => {
 
     setIsLoading(true);
     setError(null);
-    urlRef.current = url;
+
+    // Determine if first argument is URL or surah number
+    let audioUrl: string;
+    if (typeof urlOrSurah === 'string') {
+      // Direct URL provided
+      audioUrl = urlOrSurah;
+    } else if (typeof urlOrSurah === 'number' && typeof ayahNumber === 'number') {
+      // Surah and ayah provided - use reciter service
+      const effectiveReciterId = verseReciterId || reciterId;
+      audioUrl = getAudioUrl(urlOrSurah, ayahNumber, effectiveReciterId);
+    } else {
+      setError('Invalid play parameters');
+      setIsLoading(false);
+      return;
+    }
+
+    urlRef.current = audioUrl;
 
     try {
       const { sound } = await Audio.Sound.createAsync(
-        { uri: url },
+        { uri: audioUrl },
         { shouldPlay: true },
         async (status) => {
           if (status.isLoaded) {
@@ -108,7 +137,7 @@ export const useAudioPlayer = () => {
       setIsLoading(false);
       console.error('Audio playback error:', err);
     }
-  }, [clearTrackingInterval, startTracking, t]);
+  }, [clearTrackingInterval, startTracking, t, reciterId]);
 
   const pause = useCallback(async () => {
     if (soundRef.current) {

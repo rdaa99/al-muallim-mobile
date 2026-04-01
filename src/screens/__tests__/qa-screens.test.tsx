@@ -321,14 +321,18 @@ describe('QA: SettingsScreen — SC-5.x', () => {
 
   // SC-5.1 — Language selection
   it('SC-5.1: should show language picker', () => {
-    const { getByText } = render(<SettingsScreen />);
+    const { getByText, getAllByText } = render(<SettingsScreen />);
     expect(getByText('settings.language')).toBeTruthy();
-    expect(getByText('Français')).toBeTruthy();
+    // There are now multiple Français texts (language + translation)
+    const francaisElements = getAllByText('Français');
+    expect(francaisElements.length).toBeGreaterThan(0);
   });
 
   it('SC-5.1: should show all language options when picker opened', () => {
-    const { getByText } = render(<SettingsScreen />);
-    fireEvent.press(getByText('Français'));
+    const { getByText, getAllByText } = render(<SettingsScreen />);
+    // Use the first Français (likely the language picker)
+    const francaisButtons = getAllByText('Français');
+    fireEvent.press(francaisButtons[0]);
 
     expect(getByText('English')).toBeTruthy();
     expect(getByText('العربية')).toBeTruthy();

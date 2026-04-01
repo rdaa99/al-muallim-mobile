@@ -15,6 +15,7 @@ import { useAppStore } from '@/stores/appStore';
 import { useUserStore } from '../stores/userStore';
 import { useTheme } from '../context/ThemeContext';
 import type { UserSettings } from '@/types';
+import { AVAILABLE_TRANSLATIONS, type TranslationLanguage } from '@/services/translationService';
 
 const RECITERS = [
   { id: 'abdul_basit', name: 'Abdul Basit' },
@@ -40,6 +41,7 @@ export const SettingsScreen: React.FC = () => {
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
   const [showReciterPicker, setShowReciterPicker] = useState(false);
   const [showLanguagePicker, setShowLanguagePicker] = useState(false);
+  const [showTranslationPicker, setShowTranslationPicker] = useState(false);
 
   useEffect(() => {
     loadSettings();
@@ -105,6 +107,11 @@ export const SettingsScreen: React.FC = () => {
     setShowLanguagePicker(false);
   };
 
+  const handleTranslationChange = (translationId: TranslationLanguage) => {
+    updateDisplaySettings({ selectedTranslation: translationId });
+    setShowTranslationPicker(false);
+  };
+
   if (!localSettings) {
     return (
       <View style={[styles.container, { backgroundColor: colors.background }]}>
@@ -161,6 +168,62 @@ export const SettingsScreen: React.FC = () => {
                 >
                   {lang.label}
                 </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        )}
+      </View>
+
+      {/* Quran Translation */}
+      <View style={[styles.section, { backgroundColor: colors.surface }]}>
+        <Text style={[styles.sectionTitle, { color: colors.text }]}>
+          {t('settings.translation', 'Traduction du Coran')}
+        </Text>
+
+        <TouchableOpacity
+          style={[styles.reciterButton, { backgroundColor: colors.border }]}
+          onPress={() => setShowTranslationPicker(!showTranslationPicker)}
+        >
+          <Text style={[styles.reciterText, { color: colors.primary }]}>
+            {AVAILABLE_TRANSLATIONS.find(t => t.id === (displaySettings?.selectedTranslation || 'fr'))?.nativeName || 'Français'}
+          </Text>
+          <Text style={[styles.reciterArrow, { color: colors.textSecondary }]}>
+            {showTranslationPicker ? '▲' : '▼'}
+          </Text>
+        </TouchableOpacity>
+
+        {showTranslationPicker && (
+          <View style={[styles.pickerContainer, { backgroundColor: colors.border }]}>
+            {AVAILABLE_TRANSLATIONS.map((translation) => (
+              <TouchableOpacity
+                key={translation.id}
+                style={[
+                  styles.pickerOption,
+                  { borderBottomColor: colors.background },
+                  displaySettings?.selectedTranslation === translation.id && { backgroundColor: colors.primary },
+                ]}
+                onPress={() => handleTranslationChange(translation.id)}
+              >
+                <View style={styles.translationOption}>
+                  <Text
+                    style={[
+                      styles.pickerOptionText,
+                      { color: colors.textSecondary },
+                      displaySettings?.selectedTranslation === translation.id && styles.pickerOptionTextActive,
+                    ]}
+                  >
+                    {translation.nativeName}
+                  </Text>
+                  <Text
+                    style={[
+                      styles.translationDescription,
+                      { color: colors.textSecondary },
+                      displaySettings?.selectedTranslation === translation.id && styles.pickerOptionTextActive,
+                    ]}
+                  >
+                    {translation.description}
+                  </Text>
+                </View>
               </TouchableOpacity>
             ))}
           </View>
@@ -528,6 +591,14 @@ const styles = StyleSheet.create({
   pickerOptionTextActive: {
     color: '#FFFFFF',
     fontWeight: '600',
+  },
+  translationOption: {
+    flex: 1,
+  },
+  translationDescription: {
+    fontSize: 12,
+    marginTop: 2,
+    opacity: 0.8,
   },
   infoCard: {
     borderRadius: 12,

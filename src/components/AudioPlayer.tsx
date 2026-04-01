@@ -8,6 +8,8 @@ import {
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useAudioPlayer } from '@/hooks/useAudioPlayer';
+import { useAppStore } from '@/stores/appStore';
+import { getReciterDisplayName } from '@/services/reciterService';
 import type { ThemeColors } from '../context/ThemeContext';
 
 interface AudioPlayerProps {
@@ -24,16 +26,15 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
   colors,
 }) => {
   const { t } = useTranslation();
+  const { settings } = useAppStore();
 
   const bg = colors?.surface || '#1E293B';
   const accent = colors?.primary || '#10B981';
   const textSecondary = colors?.textSecondary || '#94A3B8';
   const buttonBg = colors?.border || '#334155';
 
-  // Generate audio URL
-  const paddedSurah = String(surahNumber).padStart(3, '0');
-  const paddedAyah = String(ayahNumber).padStart(3, '0');
-  const audioUrl = `https://cdn.islamic.network/quran/audio/128/ar.alafasy/${paddedSurah}${paddedAyah}.mp3`;
+  // Get selected reciter from settings
+  const selectedReciter = settings?.preferred_reciter || 'afasy';
 
   const {
     isPlaying,
@@ -43,24 +44,23 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
     play,
     pause,
     stop,
-    replay,
     toggleLoop,
-  } = useAudioPlayer();
+  } = useAudioPlayer({ reciterId: selectedReciter });
 
   // Auto-play on mount if enabled
   React.useEffect(() => {
     if (autoPlay) {
-      play(audioUrl);
+      play(surahNumber, ayahNumber);
     }
-  }, [audioUrl, autoPlay, play]);
+  }, [surahNumber, ayahNumber, autoPlay, play]);
 
   const handlePlayPause = () => {
     if (error) {
-      play(audioUrl);
+      play(surahNumber, ayahNumber);
     } else if (isPlaying) {
       pause();
     } else {
-      play(audioUrl);
+      play(surahNumber, ayahNumber);
     }
   };
 
@@ -100,7 +100,7 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
 
         <TouchableOpacity
           style={[styles.button, { backgroundColor: buttonBg }]}
-          onPress={() => replay()}
+          onPress={() => play(surahNumber, ayahNumber)}
           disabled={isLoading}
         >
           <Text style={styles.buttonIcon}>{'\uD83D\uDD04'}</Text>
@@ -120,6 +120,10 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
           {t('audio.loopEnabled', 'Répétition activée')}
         </Text>
       )}
+
+      <Text style={[styles.reciterIndicator, { color: textSecondary }]}>
+        🎤 {getReciterDisplayName(selectedReciter)}
+      </Text>
     </View>
   );
 };
@@ -167,5 +171,11 @@ const styles = StyleSheet.create({
     fontSize: 11,
     textAlign: 'center',
     marginTop: 8,
+  },
+  reciterIndicator: {
+    fontSize: 11,
+    textAlign: 'center',
+    marginTop: 8,
+    fontStyle: 'italic',
   },
 });

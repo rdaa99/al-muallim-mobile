@@ -97,7 +97,8 @@
     "modeRevision": "Révision uniquement",
     "modePaused": "En pause",
     "dirDesc": "An-Nas → Al-Fatiha",
-    "dirAsc": "Al-Fatiha → An-Nas"
+    "dirAsc": "Al-Fatiha → An-Nas",
+    "translation": "Traduction du Coran"
   },
   "audio": {
     "title": "Lecteur Audio",

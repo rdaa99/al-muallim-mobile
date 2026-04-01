@@ -7,7 +7,13 @@ jest.mock('@/hooks/useAudioPlayer', () => ({
   useAudioPlayer: jest.fn(),
 }));
 
+// Mock the appStore
+jest.mock('@/stores/appStore', () => ({
+  useAppStore: jest.fn(),
+}));
+
 const mockUseAudioPlayer = require('@/hooks/useAudioPlayer').useAudioPlayer;
+const mockUseAppStore = require('@/stores/appStore').useAppStore;
 
 describe('AudioPlayer', () => {
   const defaultProps = {
@@ -26,7 +32,6 @@ describe('AudioPlayer', () => {
     play: jest.fn(),
     pause: jest.fn(),
     stop: jest.fn(),
-    replay: jest.fn(),
     toggleLoop: jest.fn(),
     seek: jest.fn(),
   };
@@ -34,6 +39,9 @@ describe('AudioPlayer', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockUseAudioPlayer.mockReturnValue(mockAudioPlayerState);
+    mockUseAppStore.mockReturnValue({
+      settings: { preferred_reciter: 'afasy' },
+    });
   });
 
   it('should render correctly with default props', () => {
@@ -96,9 +104,7 @@ describe('AudioPlayer', () => {
     const playButton = getByText('▶');
     fireEvent.press(playButton);
 
-    expect(mockAudioPlayerState.play).toHaveBeenCalledWith(
-      'https://cdn.islamic.network/quran/audio/128/ar.alafasy/001001.mp3'
-    );
+    expect(mockAudioPlayerState.play).toHaveBeenCalledWith(1, 1);
   });
 
   it('should call pause when pause button is pressed', () => {
@@ -124,13 +130,13 @@ describe('AudioPlayer', () => {
     expect(mockAudioPlayerState.stop).toHaveBeenCalled();
   });
 
-  it('should call replay when replay button is pressed', () => {
+  it('should call play with surah and ayah when replay button is pressed', () => {
     const { getByText } = render(<AudioPlayer {...defaultProps} />);
 
     const replayButton = getByText('🔄');
     fireEvent.press(replayButton);
 
-    expect(mockAudioPlayerState.replay).toHaveBeenCalled();
+    expect(mockAudioPlayerState.play).toHaveBeenCalledWith(1, 1);
   });
 
   it('should toggle loop when loop button is pressed', () => {
@@ -156,27 +162,20 @@ describe('AudioPlayer', () => {
   it('should auto-play when autoPlay is true', () => {
     render(<AudioPlayer {...defaultProps} autoPlay={true} />);
 
-    expect(mockAudioPlayerState.play).toHaveBeenCalledWith(
-      'https://cdn.islamic.network/quran/audio/128/ar.alafasy/001001.mp3'
-    );
+    expect(mockAudioPlayerState.play).toHaveBeenCalledWith(1, 1);
   });
 
-  it('should generate correct URL for different surah and ayah', () => {
+  it('should play with correct surah and ayah numbers', () => {
     const props = {
       surahNumber: 2,
       ayahNumber: 255,
       autoPlay: false,
     };
 
-    render(<AudioPlayer {...props} />);
-
-    // When play button is pressed
     const { getByText } = render(<AudioPlayer {...props} />);
     fireEvent.press(getByText('▶'));
 
-    expect(mockAudioPlayerState.play).toHaveBeenCalledWith(
-      'https://cdn.islamic.network/quran/audio/128/ar.alafasy/002255.mp3'
-    );
+    expect(mockAudioPlayerState.play).toHaveBeenCalledWith(2, 255);
   });
 
   it('should retry playback when play button is pressed after error', () => {
@@ -190,9 +189,7 @@ describe('AudioPlayer', () => {
     const playButton = getByText('▶');
     fireEvent.press(playButton);
 
-    expect(mockAudioPlayerState.play).toHaveBeenCalledWith(
-      'https://cdn.islamic.network/quran/audio/128/ar.alafasy/001001.mp3'
-    );
+    expect(mockAudioPlayerState.play).toHaveBeenCalledWith(1, 1);
   });
 
   it('should disable buttons when loading', () => {

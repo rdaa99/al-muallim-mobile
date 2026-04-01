@@ -105,6 +105,7 @@ export const CollectionsScreen: React.FC = () => {
       style={[styles.collectionCard, { backgroundColor: colors.surface }]}
       onPress={() => navigation.navigate('CollectionDetail' as never, { collectionId: item.id } as never)}
       onLongPress={() => handleDeleteCollection(item)}
+      testID={`collection-${item.id}`}
     >
       <View style={[styles.colorIndicator, { backgroundColor: item.color }]} />
       
@@ -154,7 +155,7 @@ export const CollectionsScreen: React.FC = () => {
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={
           !isLoadingCollections ? (
-            <View style={styles.emptyContainer}>
+            <View style={styles.emptyContainer} testID="empty-state">
               <Text style={styles.emptyIcon}>📁</Text>
               <Text style={[styles.emptyText, { color: colors.textSecondary }]}>
                 {t('collections.empty', 'No collections yet')}
@@ -175,7 +176,7 @@ export const CollectionsScreen: React.FC = () => {
         onRequestClose={() => setShowCreateModal(false)}
       >
         <View style={styles.modalOverlay}>
-          <View style={[styles.modalContent, { backgroundColor: colors.surface }]}>
+          <View style={[styles.modalContent, { backgroundColor: colors.surface }]} testID="create-collection-modal">
             <Text style={[styles.modalTitle, { color: colors.text }]}>
               {t('collections.createNew', 'Create New Collection')}
             </Text>

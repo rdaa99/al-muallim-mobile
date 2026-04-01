@@ -97,7 +97,8 @@
     "modeRevision": "مراجعة فقط",
     "modePaused": "متوقف",
     "dirDesc": "الناس ← الفاتحة",
-    "dirAsc": "الفاتحة ← الناس"
+    "dirAsc": "الفاتحة ← الناس",
+    "translation": "ترجمة القرآن"
   },
   "audio": {
     "title": "مشغل الصوت",

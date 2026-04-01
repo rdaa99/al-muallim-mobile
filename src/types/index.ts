@@ -98,6 +98,7 @@ export interface UserDisplaySettings {
   dailyReminderTime: string;
   darkMode: boolean;
   fontSize: 'small' | 'medium' | 'large';
+  selectedTranslation: 'ar' | 'fr' | 'en'; // Translation language for verse text
 }
 
 // Audio types

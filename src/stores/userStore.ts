@@ -25,6 +25,7 @@ export const useUserStore = create<UserState>()(
         dailyReminderTime: '08:00',
         darkMode: false,
         fontSize: 'medium',
+        selectedTranslation: 'fr', // Default to French translation
       },
       updateSettings: (settings) =>
         set((state) => ({ settings: { ...state.settings, ...settings } })),

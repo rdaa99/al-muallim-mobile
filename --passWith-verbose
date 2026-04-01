@@ -1,0 +1,1956 @@
+
+> al-muallim-mobile@1.0.0 test
+> jest --testPathPattern=src/hooks/__tests__2 -- --test suites: ^
+
+FAIL src/screens/__tests__/CollectionsScreen.test.tsx
+FAIL src/screens/__tests__/CollectionsScreen.test.tsx
+  ● CollectionsScreen › should close modal when cancel is pressed
+
+    expect(received).toBeNull()
+
+    Received: {"_fiber": {"_debugHookTypes": null, "_debugNeedsRemount": false, "_debugOwner": [FiberNode], "_debugSource": null, "actualDuration": 0, "actualStartTime": -1, "alternate": [FiberNode], "child": [FiberNode], "childLanes": 0, "deletions": null, "dependencies": null, "elementType": "Text", "flags": 4, "index": 0, "key": null, "lanes": 0, "memoizedProps": [Object], "memoizedState": null, "mode": 1, "pendingProps": [Object], "ref": null, "return": [FiberNode], "selfBaseDuration": 0, "sibling": null, "stateNode": [Object], "subtreeFlags": 0, "tag": 5, "treeBaseDuration": 0, "type": "Text", "updateQueue": null}}
+
+      171 |
+      172 |     // Modal should be closed
+    > 173 |     await waitFor(() => {
+          |                  ^
+      174 |       expect(queryByText('Create New Collection')).toBeNull();
+      175 |     });
+      176 |   });
+
+      at Object.<anonymous> (src/screens/__tests__/CollectionsScreen.test.tsx:173:18)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+      at node_modules/@babel/runtime/helpers/asyncToGenerator.js:22:7
+      at Object.<anonymous> (node_modules/@babel/runtime/helpers/asyncToGenerator.js:14:12)
+
+  ● CollectionsScreen › should close modal when cancel is pressed
+
+    expect(received).toBeNull()
+
+    Received: {"_fiber": {"_debugHookTypes": null, "_debugNeedsRemount": false, "_debugOwner": [FiberNode], "_debugSource": null, "actualDuration": 0, "actualStartTime": -1, "alternate": [FiberNode], "child": [FiberNode], "childLanes": 0, "deletions": null, "dependencies": null, "elementType": "Text", "flags": 4, "index": 0, "key": null, "lanes": 0, "memoizedProps": [Object], "memoizedState": null, "mode": 1, "pendingProps": [Object], "ref": null, "return": [FiberNode], "selfBaseDuration": 0, "sibling": null, "stateNode": [Object], "subtreeFlags": 0, "tag": 5, "treeBaseDuration": 0, "type": "Text", "updateQueue": null}}
+
+      171 |
+      172 |     // Modal should be closed
+    > 173 |     await waitFor(() => {
+          |                  ^
+      174 |       expect(queryByText('Create New Collection')).toBeNull();
+      175 |     });
+      176 |   });
+
+      at Object.<anonymous> (src/screens/__tests__/CollectionsScreen.test.tsx:173:18)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+      at node_modules/@babel/runtime/helpers/asyncToGenerator.js:22:7
+      at Object.<anonymous> (node_modules/@babel/runtime/helpers/asyncToGenerator.js:14:12)
+
+FAIL src/hooks/__tests__/useAudioPlayer-qa.test.ts
+FAIL src/hooks/__tests__/useAudioPlayer-qa.test.ts
+  ● Console
+
+    console.error
+      Warning: An update to HookContainer inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at hookProps (/Users/reda/.openclaw/workspace/al-muallim-mobile/node_modules/@testing-library/react-native/src/render-hook.tsx:45:28)
+
+      114 |     if (soundRef.current) {
+      115 |       await soundRef.current.pauseAsync();
+    > 116 |       setIsPlaying(false);
+          |       ^
+      117 |       clearTrackingInterval();
+      118 |     }
+      119 |   }, [clearTrackingInterval]);
+
+      at printWarning (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:72:30)
+      at error (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:46:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16716:9)
+      at scheduleUpdateOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14916:5)
+      at dispatchSetState (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6767:7)
+      at Object.setIsPlaying (src/hooks/useAudioPlayer.ts:116:7)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+    console.error
+      Warning: An update to HookContainer inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at hookProps (/Users/reda/.openclaw/workspace/al-muallim-mobile/node_modules/@testing-library/react-native/src/render-hook.tsx:45:28)
+
+      141 |     if (soundRef.current) {
+      142 |       await soundRef.current.setPositionAsync(time * 1000);
+    > 143 |       setCurrentTime(time);
+          |       ^
+      144 |     }
+      145 |   }, []);
+      146 |
+
+      at printWarning (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:72:30)
+      at error (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:46:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16716:9)
+      at scheduleUpdateOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14916:5)
+      at dispatchSetState (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6767:7)
+      at Object.setCurrentTime (src/hooks/useAudioPlayer.ts:143:7)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+    console.error
+      Warning: An update to HookContainer inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at hookProps (/Users/reda/.openclaw/workspace/al-muallim-mobile/node_modules/@testing-library/react-native/src/render-hook.tsx:45:28)
+
+      68 |     clearTrackingInterval();
+      69 |
+    > 70 |     setIsLoading(true);
+         |     ^
+      71 |     setError(null);
+      72 |     urlRef.current = url;
+      73 |
+
+      at printWarning (nod  ● Console
+
+    console.error
+      Warning: An update to HookContainer inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at hookProps (/Users/reda/.openclaw/workspace/al-muallim-mobile/node_modules/@testing-library/react-native/src/render-hook.tsx:45:28)
+
+      114 |     if (soundRef.current) {
+      115 |       await soundRef.current.pauseAsync();
+    > 116 |       setIsPlaying(false);
+          |       ^
+      117 |       clearTrackingInterval();
+      118 |     }
+      119 |   }, [clearTrackingInterval]);
+
+      at printWarning (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:72:30)
+      at error (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:46:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16716:9)
+      at scheduleUpdateOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14916:5)
+      at dispatchSetState (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6767:7)
+      at Object.setIsPlaying (src/hooks/useAudioPlayer.ts:116:7)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+    console.error
+      Warning: An update to HookContainer inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at hookProps (/Users/reda/.openclaw/workspace/al-muallim-mobile/node_modules/@testing-library/react-native/src/render-hook.tsx:45:28)
+
+      141 |     if (soundRef.current) {
+      142 |       await soundRef.current.setPositionAsync(time * 1000);
+    > 143 |       setCurrentTime(time);
+          |       ^
+      144 |     }
+      145 |   }, []);
+      146 |
+
+      at printWarning (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:72:30)
+      at error (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:46:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16716:9)
+      at scheduleUpdateOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14916:5)
+      at dispatchSetState (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6767:7)
+      at Object.setCurrentTime (src/hooks/useAudioPlayer.ts:143:7)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+    console.error
+      Warning: An update to HookContainer inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at hookProps (/Users/reda/.openclaw/workspace/al-muallim-mobile/node_modules/@testing-library/react-native/src/render-hook.tsx:45:28)
+
+      68 |     clearTrackingInterval();
+      69 |
+    > 70 |     setIsLoading(true);
+         |     ^
+      71 |     setError(null);
+      72 |     urlRef.current = url;
+      73 |
+
+      at printWarning (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:72:30)
+      at error (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:46:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16716:9)
+      at scheduleUpdateOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14916:5)
+      at dispatchSetState (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6767:7)
+      at Object.setIsLoading (src/hooks/useAudioPlayer.ts:70:5)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+    console.error
+      Warning: An update to HookContainer inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at hookProps (/Users/reda/.openclaw/workspace/al-muallim-mobile/node_modules/@testing-library/react-native/src/render-hook.tsx:45:28)
+
+      69 |
+      70 |     setIsLoading(true);
+    > 71 |     setError(null);
+         |     ^
+      72 |     urlRef.current = url;
+      73 |
+      74 |     try {
+
+      at printWarning (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:72:30)
+      at error (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:46:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16716:9)
+      at scheduleUpdateOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14916:5)
+      at dispatchSetState (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6767:7)
+      at Object.setError (src/hooks/useAudioPlayer.ts:71:5)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+    console.error
+      Warning: An update to HookContainer inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at hookProps (/Users/reda/.openclaw/workspace/al-muallim-mobile/node_modules/@testing-library/react-native/src/render-hook.tsx:45:28)
+
+       99 |       const status = await sound.getStatusAsync();
+      100 |       if (status.isLoaded) {
+    > 101 |         setDuration(status.durationMillis ? status.durationMillis / 1000 : 0);
+          |         ^
+      102 |         setIsLoading(false);
+      103 |         setIsPlaying(true);
+      104 |         startTracking();
+
+      at printWarning (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:72:30)
+      at error (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:46:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16716:9)
+      at scheduleUpdateOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14916:5)
+      at dispatchSetState (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6767:7)
+      at Object.setDuration (src/hooks/useAudioPlayer.ts:101:9)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+    console.error
+      Warning: An update to HookContainer inside a test wase_modules/react-test-renderer/cjs/react-test-renderer.development.js:72:30)
+      at error (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:46:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16716:9)
+      at scheduleUpdateOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14916:5)
+      at dispatchSetState (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6767:7)
+      at Object.setIsLoading (src/hooks/useAudioPlayer.ts:70:5)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+    console.error
+      Warning: An update to HookContainer inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at hookProps (/Users/reda/.openclaw/workspace/al-muallim-mobile/node_modules/@testing-library/react-native/src/render-hook.tsx:45:28)
+
+      69 |
+      70 |     setIsLoading(true);
+    > 71 |     setError(null);
+         |     ^
+      72 |     urlRef.current = url;
+      73 |
+      74 |     try {
+
+      at printWarning (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:72:30)
+      at error (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:46:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16716:9)
+      at scheduleUpdateOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14916:5)
+      at dispatchSetState (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6767:7)
+      at Object.setError (src/hooks/useAudioPlayer.ts:71:5)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+    console.error
+      Warning: An update to HookContainer inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at hookProps (/Users/reda/.openclaw/workspace/al-muallim-mobile/node_modules/@testing-library/react-native/src/render-hook.tsx:45:28)
+
+       99 |       const status = await sound.getStatusAsync();
+      100 |       if (status.isLoaded) {
+    > 101 |         setDuration(status.durationMillis ? status.durationMillis / 1000 : 0);
+          |         ^
+      102 |         setIsLoading(false);
+      103 |         setIsPlaying(true);
+      104 |         startTracking();
+
+      at printWarning (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:72:30)
+      at error (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:46:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16716:9)
+      at scheduleUpdateOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14916:5)
+      at dispatchSetState (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6767:7)
+      at Object.setDuration (src/hooks/useAudioPlayer.ts:101:9)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+    console.error
+      Warning: An update to HookContainer inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at hookProps (/Users/reda/.openclaw/workspace/al-muallim-mobile/node_modules/@testing-library/react-native/src/render-hook.tsx:45:28)
+
+      100 |       if (status.isLoaded) {
+      101 |         setDuration(status.durationMillis ? status.durationMillis / 1000 : 0);
+    > 102 |         setIsLoading(false);
+          |         ^
+      103 |         setIsPlaying(true);
+      104 |         startTracking();
+      105 |       }
+
+      at printWarning (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:72:30)
+      at error (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:46:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16716:9)
+      at scheduleUpdateOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14916:5)
+      at dispatchSetState (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6767:7)
+      at Object.setIsLoading (src/hooks/useAudioPlayer.ts:102:9)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+    console.error
+      Warning: An update to HookContainer inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at hookProps (/Users/reda/.openclaw/workspace/al-muallim-mobile/node_modules/@testing-library/react-native/src/render-hook.tsx:45:28)
+
+      101 |         setDuration(status.durationMillis ? status.durationMillis / 1000 : 0);
+      102 |         setIsLoading(false);
+    > 103 |         setIsPlaying(true);
+          |         ^
+      104 |         startTracking();
+      105 |       }
+      106 |     } catch (err) {
+
+      at printWarning (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:72:30)
+      at error (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:46:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16716:9)
+      at scheduleUpdateOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14916:5)
+      at dispatchSetState (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6767:7)
+      at Object.setIsPlaying (src/hooks/useAudioPlayer.ts:103:9)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+    console.error
+      Warning: An update to HookContainer inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at hookProps (/Users/reda/.openclaw/workspace/al-muallim-mobile/node_modules/@testing-library/react-native/src/render-hook.tsx:45:28)
+
+      141 |     if (soundRef.current) {
+      142 |       await soundRef.current.setPositionAsync(time * 1000);
+    > 143 |       setCurrentTime(time);
+          |       ^
+      144 |     }
+      145 |   }, []) not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at hookProps (/Users/reda/.openclaw/workspace/al-muallim-mobile/node_modules/@testing-library/react-native/src/render-hook.tsx:45:28)
+
+      100 |       if (status.isLoaded) {
+      101 |         setDuration(status.durationMillis ? status.durationMillis / 1000 : 0);
+    > 102 |         setIsLoading(false);
+          |         ^
+      103 |         setIsPlaying(true);
+      104 |         startTracking();
+      105 |       }
+
+      at printWarning (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:72:30)
+      at error (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:46:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16716:9)
+      at scheduleUpdateOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14916:5)
+      at dispatchSetState (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6767:7)
+      at Object.setIsLoading (src/hooks/useAudioPlayer.ts:102:9)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+    console.error
+      Warning: An update to HookContainer inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at hookProps (/Users/reda/.openclaw/workspace/al-muallim-mobile/node_modules/@testing-library/react-native/src/render-hook.tsx:45:28)
+
+      101 |         setDuration(status.durationMillis ? status.durationMillis / 1000 : 0);
+      102 |         setIsLoading(false);
+    > 103 |         setIsPlaying(true);
+          |         ^
+      104 |         startTracking();
+      105 |       }
+      106 |     } catch (err) {
+
+      at printWarning (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:72:30)
+      at error (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:46:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16716:9)
+      at scheduleUpdateOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14916:5)
+      at dispatchSetState (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6767:7)
+      at Object.setIsPlaying (src/hooks/useAudioPlayer.ts:103:9)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+    console.error
+      Warning: An update to HookContainer inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at hookProps (/Users/reda/.openclaw/workspace/al-muallim-mobile/node_modules/@testing-library/react-native/src/render-hook.tsx:45:28)
+
+      141 |     if (soundRef.current) {
+      142 |       await soundRef.current.setPositionAsync(time * 1000);
+    > 143 |       setCurrentTime(time);
+          |       ^
+      144 |     }
+      145 |   }, []);
+      146 |
+
+      at printWarning (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:72:30)
+      at error (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:46:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16716:9)
+      at scheduleUpdateOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14916:5)
+      at dispatchSetState (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6767:7)
+      at Object.setCurrentTime (src/hooks/useAudioPlayer.ts:143:7)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+    console.error
+      Warning: An update to HookContainer inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at hookProps (/Users/reda/.openclaw/workspace/al-muallim-mobile/node_modules/@testing-library/react-native/src/render-hook.tsx:45:28)
+
+      141 |     if (soundRef.current) {
+      142 |       await soundRef.current.setPositionAsync(time * 1000);
+    > 143 |       setCurrentTime(time);
+          |       ^
+      144 |     }
+      145 |   }, []);
+      146 |
+
+      at printWarning (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:72:30)
+      at error (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:46:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16716:9)
+      at scheduleUpdateOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14916:5)
+      at dispatchSetState (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6767:7)
+      at Object.setCurrentTime (src/hooks/useAudioPlayer.ts:143:7)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+    console.error
+      Warning: An update to HookContainer inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at hookProps (/Users/reda/.openclaw/workspace/al-muallim-mobile/node_modules/@testing-library/react-native/src/render-hook.tsx:45:28)
+
+      68 |     clearTrackingInterval();
+      69 |
+    > 70 |     setIsLoading(true);
+         |     ^
+      71 |     setError(null);
+      72 |     urlRef.current = url;
+      73 |
+
+      at printWarning (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:72:30)
+      at error (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:46:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16716:9)
+      at scheduleUpdateOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14916:5)
+      at dispatchSetState (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6767:7)
+      at setIsLoading (src/hooks/useAudioPlayer.ts:70:5)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+    console.error
+      Warning: An update to HookContainer inside a test was not wrapped in act(...).
+      
+      When test;
+      146 |
+
+      at printWarning (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:72:30)
+      at error (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:46:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16716:9)
+      at scheduleUpdateOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14916:5)
+      at dispatchSetState (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6767:7)
+      at Object.setCurrentTime (src/hooks/useAudioPlayer.ts:143:7)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+    console.error
+      Warning: An update to HookContainer inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at hookProps (/Users/reda/.openclaw/workspace/al-muallim-mobile/node_modules/@testing-library/react-native/src/render-hook.tsx:45:28)
+
+      141 |     if (soundRef.current) {
+      142 |       await soundRef.current.setPositionAsync(time * 1000);
+    > 143 |       setCurrentTime(time);
+          |       ^
+      144 |     }
+      145 |   }, []);
+      146 |
+
+      at printWarning (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:72:30)
+      at error (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:46:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16716:9)
+      at scheduleUpdateOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14916:5)
+      at dispatchSetState (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6767:7)
+      at Object.setCurrentTime (src/hooks/useAudioPlayer.ts:143:7)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+    console.error
+      Warning: An update to HookContainer inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at hookProps (/Users/reda/.openclaw/workspace/al-muallim-mobile/node_modules/@testing-library/react-native/src/render-hook.tsx:45:28)
+
+      68 |     clearTrackingInterval();
+      69 |
+    > 70 |     setIsLoading(true);
+         |     ^
+      71 |     setError(null);
+      72 |     urlRef.current = url;
+      73 |
+
+      at printWarning (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:72:30)
+      at error (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:46:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16716:9)
+      at scheduleUpdateOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14916:5)
+      at dispatchSetState (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6767:7)
+      at setIsLoading (src/hooks/useAudioPlayer.ts:70:5)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+    console.error
+      Warning: An update to HookContainer inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at hookProps (/Users/reda/.openclaw/workspace/al-muallim-mobile/node_modules/@testing-library/react-native/src/render-hook.tsx:45:28)
+
+      69 |
+      70 |     setIsLoading(true);
+    > 71 |     setError(null);
+         |     ^
+      72 |     urlRef.current = url;
+      73 |
+      74 |     try {
+
+      at printWarning (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:72:30)
+      at error (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:46:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16716:9)
+      at scheduleUpdateOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14916:5)
+      at dispatchSetState (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6767:7)
+      at setError (src/hooks/useAudioPlayer.ts:71:5)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+    console.error
+      Warning: An update to HookContainer inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at hookProps (/Users/reda/.openclaw/workspace/al-muallim-mobile/node_modules/@testing-library/react-native/src/render-hook.tsx:45:28)
+
+       99 |       const status = await sound.getStatusAsync();
+      100 |       if (status.isLoaded) {
+    > 101 |         setDuration(status.durationMillis ? status.durationMillis / 1000 : 0);
+          |         ^
+      102 |         setIsLoading(false);
+      103 |         setIsPlaying(true);
+      104 |         startTracking();
+
+      at printWarning (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:72:30)
+      at error (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:46:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16716:9)
+      at scheduleUpdateOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14916:5)
+      at dispatchSetState (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6767:7)
+      at setDuration (src/hooks/useAudioPlayer.ts:101:9)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+    console.error
+      Warning: An update to HookContainer inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at hookProps (/Users/reda/.openclaw/workspace/al-muallim-mobile/node_modules/@testing-library/react-native/src/render-hook.tsx:45:28)
+
+      100 |       if (status.isLoaded) {
+      101 |         setDuration(status.durationMillis ? status.durationMillis / 1000 : 0);
+    > 102 |         setIsLoading(false);
+          |         ^
+      103 |         setIsPlaying(true);
+      104 |         startTracking();
+      105 |       }
+
+      at printWarning (node_modules/react-test-renderer/cjs/reing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at hookProps (/Users/reda/.openclaw/workspace/al-muallim-mobile/node_modules/@testing-library/react-native/src/render-hook.tsx:45:28)
+
+      69 |
+      70 |     setIsLoading(true);
+    > 71 |     setError(null);
+         |     ^
+      72 |     urlRef.current = url;
+      73 |
+      74 |     try {
+
+      at printWarning (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:72:30)
+      at error (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:46:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16716:9)
+      at scheduleUpdateOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14916:5)
+      at dispatchSetState (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6767:7)
+      at setError (src/hooks/useAudioPlayer.ts:71:5)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+    console.error
+      Warning: An update to HookContainer inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at hookProps (/Users/reda/.openclaw/workspace/al-muallim-mobile/node_modules/@testing-library/react-native/src/render-hook.tsx:45:28)
+
+       99 |       const status = await sound.getStatusAsync();
+      100 |       if (status.isLoaded) {
+    > 101 |         setDuration(status.durationMillis ? status.durationMillis / 1000 : 0);
+          |         ^
+      102 |         setIsLoading(false);
+      103 |         setIsPlaying(true);
+      104 |         startTracking();
+
+      at printWarning (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:72:30)
+      at error (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:46:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16716:9)
+      at scheduleUpdateOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14916:5)
+      at dispatchSetState (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6767:7)
+      at setDuration (src/hooks/useAudioPlayer.ts:101:9)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+    console.error
+      Warning: An update to HookContainer inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at hookProps (/Users/reda/.openclaw/workspace/al-muallim-mobile/node_modules/@testing-library/react-native/src/render-hook.tsx:45:28)
+
+      100 |       if (status.isLoaded) {
+      101 |         setDuration(status.durationMillis ? status.durationMillis / 1000 : 0);
+    > 102 |         setIsLoading(false);
+          |         ^
+      103 |         setIsPlaying(true);
+      104 |         startTracking();
+      105 |       }
+
+      at printWarning (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:72:30)
+      at error (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:46:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16716:9)
+      at scheduleUpdateOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14916:5)
+      at dispatchSetState (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6767:7)
+      at setIsLoading (src/hooks/useAudioPlayer.ts:102:9)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+    console.error
+      Warning: An update to HookContainer inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at hookProps (/Users/reda/.openclaw/workspace/al-muallim-mobile/node_modules/@testing-library/react-native/src/render-hook.tsx:45:28)
+
+      101 |         setDuration(status.durationMillis ? status.durationMillis / 1000 : 0);
+      102 |         setIsLoading(false);
+    > 103 |         setIsPlaying(true);
+          |         ^
+      104 |         startTracking();
+      105 |       }
+      106 |     } catch (err) {
+
+      at printWarning (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:72:30)
+      at error (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:46:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16716:9)
+      at scheduleUpdateOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14916:5)
+      at dispatchSetState (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6767:7)
+      at setIsPlaying (src/hooks/useAudioPlayer.ts:103:9)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+  ● QA: Audio Player — SC-3.x › SC-3.1: Basic playback › should pause and resume
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: false
+    Received: true
+
+      60 |
+      61 |       act(() => { result.current.pause(); });
+    > 62 |       expect(result.current.isPlaying).toBe(false);
+         |                                        ^
+      63 |       expect(mockSoundInstance.pause).toHaveBeenCalled();
+      64 |     });
+      65 |
+
+      at Object.toBe (src/hooks/__tests__/useAudioPlayer-qa.test.ts:62:40)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+  ● QA: Audio Player — SC-3.x › SC-3.1: Basic playback › should stop and reset position
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 30
+    Received: 0
+
+      71 |
+      72 |       act(() => { result.current.seek(30); });
+    > 73 |       expect(result.current.currentTime).toBe(30);
+         |                                          ^
+      74 |
+      75 |       act(() => { result.current.stop(); });
+      76 |       expect(result.current.isPlaying).toBe(false);
+
+      at Object.toBe (src/hooks/__tests__/useAudioPlayer-qa.test.ts:73:42)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+  ● QA: Audio Player — SC-3.x › SC-3.2: Speed control › should call setSpeed on the sound instance
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: 0.5
+
+    Number of calls: 0
+
+      89 |
+      90 |       act(() => { resultact-test-renderer.development.js:72:30)
+      at error (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:46:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16716:9)
+      at scheduleUpdateOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14916:5)
+      at dispatchSetState (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6767:7)
+      at setIsLoading (src/hooks/useAudioPlayer.ts:102:9)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+    console.error
+      Warning: An update to HookContainer inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at hookProps (/Users/reda/.openclaw/workspace/al-muallim-mobile/node_modules/@testing-library/react-native/src/render-hook.tsx:45:28)
+
+      101 |         setDuration(status.durationMillis ? status.durationMillis / 1000 : 0);
+      102 |         setIsLoading(false);
+    > 103 |         setIsPlaying(true);
+          |         ^
+      104 |         startTracking();
+      105 |       }
+      106 |     } catch (err) {
+
+      at printWarning (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:72:30)
+      at error (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:46:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16716:9)
+      at scheduleUpdateOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14916:5)
+      at dispatchSetState (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6767:7)
+      at setIsPlaying (src/hooks/useAudioPlayer.ts:103:9)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+  ● QA: Audio Player — SC-3.x › SC-3.1: Basic playback › should pause and resume
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: false
+    Received: true
+
+      60 |
+      61 |       act(() => { result.current.pause(); });
+    > 62 |       expect(result.current.isPlaying).toBe(false);
+         |                                        ^
+      63 |       expect(mockSoundInstance.pause).toHaveBeenCalled();
+      64 |     });
+      65 |
+
+      at Object.toBe (src/hooks/__tests__/useAudioPlayer-qa.test.ts:62:40)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+  ● QA: Audio Player — SC-3.x › SC-3.1: Basic playback › should stop and reset position
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 30
+    Received: 0
+
+      71 |
+      72 |       act(() => { result.current.seek(30); });
+    > 73 |       expect(result.current.currentTime).toBe(30);
+         |                                          ^
+      74 |
+      75 |       act(() => { result.current.stop(); });
+      76 |       expect(result.current.isPlaying).toBe(false);
+
+      at Object.toBe (src/hooks/__tests__/useAudioPlayer-qa.test.ts:73:42)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+  ● QA: Audio Player — SC-3.x › SC-3.2: Speed control › should call setSpeed on the sound instance
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: 0.5
+
+    Number of calls: 0
+
+      89 |
+      90 |       act(() => { result.current.setPlaybackSpeed(0.5); });
+    > 91 |       expect(mockSoundInstance.setSpeed).toHaveBeenCalledWith(0.5);
+         |                                          ^
+      92 |     });
+      93 |
+      94 |     it('should handle all speed values: 0.5, 0.75, 1, 1.25, 1.5, 2', async () => {
+
+      at Object.toHaveBeenCalledWith (src/hooks/__tests__/useAudioPlayer-qa.test.ts:91:42)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+  ● QA: Audio Player — SC-3.x › SC-3.2: Speed control › should handle all speed values: 0.5, 0.75, 1, 1.25, 1.5, 2
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: 0.5
+
+    Number of calls: 0
+
+      100 |       for (const speed of [0.5, 0.75, 1, 1.25, 1.5, 2]) {
+      101 |         act(() => { result.current.setPlaybackSpeed(speed); });
+    > 102 |         expect(mockSoundInstance.setSpeed).toHaveBeenCalledWith(speed);
+          |                                            ^
+      103 |       }
+      104 |       expect(mockSoundInstance.setSpeed).toHaveBeenCalledTimes(6);
+      105 |     });
+
+      at toHaveBeenCalledWith (src/hooks/__tests__/useAudioPlayer-qa.test.ts:102:44)
+          at _loop.next (<anonymous>)
+      at Object._loop (src/hooks/__tests__/useAudioPlayer-qa.test.ts:100:55)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+  ● QA: Audio Player — SC-3.x › SC-3.3: Loop mode › should replay when track ends in loop mode
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: 0
+
+    Number of calls: 0
+
+      141 |       // The play callback calls setCurrentTime(0) + play() when looping
+      142 |       // Verify the track was set to beginning
+    > 143 |       expect(mockSoundInstance.setCurrentTime).toHaveBeenCalledWith(0);
+          |                                                ^
+      144 |     });
+      145 |   });
+      146 |
+
+      at Object.toHaveBeenCalledWith (src/hooks/__tests__/useAudioPlayer-qa.test.ts:143:48)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+  ● QA: Audio Player — SC-3.x › SC-3.7: Network error handling › should set error state on load failure
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "Audio non disponible"
+    Received: null
+
+      158 |       await act(async () => { await new Promise(r => process.nextTick(r)); });
+      159 |
+    > 160 |       expect(result.current.error).toBe('Audio non disponible');
+          |                                    ^
+      161 |       expect(result.current.isLoading).toBe(false);
+      162 |       expect(result.current.isPlaying).toBe(false);
+      163 |     });
+
+      at Object.toBe (src/hooks/__tests__/useAudioPlayer-qa.test.ts:160:36)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+  ● QA: Audio Player — SC-3.x › SC-3.7: Network error handling › should set error on playback failure
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "Erreur de lecture"
+    Received: null
+
+      172 |       await act(async () => { await new Promise(r => process.nextTick(r)); });
+      173 |
+    > 174 |       expect(result.current.error).toBe('Erreur de lecture');
+          |                                    ^
+      175 |     });
+      176 |   });
+      177 |
+
+      at Object.toBe (src/hooks/__tests__/useAudioPlayer-qa.test.ts:174:36)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+  ● QA: Audio Player — SC-3.x › SC-3.8: Rapid track switching › should cleanup previous sound when playing a new one
+
+    ex.current.setPlaybackSpeed(0.5); });
+    > 91 |       expect(mockSoundInstance.setSpeed).toHaveBeenCalledWith(0.5);
+         |                                          ^
+      92 |     });
+      93 |
+      94 |     it('should handle all speed values: 0.5, 0.75, 1, 1.25, 1.5, 2', async () => {
+
+      at Object.toHaveBeenCalledWith (src/hooks/__tests__/useAudioPlayer-qa.test.ts:91:42)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+  ● QA: Audio Player — SC-3.x › SC-3.2: Speed control › should handle all speed values: 0.5, 0.75, 1, 1.25, 1.5, 2
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: 0.5
+
+    Number of calls: 0
+
+      100 |       for (const speed of [0.5, 0.75, 1, 1.25, 1.5, 2]) {
+      101 |         act(() => { result.current.setPlaybackSpeed(speed); });
+    > 102 |         expect(mockSoundInstance.setSpeed).toHaveBeenCalledWith(speed);
+          |                                            ^
+      103 |       }
+      104 |       expect(mockSoundInstance.setSpeed).toHaveBeenCalledTimes(6);
+      105 |     });
+
+      at toHaveBeenCalledWith (src/hooks/__tests__/useAudioPlayer-qa.test.ts:102:44)
+          at _loop.next (<anonymous>)
+      at Object._loop (src/hooks/__tests__/useAudioPlayer-qa.test.ts:100:55)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+  ● QA: Audio Player — SC-3.x › SC-3.3: Loop mode › should replay when track ends in loop mode
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: 0
+
+    Number of calls: 0
+
+      141 |       // The play callback calls setCurrentTime(0) + play() when looping
+      142 |       // Verify the track was set to beginning
+    > 143 |       expect(mockSoundInstance.setCurrentTime).toHaveBeenCalledWith(0);
+          |                                                ^
+      144 |     });
+      145 |   });
+      146 |
+
+      at Object.toHaveBeenCalledWith (src/hooks/__tests__/useAudioPlayer-qa.test.ts:143:48)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+  ● QA: Audio Player — SC-3.x › SC-3.7: Network error handling › should set error state on load failure
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "Audio non disponible"
+    Received: null
+
+      158 |       await act(async () => { await new Promise(r => process.nextTick(r)); });
+      159 |
+    > 160 |       expect(result.current.error).toBe('Audio non disponible');
+          |                                    ^
+      161 |       expect(result.current.isLoading).toBe(false);
+      162 |       expect(result.current.isPlaying).toBe(false);
+      163 |     });
+
+      at Object.toBe (src/hooks/__tests__/useAudioPlayer-qa.test.ts:160:36)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+  ● QA: Audio Player — SC-3.x › SC-3.7: Network error handling › should set error on playback failure
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "Erreur de lecture"
+    Received: null
+
+      172 |       await act(async () => { await new Promise(r => process.nextTick(r)); });
+      173 |
+    > 174 |       expect(result.current.error).toBe('Erreur de lecture');
+          |                                    ^
+      175 |     });
+      176 |   });
+      177 |
+
+      at Object.toBe (src/hooks/__tests__/useAudioPlayer-qa.test.ts:174:36)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+  ● QA: Audio Player — SC-3.x › SC-3.8: Rapid track switching › should cleanup previous sound when playing a new one
+
+    expect(jest.fn()).toHaveBeenCalled()
+
+    Expected number of calls: >= 1
+    Received number of calls:    0
+
+      188 |
+      189 |       // Previous sound should be stopped and released
+    > 190 |       expect(mockSoundInstance.stop).toHaveBeenCalled();
+          |                                      ^
+      191 |       expect(mockSoundInstance.release).toHaveBeenCalled();
+      192 |     });
+      193 |   });
+
+      at Object.toHaveBeenCalled (src/hooks/__tests__/useAudioPlayer-qa.test.ts:190:38)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+  ● QA: Audio Player — SC-3.x › SC-7.3: Cleanup on unmount › should stop and release sound on unmount
+
+    expect(jest.fn()).toHaveBeenCalled()
+
+    Expected number of calls: >= 1
+    Received number of calls:    0
+
+      202 |
+      203 |       unmount();
+    > 204 |       expect(mockSoundInstance.stop).toHaveBeenCalled();
+          |                                      ^
+      205 |       expect(mockSoundInstance.release).toHaveBeenCalled();
+      206 |     });
+      207 |   });
+
+      at Object.toHaveBeenCalled (src/hooks/__tests__/useAudioPlayer-qa.test.ts:204:38)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+  ● QA: Audio Player — SC-3.x › Seek functionality › should update currentTime and call setCurrentTime
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 45.5
+    Received: 0
+
+      216 |
+      217 |       act(() => { result.current.seek(45.5); });
+    > 218 |       expect(result.current.currentTime).toBe(45.5);
+          |                                          ^
+      219 |       expect(mockSoundInstance.setCurrentTime).toHaveBeenCalledWith(45.5);
+      220 |     });
+      221 |
+
+      at Object.toBe (src/hooks/__tests__/useAudioPlayer-qa.test.ts:218:42)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+  ● QA: Audio Player — SC-3.x › Replay › should replay the current URL
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 1
+    Received: 0
+
+      244 |
+      245 |       // Should create a new Sound with the same URL
+    > 246 |       expect(Sound.mock.calls.length).toBe(callsBefore + 1);
+          |                                       ^
+      247 |       expect(Sound.mock.calls[Sound.mock.calls.length - 1][0]).toBe('test.mp3');
+      248 |     });
+      249 |
+
+      at Object.toBe (src/hooks/__tests__/useAudioPlayer-qa.test.ts:246:39)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+pect(jest.fn()).toHaveBeenCalled()
+
+    Expected number of calls: >= 1
+    Received number of calls:    0
+
+      188 |
+      189 |       // Previous sound should be stopped and released
+    > 190 |       expect(mockSoundInstance.stop).toHaveBeenCalled();
+          |                                      ^
+      191 |       expect(mockSoundInstance.release).toHaveBeenCalled();
+      192 |     });
+      193 |   });
+
+      at Object.toHaveBeenCalled (src/hooks/__tests__/useAudioPlayer-qa.test.ts:190:38)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+  ● QA: Audio Player — SC-3.x › SC-7.3: Cleanup on unmount › should stop and release sound on unmount
+
+    expect(jest.fn()).toHaveBeenCalled()
+
+    Expected number of calls: >= 1
+    Received number of calls:    0
+
+      202 |
+      203 |       unmount();
+    > 204 |       expect(mockSoundInstance.stop).toHaveBeenCalled();
+          |                                      ^
+      205 |       expect(mockSoundInstance.release).toHaveBeenCalled();
+      206 |     });
+      207 |   });
+
+      at Object.toHaveBeenCalled (src/hooks/__tests__/useAudioPlayer-qa.test.ts:204:38)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+  ● QA: Audio Player — SC-3.x › Seek functionality › should update currentTime and call setCurrentTime
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 45.5
+    Received: 0
+
+      216 |
+      217 |       act(() => { result.current.seek(45.5); });
+    > 218 |       expect(result.current.currentTime).toBe(45.5);
+          |                                          ^
+      219 |       expect(mockSoundInstance.setCurrentTime).toHaveBeenCalledWith(45.5);
+      220 |     });
+      221 |
+
+      at Object.toBe (src/hooks/__tests__/useAudioPlayer-qa.test.ts:218:42)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+  ● QA: Audio Player — SC-3.x › Replay › should replay the current URL
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 1
+    Received: 0
+
+      244 |
+      245 |       // Should create a new Sound with the same URL
+    > 246 |       expect(Sound.mock.calls.length).toBe(callsBefore + 1);
+          |                                       ^
+      247 |       expect(Sound.mock.calls[Sound.mock.calls.length - 1][0]).toBe('test.mp3');
+      248 |     });
+      249 |
+
+      at Object.toBe (src/hooks/__tests__/useAudioPlayer-qa.test.ts:246:39)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+FAIL src/hooks/__tests__/useAudioPlayer.test.ts
+  ● Test suite failed to run
+
+    SyntaxError: /Users/reda/.openclaw/workspace/al-muallim-mobile/src/hooks/__tests__/useAudioPlayer.test.ts: Unexpected token, expected "," (1:31)
+
+    > 1 | import { renderHook, act, from '@testing-library/react-native';
+        |                                ^
+      2 | import { useAudioPlayer } from '../useAudioPlayer';
+      3 | import { Audio } from 'expo-av';
+      4 |
+
+      at constructor (node_modules/@babel/parser/src/parse-error.ts:95:45)
+      at TypeScriptParserMixin.toParseError [as raise] (node_modules/@babel/parser/src/tokenizer/index.ts:1504:19)
+      at TypeScriptParserMixin.raise [as unexpected] (node_modules/@babel/parser/src/tokenizer/index.ts:1544:16)
+      at TypeScriptParserMixin.unexpected [as expect] (node_modules/@babel/parser/src/parser/util.ts:157:12)
+      at TypeScriptParserMixin.expect [as parseNamedImportSpecifiers] (node_modules/@babel/parser/src/parser/statement.ts:3443:14)
+      at TypeScriptParserMixin.parseNamedImportSpecifiers [as parseImportSpecifiersAndAfter] (node_modules/@babel/parser/src/parser/statement.ts:3179:37)
+      at TypeScriptParserMixin.parseImportSpecifiersAndAfter (node_modules/@babel/parser/src/parser/statement.ts:3148:17)
+      at TypeScriptParserMixin.parseImport (node_modules/@babel/parser/src/plugins/typescript/index.ts:2970:28)
+      at TypeScriptParserMixin.parseImport (node_modules/@babel/parser/src/parser/statement.ts:647:25)
+      at TypeScriptParserMixin.parseStatementContent (node_modules/@babel/parser/src/plugins/typescript/index.ts:3220:20)
+      at TypeScriptParserMixin.parseStatementContent [as parseStatementLike] (node_modules/@babel/parser/src/parser/statement.ts:482:17)
+      at TypeScriptParserMixin.parseStatementLike [as parseModuleItem] (node_modules/@babel/parser/src/parser/statement.ts:419:17)
+      at TypeScriptParserMixin.parseModuleItem [as parseBlockOrModuleBlockBody] (node_modules/@babel/parser/src/parser/statement.ts:1443:16)
+      at TypeScriptParserMixin.parseBlockOrModuleBlockBody [as parseBlockBody] (node_modules/@babel/parser/src/parser/statement.ts:1417:10)
+      at TypeScriptParserMixin.parseBlockBody [as parseProgram] (node_modules/@babel/parser/src/parser/statement.ts:229:10)
+      at TypeScriptParserMixin.parseProgram [as parseTopLevel] (node_modules/@babel/parser/src/parser/statement.ts:203:25)
+      at TypeScriptParserMixin.parseTopLevel (node_modules/@babel/parser/src/parser/index.ts:83:25)
+      at TypeScriptParserMixin.parse (node_modules/@babel/parser/src/plugins/typescript/index.ts:4354:20)
+      at parse (node_modules/@babel/parser/src/index.ts:86:38)
+      at parser (node_modules/@babel/core/src/parser/index.ts:29:19)
+          at parser.next (<anonymous>)
+      at normalizeFile (node_modules/@babel/core/src/transformation/normalize-file.ts:50:24)
+          at normalizeFile.next (<anonymous>)
+      at run (node_modules/@babel/core/src/transformation/index.ts:41:36)
+          at run.next (<anonymous>)
+      at transform (node_modules/@babel/core/src/transform.ts:29:20)
+          at transform.next (<anonymous>)
+      at evaluateSync (node_modules/gensync/index.js:251:28)
+      at sync (node_modules/gensync/index.js:89:14)
+      at fn (node_modules/@babel/core/src/errors/rewrite-stack-trace.ts:99:14)
+      at transformSync (node_modules/@babel/core/src/transform.ts:66:52)
+      at ScriptTransformer.transformSource (node_modules/@jest/transform/build/ScriptTransformer.js:545:31)
+      at ScriptTransformer._transformAndBuildScript (node_modules/@jest/transform/build/ScriptTransformer.js:674:40)
+      at ScriptTransformer.transform (node_modules/@jest/transform/build/ScriptTransformer.js:726:19)
+
+FAIL src/hooks/__tests__/useAudioPlayer.test.ts
+  ● Test suite failed to run
+
+    SyntaxError: /Users/reda/.openclaw/workspace/al-muallim-mobile/src/hooks/__tests__/useAudioPlayer.test.ts: Unexpected token, expected "," (1:31)
+
+    > 1 | import { renderHook, act, from '@testing-library/react-native';
+        |                                ^
+      2 | import { useAudioPlayer } from '../useAudioPlayer';
+      3 | import { Audio } from 'expo-av';
+      4 |
+
+      at constructor (node_modules/@babel/parser/src/parse-error.ts:95:45)
+      at TypeScriptParserMixin.toParseError [as raise] (node_modules/@babel/parser/src/tokenizer/index.ts:1504:19)
+      at TypeScriptParserMixin.raise [as unexpected] (node_modules/@babel/parser/src/tokenizer/index.ts:1544:16)
+      at TypeScriptParserMixin.unexpected [as expect] (node_modules/@babel/parser/src/parser/util.ts:157:12)
+      at TypeScriptParserMixin.expect [as parseNamedImportSpecifiers] (node_modules/@babel/parser/src/parser/statement.ts:3443:14)
+      at TypeScriptParserMixin.parseNamedImportSpecifiers [as parseImportSpecifiersAndAfter] (node_modules/@babel/parser/src/parser/statement.ts:3179:37)
+      at TypeScriptParserMixin.parseImportSpecifiersAndAfter (node_modules/@babel/parser/src/parser/statement.ts:3148:17)
+      at TypeScriptParserMixin.parseImport (node_modules/@babel/parser/src/plugins/typescript/index.ts:2970:28)
+      at TypeScriptParserMixin.parseImport (node_modules/@babel/parser/src/parser/statement.ts:647:25)
+      at TypeScriptParserMixin.parseStatementContent (node_modules/@babel/parser/src/plugins/typescript/index.ts:3220:20)
+      at TypeScriptParserMixin.parseStatementContent [as parseStatementLike] (node_modules/@babel/parser/src/parser/statement.ts:482:17)
+      at TypeScriptParserMixin.parseStatementLike [as parseModuleItem] (node_modules/@babel/parser/src/parser/statement.ts:419:17)
+      at TypeScriptParserMixin.parseModuleItem [as parseBlockOrModuleBlockBody] (node_modules/@babel/parser/src/parser/statement.ts:1443:16)
+      at TypeScriptParserMixin.parseBlockOrModuleBlockBody [as parseBlockBody] (node_modules/@babel/parser/src/parser/statement.ts:1417:10)
+      at TypeScriptParserMixin.parseBlockBody [as parseProgram] (node_modules/@babel/parser/src/parser/statement.ts:229:10)
+      at TypeScriptParserMixin.parseProgram [as parseTopLevel] (node_modules/@babel/parser/src/parser/statement.ts:203:25)
+      at TypeScriptParserMixin.parseTopLevel (node_modules/@babel/parser/src/parser/index.ts:83:25)
+      at TypeScriptParserMixin.parse (node_modules/@babel/parser/src/plugins/typescript/index.ts:4354:20)
+      at parse (node_modules/@babel/parser/src/index.ts:86:38)
+      at parser (node_modules/@babel/core/src/parser/index.ts:29:19)
+          at parser.next (<anonymous>)
+      at normalizeFile (node_modules/@babel/core/src/transformation/normalize-file.ts:50:24)
+          at normalizeFile.next (<anonymous>)
+      at run (node_modules/@babel/core/src/transformation/index.ts:41:36)
+          at run.next (<anonymous>)
+      at transform (node_modules/@babel/core/src/transform.ts:29:20)
+          at transform.next (<anonymous>)
+      at evaluateSync (node_modules/gensync/index.js:251:28)
+      at sync (node_modules/gensync/index.js:89:14)
+      at fn (node_modules/@babel/core/src/errors/rewrite-stack-trace.ts:99:14)
+      at transformSync (node_modules/@babel/core/src/transform.ts:66:52)
+      at ScriptTransformer.transformSource (node_modules/@jest/transform/build/ScriptTransformer.js:545:31)
+      at ScriptTransformer._transformAndBuildScript (node_modules/@jest/transform/build/ScriptTransformer.js:674:40)
+      at ScriptTransformer.transform (node_modules/@jest/transform/build/ScriptTransformer.js:726:19)
+
+PASS src/screens/__tests__/SettingsScreen.test.tsx
+PASS src/screens/__tests__/SettingsScreen.test.tsx
+PASS src/screens/__tests__/ReviewScreen.test.tsx
+PASS src/screens/__tests__/ReviewScreen.test.tsx
+PASS src/components/__tests__/AudioPlayer.test.tsx
+PASS src/components/__tests__/AudioPlayer.test.tsx
+PASS src/components/__tests__/StatsCard.test.tsx
+PASS src/components/__tests__/StatsCard.test.tsx
+PASS src/services/__tests__/database-qa.test.ts
+PASS src/services/__tests__/database-qa.test.ts
+PASS src/services/__tests__/sm2-algorithm.test.ts
+PASS src/services/__tests__/sm2-algorithm.test.ts
+PASS src/screens/__tests__/FocusModeScreen.test.tsx
+PASS src/screens/__tests__/FocusModeScreen.test.tsx
+PASS src/screens/__tests__/qa-screens.test.tsx
+PASS src/screens/__tests__/qa-screens.test.tsx
+  ● Console
+
+    console.error
+      Warning: An update to DashboardScreen inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at DashboardScreen (/Users/reda/.openclaw/workspace/al-muallim-mobile/src/screens/DashboardScreen.tsx:22:76)
+
+      at printWarning (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:72:30)
+      at error (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:46:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16716:9)
+      at scheduleUpdateOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14916:5)
+      at dispatchSetState (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6767:7)
+
+    console.error
+      Warning: An update to DashboardScreen inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at DashboardScreen (/Users/reda/.openclaw/workspace/al-muallim-mobile/src/screens/DashboardScreen.tsx:22:76)
+
+      at printWarning (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:72:30)
+      at error (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:46:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16716:9)
+      at scheduleUpdateOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14916:5)
+      at dispatchSetState (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6767:7)
+
+    console.error
+      Warning: An update to DashboardScreen inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at DashboardScreen (/Users/reda/.openclaw/workspace/al-muallim-mobile/src/screens/DashboardScreen.tsx:22:76)
+
+      at printWarning (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:72:30)
+      at error (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:46:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16716:9)
+      at scheduleUpdateOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14916:5)
+      at dispatchSetState (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6767:7)
+
+    console.error
+      Warning: An update to DashboardScreen inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at DashboardScreen (/Users/reda/.openclaw/workspace/al-muallim-mobile/src/screens/DashboardScreen.tsx:22:76)
+
+      at printWarning (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:72:30)
+   ● Console
+
+    console.error
+      Warning: An update to DashboardScreen inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at DashboardScreen (/Users/reda/.openclaw/workspace/al-muallim-mobile/src/screens/DashboardScreen.tsx:22:76)
+
+      at printWarning (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:72:30)
+      at error (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:46:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16716:9)
+      at scheduleUpdateOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14916:5)
+      at dispatchSetState (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6767:7)
+
+    console.error
+      Warning: An update to DashboardScreen inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at DashboardScreen (/Users/reda/.openclaw/workspace/al-muallim-mobile/src/screens/DashboardScreen.tsx:22:76)
+
+      at printWarning (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:72:30)
+      at error (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:46:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16716:9)
+      at scheduleUpdateOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14916:5)
+      at dispatchSetState (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6767:7)
+
+    console.error
+      Warning: An update to DashboardScreen inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at DashboardScreen (/Users/reda/.openclaw/workspace/al-muallim-mobile/src/screens/DashboardScreen.tsx:22:76)
+
+      at printWarning (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:72:30)
+      at error (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:46:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16716:9)
+      at scheduleUpdateOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14916:5)
+      at dispatchSetState (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6767:7)
+
+    console.error
+      Warning: An update to DashboardScreen inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at DashboardScreen (/Users/reda/.openclaw/workspace/al-muallim-mobile/src/screens/DashboardScreen.tsx:22:76)
+
+      at printWarning (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:72:30)
+      at error (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:46:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16716:9)
+      at scheduleUpdateOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14916:5)
+      at dispatchSetState (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6767:7)
+
+    console.error
+      Warning: An update to DashboardScreen inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at DashboardScreen (/Users/reda/.openclaw/workspace/al-muallim-mobile/src/screens/DashboardScreen.tsx:22:76)
+
+      at printWarning (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:72:30)
+      at error (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:46:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16716:9)
+      at scheduleUpdateOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14916:5)
+      at dispatchSetState (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6767:7)
+
+    console.error
+      Warning: An update to DashboardScreen inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at DashboardScreen (/Users/reda/.openclaw/workspace/al-muallim-mobile/src/screens/DashboardScreen.tsx:22:76)
+
+      at printWarning (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:72:30)
+      at error (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:46:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16716:9)
+      at scheduleUpdateOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14916:5)
+      at dispatchSetState (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6767:7)
+
+    console.error
+      Warning: An update to DashboardScreen inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at DashboardScreen (/Users/reda/.openclaw/workspace/al-muallim-mobile/src/screens/DashboardScreen.tsx:22:76)
+
+      at printWarning (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:72:30)
+      at error (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:46:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16716:9)
+      at scheduleUpdateOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14916:5)
+      at dispatchSetState (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6767:7)
+
+     at error (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:46:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16716:9)
+      at scheduleUpdateOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14916:5)
+      at dispatchSetState (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6767:7)
+
+    console.error
+      Warning: An update to DashboardScreen inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at DashboardScreen (/Users/reda/.openclaw/workspace/al-muallim-mobile/src/screens/DashboardScreen.tsx:22:76)
+
+      at printWarning (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:72:30)
+      at error (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:46:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16716:9)
+      at scheduleUpdateOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14916:5)
+      at dispatchSetState (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6767:7)
+
+    console.error
+      Warning: An update to DashboardScreen inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at DashboardScreen (/Users/reda/.openclaw/workspace/al-muallim-mobile/src/screens/DashboardScreen.tsx:22:76)
+
+      at printWarning (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:72:30)
+      at error (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:46:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16716:9)
+      at scheduleUpdateOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14916:5)
+      at dispatchSetState (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6767:7)
+
+    console.error
+      Warning: An update to DashboardScreen inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at DashboardScreen (/Users/reda/.openclaw/workspace/al-muallim-mobile/src/screens/DashboardScreen.tsx:22:76)
+
+      at printWarning (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:72:30)
+      at error (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:46:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16716:9)
+      at scheduleUpdateOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14916:5)
+      at dispatchSetState (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6767:7)
+
+PASS src/screens/__tests__/StatsScreen.test.tsx
+PASS src/screens/__tests__/StatsScreen.test.tsx
+PASS src/screens/__tests__/DashboardScreen.test.tsx
+PASS src/screens/__tests__/DashboardScreen.test.tsx
+  ● Console
+
+    console.error
+      Warning: An update to DashboardScreen inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at DashboardScreen (/Users/reda/.openclaw/workspace/al-muallim-mobile/src/screens/DashboardScreen.tsx:22:76)
+
+      at printWarning (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:72:30)
+      at error (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:46:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16716:9)
+      at scheduleUpdateOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14916:5)
+      at dispatchSetState (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6767:7)
+
+    console.error
+      Warning: An update to DashboardScreen inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at DashboardScreen (/Users/reda/.openclaw/workspace/al-muallim-mobile/src/screens/DashboardScreen.tsx:22:76)
+
+      at printWarning (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:72:30)
+      at error (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:46:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16716:9)
+      at scheduleUpdateOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14916:5)
+      at dispatchSetState (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6767:7)
+
+    console.error
+      Warning: An update to DashboardScreen inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at DashboardScreen (/Users/reda/.openclaw/workspace/al-muallim-mobile/src/screens/DashboardScreen.tsx:22:76)
+
+      at printWarning (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:72:30)
+      at error (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:46:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16716:9)
+      at scheduleUpdateOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14916:5)
+      at dispatchSetState (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6767:7)
+
+    console.error
+      Warning: An update to DashboardScreen inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at DashboardScreen (/Users/reda/.openclaw/workspace/al-muallim-mobile/src/screens/DashboardScreen.tsx:22:76)
+
+      at printWarning (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:72:30)
+   ● Console
+
+    console.error
+      Warning: An update to DashboardScreen inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at DashboardScreen (/Users/reda/.openclaw/workspace/al-muallim-mobile/src/screens/DashboardScreen.tsx:22:76)
+
+      at printWarning (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:72:30)
+      at error (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:46:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16716:9)
+      at scheduleUpdateOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14916:5)
+      at dispatchSetState (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6767:7)
+
+    console.error
+      Warning: An update to DashboardScreen inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at DashboardScreen (/Users/reda/.openclaw/workspace/al-muallim-mobile/src/screens/DashboardScreen.tsx:22:76)
+
+      at printWarning (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:72:30)
+      at error (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:46:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16716:9)
+      at scheduleUpdateOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14916:5)
+      at dispatchSetState (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6767:7)
+
+    console.error
+      Warning: An update to DashboardScreen inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at DashboardScreen (/Users/reda/.openclaw/workspace/al-muallim-mobile/src/screens/DashboardScreen.tsx:22:76)
+
+      at printWarning (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:72:30)
+      at error (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:46:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16716:9)
+      at scheduleUpdateOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14916:5)
+      at dispatchSetState (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6767:7)
+
+    console.error
+      Warning: An update to DashboardScreen inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at DashboardScreen (/Users/reda/.openclaw/workspace/al-muallim-mobile/src/screens/DashboardScreen.tsx:22:76)
+
+      at printWarning (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:72:30)
+      at error (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:46:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16716:9)
+      at scheduleUpdateOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14916:5)
+      at dispatchSetState (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6767:7)
+
+    console.error
+      Warning: An update to DashboardScreen inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at DashboardScreen (/Users/reda/.openclaw/workspace/al-muallim-mobile/src/screens/DashboardScreen.tsx:22:76)
+
+      at printWarning (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:72:30)
+      at error (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:46:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16716:9)
+      at scheduleUpdateOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14916:5)
+      at dispatchSetState (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6767:7)
+
+    console.error
+      Warning: An update to DashboardScreen inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at DashboardScreen (/Users/reda/.openclaw/workspace/al-muallim-mobile/src/screens/DashboardScreen.tsx:22:76)
+
+      at printWarning (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:72:30)
+      at error (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:46:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16716:9)
+      at scheduleUpdateOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14916:5)
+      at dispatchSetState (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6767:7)
+
+     at error (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:46:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16716:9)
+      at scheduleUpdateOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14916:5)
+      at dispatchSetState (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6767:7)
+
+    console.error
+      Warning: An update to DashboardScreen inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at DashboardScreen (/Users/reda/.openclaw/workspace/al-muallim-mobile/src/screens/DashboardScreen.tsx:22:76)
+
+      at printWarning (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:72:30)
+      at error (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:46:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16716:9)
+      at scheduleUpdateOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14916:5)
+      at dispatchSetState (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6767:7)
+
+    console.error
+      Warning: An update to DashboardScreen inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at DashboardScreen (/Users/reda/.openclaw/workspace/al-muallim-mobile/src/screens/DashboardScreen.tsx:22:76)
+
+      at printWarning (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:72:30)
+      at error (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:46:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16716:9)
+      at scheduleUpdateOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14916:5)
+      at dispatchSetState (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6767:7)
+
+PASS src/stores/__tests__/focusStore.test.ts
+PASS src/stores/__tests__/focusStore.test.ts
+PASS src/stores/__tests__/statsStore.test.ts
+PASS src/stores/__tests__/statsStore.test.ts
+PASS src/screens/__tests__/AudioPlayerScreen.test.tsx
+PASS src/screens/__tests__/AudioPlayerScreen.test.tsx
+PASS src/stores/__tests__/collectionsStore.test.ts
+PASS src/stores/__tests__/collectionsStore.test.ts
+PASS __tests__/basic.test.ts
+PASS __tests__/basic.test.ts
+
+
+Test Suites: 3 failed, 15 passed, 18 total
+Tests:       12 failed, 244 passed, 256 total
+Snapshots:   0 total
+Time:        2.863 s
+Ran all test suites matching /--test|suites:|^|src\/hooks\/__tests__2/i.
+Test Suites: 3 failed, 15 passed, 18 total
+Tests:       12 failed, 244 passed, 256 total
+Snapshots:   0 total
+Time:        2.863 s
+Ran all test suites matching /--test|suites:|^|src\/hooks\/__tests__2/i.

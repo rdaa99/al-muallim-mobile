@@ -14,7 +14,7 @@ module.exports = {
     '!src/**/__mocks__/**',
   ],
   transformIgnorePatterns: [
-    'node_modules/(?!(react-native|@react-navigation|zustand|@react-native|react-native-quick-sqlite|@react-native-async-storage|@react-native-community|i18next|react-i18next)/)',
+    'node_modules/(?!(react-native|@react-navigation|zustand|@react-native|react-native-quick-sqlite|@react-native-async-storage|@react-native-community|i18next|react-i18next|expo-av|expo|expo-modules-core)/)',
   ],
   testPathIgnorePatterns: ['/node_modules/', '/android/', '/ios/'],
 };

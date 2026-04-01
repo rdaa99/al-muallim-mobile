@@ -15,7 +15,9 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../context/ThemeContext';
 import { useFonts } from '../context/FontSizeContext';
+import { useUserStore } from '../stores/userStore';
 import { useCollectionsStore } from '@/stores/collectionsStore';
+import { getVerseTranslation, type TranslationLanguage } from '@/services/translationService';
 import type { CollectionItem, Verse } from '@/types';
 
 export const CollectionDetailScreen: React.FC = () => {
@@ -25,6 +27,7 @@ export const CollectionDetailScreen: React.FC = () => {
   const { t } = useTranslation();
   const { colors } = useTheme();
   const { fonts } = useFonts();
+  const { settings } = useUserStore();
 
   const {
     currentCollection,
@@ -142,9 +145,9 @@ export const CollectionDetailScreen: React.FC = () => {
             </Text>
           )}
           
-          {verse?.text_translation_fr && (
+          {verse && settings?.selectedTranslation && settings.selectedTranslation !== 'ar' && (
             <Text style={[styles.itemTranslation, { color: colors.textSecondary }]} numberOfLines={2}>
-              {verse.text_translation_fr}
+              {getVerseTranslation(verse, settings.selectedTranslation as TranslationLanguage)}
             </Text>
           )}
         </View>

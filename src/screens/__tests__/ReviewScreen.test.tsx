@@ -138,15 +138,17 @@ describe('ReviewScreen', () => {
   it('should render verse with progress', () => {
     const { getByText } = render(<ReviewScreen />);
     expect(getByText('1 / 5')).toBeTruthy();
-    expect(getByText('1:1')).toBeTruthy();
+    // Sprint 7: Surah title shown at top, reference shown after reveal
+    expect(getByText('Sourate 1')).toBeTruthy();
   });
 
   it('should reveal arabic text on tap', () => {
     const { getByText, queryByText } = render(<ReviewScreen />);
 
-    expect(queryByText('review.tapToReveal')).toBeTruthy();
+    // Sprint 7: French text for reveal hint
+    expect(queryByText('Touchez pour révéler le texte')).toBeTruthy();
 
-    fireEvent.press(getByText('review.tapToReveal'));
+    fireEvent.press(getByText('Touchez pour révéler le texte'));
 
     expect(getByText(mockVerse.text_arabic)).toBeTruthy();
   });
@@ -154,6 +156,10 @@ describe('ReviewScreen', () => {
   it('should reveal translation on button press', () => {
     const { getByText } = render(<ReviewScreen />);
 
+    // Sprint 7: First reveal the Arabic text
+    fireEvent.press(getByText('Touchez pour révéler le texte'));
+
+    // Then reveal translation
     const revealButton = getByText('review.revealTranslation');
     fireEvent.press(revealButton);
 
@@ -163,7 +169,8 @@ describe('ReviewScreen', () => {
   it('should submit review with quality score', async () => {
     const { getByText } = render(<ReviewScreen />);
 
-    fireEvent.press(getByText('review.tapToReveal'));
+    // Sprint 7: First reveal the Arabic text
+    fireEvent.press(getByText('Touchez pour révéler le texte'));
 
     const easyButton = getByText('review.easy');
     fireEvent.press(easyButton);

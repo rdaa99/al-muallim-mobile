@@ -14,6 +14,7 @@ import { useAudioPlayer } from '../hooks/useAudioPlayer';
 import { useUserStore } from '../stores/userStore';
 import { useTheme } from '../context/ThemeContext';
 import { getVerseBySurahAyah } from '../services/database';
+import { getVerseTranslation, type TranslationLanguage } from '../services/translationService';
 import Slider from '@react-native-community/slider';
 import type { Surah, Verse } from '../types';
 
@@ -312,9 +313,9 @@ export const AudioPlayerScreen: React.FC = () => {
               <Text style={[styles.arabicText, { color: colors.text }]}>
                 {verseText?.text_arabic || t('common.loading')}
               </Text>
-              {verseText?.text_translation_fr && (
+              {verseText && settings?.selectedTranslation && settings.selectedTranslation !== 'ar' && (
                 <Text style={[styles.translationText, { color: colors.textSecondary }]}>
-                  {verseText.text_translation_fr}
+                  {getVerseTranslation(verseText, settings.selectedTranslation as TranslationLanguage)}
                 </Text>
               )}
             </View>

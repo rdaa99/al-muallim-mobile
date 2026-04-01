@@ -1,6 +1,74 @@
 // Jest setup file
 require('@testing-library/jest-native/extend-expect');
 
+// Create a mock sound instance that can be controlled
+const createMockSound = () => {
+  let _positionMillis = 0;
+  let _isPlaying = false;
+  let _durationMillis = 60000;
+  let _rate = 1;
+
+  const mockSound = {
+    playAsync: jest.fn(() => {
+      _isPlaying = true;
+      return Promise.resolve({ isLoaded: true, isPlaying: true });
+    }),
+    pauseAsync: jest.fn(() => {
+      _isPlaying = false;
+      return Promise.resolve({ isLoaded: true, isPlaying: false });
+    }),
+    stopAsync: jest.fn(() => {
+      _isPlaying = false;
+      _positionMillis = 0;
+      return Promise.resolve({ isLoaded: true, isPlaying: false });
+    }),
+    unloadAsync: jest.fn(() => Promise.resolve()),
+    setPositionAsync: jest.fn((position) => {
+      _positionMillis = position;
+      return Promise.resolve();
+    }),
+    setVolumeAsync: jest.fn(() => Promise.resolve()),
+    setRateAsync: jest.fn((rate, shouldCorrectPitch) => {
+      _rate = rate;
+      return Promise.resolve();
+    }),
+    getStatusAsync: jest.fn(() =>
+      Promise.resolve({
+        isLoaded: true,
+        isPlaying: _isPlaying,
+        durationMillis: _durationMillis,
+        positionMillis: _positionMillis,
+        rate: _rate,
+      })
+    ),
+  };
+
+  return mockSound;
+};
+
+// Mock expo-av to avoid ES module issues
+jest.mock('expo-av', () => ({
+  Audio: {
+    Sound: {
+      createAsync: jest.fn(() => {
+        const mockSound = createMockSound();
+        return Promise.resolve({
+          sound: mockSound,
+          status: { isLoaded: true, durationMillis: 60000 },
+        });
+      }),
+    },
+    setAudioModeAsync: jest.fn(),
+  },
+  Video: {
+    useVideoPlayer: jest.fn(() => ({
+      play: jest.fn(),
+      pause: jest.fn(),
+      replace: jest.fn(),
+    })),
+  },
+}));
+
 // Mock @react-native-async-storage/async-storage
 jest.mock('@react-native-async-storage/async-storage', () => ({
   setItem: jest.fn(() => Promise.resolve()),
